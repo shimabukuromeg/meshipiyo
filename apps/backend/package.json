@@ -16,6 +16,8 @@
     "db:migrate:reset": "prisma migrate reset",
     "db:studio": "prisma studio",
     "db:pull": "prisma db pull",
+    "db:init": "prisma migrate reset -f && pnpm ageage:scrape",
+    "db:init:all": "prisma migrate reset -f && pnpm ageage:scrape all",
     "codegen:prisma": "prisma generate",
     "codegen:microcms": "microcms_sdk_generator src/micro-cms-schemas src/micro-cms-schemas/generated.ts",
     "codegen": "pnpm run codegen:prisma && pnpm run codegen:gql",
@@ -25,7 +27,7 @@
     "ci": "biome ci"
   },
   "prisma": {
-    "seed": "node dist/prisma/seed.js"
+    "seed": "ts-node prisma/seed.ts"
   },
   "keywords": [],
   "author": "",
