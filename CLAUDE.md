@@ -56,12 +56,14 @@ pnpm backend db:migrate:reset   # Reset database (WARNING: deletes all data)
 4. Search functionality uses PGroonga extension for Japanese full-text search
 
 ### Key Features
+
 - Global search with autocomplete and recent/trending searches
 - Municipality-based restaurant organization
 - Cursor-based pagination for efficient data loading
 - Server-side rendering with Next.js API routes for caching
 
 ### Code Organization
+
 - `/apps/frontend/`: Next.js application
   - `/app/`: App router pages and API routes
   - `/components/`: React components (using Radix UI)
