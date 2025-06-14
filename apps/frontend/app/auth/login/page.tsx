@@ -1,46 +1,53 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '../../../contexts/AuthContext';
-import { Button } from '../../../components/ui/button';
-import { Input } from '../../../components/ui/input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../../../components/ui/card';
-import { Label } from '../../../components/ui/label';
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { Button } from '../../../components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '../../../components/ui/card'
+import { Input } from '../../../components/ui/input'
+import { Label } from '../../../components/ui/label'
+import { useAuth } from '../../../contexts/AuthContext'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [emailSent, setEmailSent] = useState(false);
-  const { signInWithMagicLink, signInWithLine, error } = useAuth();
-  const router = useRouter();
+  const [email, setEmail] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [emailSent, setEmailSent] = useState(false)
+  const { signInWithMagicLink, signInWithLine, error } = useAuth()
+  const router = useRouter()
 
   const handleMagicLinkSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
+    e.preventDefault()
+    if (!email) return
 
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      await signInWithMagicLink(email);
-      setEmailSent(true);
+      await signInWithMagicLink(email)
+      setEmailSent(true)
     } catch (error) {
-      console.error('Magic link sign-in error:', error);
+      console.error('Magic link sign-in error:', error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleLineSignIn = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      await signInWithLine();
-      router.push('/');
+      await signInWithLine()
+      router.push('/')
     } catch (error) {
-      console.error('LINE sign-in error:', error);
+      console.error('LINE sign-in error:', error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   if (emailSent) {
     return (
@@ -54,8 +61,8 @@ export default function LoginPage() {
             </CardDescription>
           </CardHeader>
           <CardFooter>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => setEmailSent(false)}
               className="w-full"
             >
@@ -64,7 +71,7 @@ export default function LoginPage() {
           </CardFooter>
         </Card>
       </div>
-    );
+    )
   }
 
   return (
@@ -82,7 +89,7 @@ export default function LoginPage() {
               {error}
             </div>
           )}
-          
+
           <form onSubmit={handleMagicLinkSignIn} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">メールアドレス</Label>
@@ -95,9 +102,9 @@ export default function LoginPage() {
                 required
               />
             </div>
-            <Button 
-              type="submit" 
-              className="w-full" 
+            <Button
+              type="submit"
+              className="w-full"
               disabled={isLoading || !email}
             >
               {isLoading ? '送信中...' : 'マジックリンクを送信'}
@@ -113,14 +120,18 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={handleLineSignIn}
             disabled={isLoading}
             className="w-full"
           >
-            <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M20.4 12.3c0-4.5-4.5-8.1-10-8.1s-10 3.6-10 8.1c0 4 3.5 7.3 8.3 7.9.3.1.8.2.9.4.1.2.1.5 0 .7l-.2 1c-.1.3-.1.6.2.8.2.1.5 0 .8-.1l1.7-1c.5-.3 1-.5 1.5-.7 2.9-.8 4.8-3.5 4.8-6.7v-.3z"/>
+            <svg
+              className="w-5 h-5 mr-2"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M20.4 12.3c0-4.5-4.5-8.1-10-8.1s-10 3.6-10 8.1c0 4 3.5 7.3 8.3 7.9.3.1.8.2.9.4.1.2.1.5 0 .7l-.2 1c-.1.3-.1.6.2.8.2.1.5 0 .8-.1l1.7-1c.5-.3 1-.5 1.5-.7 2.9-.8 4.8-3.5 4.8-6.7v-.3z" />
             </svg>
             {isLoading ? 'ログイン中...' : 'LINEでログイン'}
           </Button>
@@ -132,5 +143,5 @@ export default function LoginPage() {
         </CardFooter>
       </Card>
     </div>
-  );
+  )
 }

@@ -1,7 +1,11 @@
-import type { MutationResolvers } from '../../../types.generated'
 import { GraphQLError } from 'graphql'
+import type { MutationResolvers } from '../../../types.generated'
 
-export const updateUser: NonNullable<MutationResolvers['updateUser']> = async (parent, args, context) => {
+export const updateUser: NonNullable<MutationResolvers['updateUser']> = async (
+  parent,
+  args,
+  context,
+) => {
   if (!context.auth.isAuthenticated || !context.auth.user) {
     throw new GraphQLError('Unauthorized', {
       extensions: { code: 'UNAUTHORIZED' },
@@ -16,9 +20,15 @@ export const updateUser: NonNullable<MutationResolvers['updateUser']> = async (p
     data: {
       ...(input.name && { name: input.name }),
       ...(input.displayName && { displayName: input.displayName }),
-      ...(input.iconImageURL !== undefined && { iconImageURL: input.iconImageURL }),
-      ...(input.description !== undefined && { description: input.description }),
-      ...(input.twitterProfileUrl !== undefined && { twitterProfileUrl: input.twitterProfileUrl }),
+      ...(input.iconImageURL !== undefined && {
+        iconImageURL: input.iconImageURL,
+      }),
+      ...(input.description !== undefined && {
+        description: input.description,
+      }),
+      ...(input.twitterProfileUrl !== undefined && {
+        twitterProfileUrl: input.twitterProfileUrl,
+      }),
     },
   })
 

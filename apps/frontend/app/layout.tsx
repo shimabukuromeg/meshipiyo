@@ -8,8 +8,8 @@ import {
   MenubarSeparator,
   MenubarTrigger,
 } from '@/components/ui/menubar'
-import { cn } from '@/lib/utils'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { cn } from '@/lib/utils'
 import './globals.css'
 // @ts-ignore
 import { GoogleTagManager } from '@next/third-parties/google'
@@ -61,7 +61,7 @@ export default function RootLayout({
                 <Link href="/members">
                   <MenubarItem>Members</MenubarItem>
                 </Link>
-                
+
                 <MenubarSeparator />
                 <Link href="/auth/login">
                   <MenubarItem>ログイン</MenubarItem>

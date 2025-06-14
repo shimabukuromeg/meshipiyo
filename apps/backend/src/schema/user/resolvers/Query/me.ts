@@ -1,6 +1,10 @@
 import type { QueryResolvers } from '../../../types.generated'
 
-export const me: NonNullable<QueryResolvers['me']> = async (parent, args, context) => {
+export const me: NonNullable<QueryResolvers['me']> = async (
+  parent,
+  args,
+  context,
+) => {
   if (!context.auth.isAuthenticated || !context.auth.user) {
     return null
   }

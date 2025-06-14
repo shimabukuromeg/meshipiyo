@@ -1,37 +1,37 @@
-import { type FastifyRequest } from 'fastify';
-import { adminAuth } from '../lib/firebase-admin';
-import type { PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client'
+import type { FastifyRequest } from 'fastify'
+import { adminAuth } from '../lib/firebase-admin'
 
 export interface AuthContext {
   user?: {
-    id: number;
-    firebaseUid: string;
-    email: string;
-    name: string;
-    displayName: string;
-  };
-  isAuthenticated: boolean;
+    id: number
+    firebaseUid: string
+    email: string
+    name: string
+    displayName: string
+  }
+  isAuthenticated: boolean
 }
 
 export async function authenticateUser(
   request: FastifyRequest,
-  prisma: PrismaClient
+  prisma: PrismaClient,
 ): Promise<AuthContext> {
-  const authHeader = request.headers.authorization;
-  
+  const authHeader = request.headers.authorization
+
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return { isAuthenticated: false };
+    return { isAuthenticated: false }
   }
 
-  const token = authHeader.split(' ')[1];
-  
+  const token = authHeader.split(' ')[1]
+
   try {
-    const decodedToken = await adminAuth.verifyIdToken(token);
-    
+    const decodedToken = await adminAuth.verifyIdToken(token)
+
     // Firebase UIDでユーザーを検索
     let user = await prisma.user.findUnique({
       where: { firebaseUid: decodedToken.uid },
-    });
+    })
 
     // ユーザーが存在しない場合は新規作成
     if (!user) {
@@ -40,10 +40,11 @@ export async function authenticateUser(
           firebaseUid: decodedToken.uid,
           email: decodedToken.email || '',
           name: decodedToken.name || decodedToken.email?.split('@')[0] || '',
-          displayName: decodedToken.name || decodedToken.email?.split('@')[0] || '',
+          displayName:
+            decodedToken.name || decodedToken.email?.split('@')[0] || '',
           authProvider: [getAuthProvider(decodedToken)],
         },
-      });
+      })
     }
 
     return {
@@ -55,19 +56,19 @@ export async function authenticateUser(
         displayName: user.displayName,
       },
       isAuthenticated: true,
-    };
+    }
   } catch (error) {
-    console.error('Authentication error:', error);
-    return { isAuthenticated: false };
+    console.error('Authentication error:', error)
+    return { isAuthenticated: false }
   }
 }
 
 function getAuthProvider(decodedToken: any): string {
   // Firebase認証プロバイダーを判定
   if (decodedToken.firebase?.identities) {
-    const identities = decodedToken.firebase.identities;
-    if (identities['line.signin']) return 'line';
-    if (identities['email']) return 'email';
+    const identities = decodedToken.firebase.identities
+    if (identities['line.signin']) return 'line'
+    if (identities['email']) return 'email'
   }
-  return 'unknown';
+  return 'unknown'
 }
