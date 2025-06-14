@@ -6,7 +6,7 @@ services:
     image: groonga/pgroonga:latest
     container_name: meshipiyo
     volumes:
-      - db-data:/var/lib/postgresql/meshipiyo/data
+      - db-data:/var/lib/postgresql/data
       - ./docker/postgres/init:/docker-entrypoint-initdb.d
     ports:
       - "55432:5432"

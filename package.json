@@ -12,7 +12,8 @@
     "lint": "turbo run lint",
     "format": "turbo run format",
     "ci": "turbo run ci",
-    "typecheck": "turbo run typecheck"
+    "typecheck": "turbo run typecheck",
+    "db:init": "pnpm --filter backend db:init"
   },
   "keywords": [],
   "author": "",
