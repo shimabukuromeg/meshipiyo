@@ -63,6 +63,16 @@ export type Municipality = {
   name: Scalars['String']['output'];
 };
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  updateUser: User;
+};
+
+
+export type MutationUpdateUserArgs = {
+  input: UpdateUserInput;
+};
+
 export type PageInfo = {
   __typename?: 'PageInfo';
   endCursor?: Maybe<Scalars['String']['output']>;
@@ -73,6 +83,7 @@ export type PageInfo = {
 
 export type Query = {
   __typename?: 'Query';
+  me?: Maybe<User>;
   meshi?: Maybe<Meshi>;
   meshis: MeshiConnection;
   municipalities: Array<Municipality>;
@@ -103,15 +114,27 @@ export type QueryUserArgs = {
   id: Scalars['ID']['input'];
 };
 
+export type UpdateUserInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  displayName?: InputMaybe<Scalars['String']['input']>;
+  iconImageURL?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  twitterProfileUrl?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type User = {
   __typename?: 'User';
+  authProvider: Array<Scalars['String']['output']>;
+  createdAt: Scalars['String']['output'];
   description?: Maybe<Scalars['String']['output']>;
   displayName: Scalars['String']['output'];
   email: Scalars['String']['output'];
+  firebaseUid?: Maybe<Scalars['String']['output']>;
   iconImageURL?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   twitterProfileUrl?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['String']['output'];
 };
 
 export type MeshiSearchQueryVariables = Exact<{
