@@ -9,6 +9,7 @@ import {
   MenubarTrigger,
 } from '@/components/ui/menubar'
 import { cn } from '@/lib/utils'
+import { AuthProvider } from '@/contexts/AuthContext'
 import './globals.css'
 // @ts-ignore
 import { GoogleTagManager } from '@next/third-parties/google'
@@ -39,32 +40,39 @@ export default function RootLayout({
     // biome-ignore lint/a11y/useValidLang: <explanation>
     <html lang="jp">
       <body className={cn('font-sans bg-background', noto.variable)}>
-        <Menubar className="flex flex-row justify-between bg-white shadow-nav">
-          <Link href="/">
-            <div className="flex flex-row items-center">
-              <Icons.logo className="mr-1 h-14 w-14" />
-              <p className="text-s tracking-widest font-bold">飯ぴよ</p>
-            </div>
-          </Link>
-          <MenubarMenu>
-            <MenubarTrigger>
-              <HamburgerMenuIcon className="w-6 h-6" />
-            </MenubarTrigger>
-            <MenubarContent>
-              <Link href="/">
-                <MenubarItem>Top</MenubarItem>
-              </Link>
+        <AuthProvider>
+          <Menubar className="flex flex-row justify-between bg-white shadow-nav">
+            <Link href="/">
+              <div className="flex flex-row items-center">
+                <Icons.logo className="mr-1 h-14 w-14" />
+                <p className="text-s tracking-widest font-bold">飯ぴよ</p>
+              </div>
+            </Link>
+            <MenubarMenu>
+              <MenubarTrigger>
+                <HamburgerMenuIcon className="w-6 h-6" />
+              </MenubarTrigger>
+              <MenubarContent>
+                <Link href="/">
+                  <MenubarItem>Top</MenubarItem>
+                </Link>
 
-              <MenubarSeparator />
-              <Link href="/members">
-                <MenubarItem>Members</MenubarItem>
-              </Link>
-            </MenubarContent>
-          </MenubarMenu>
-        </Menubar>
-        {children}
-        <FloatingButton />
-        <SpeedInsights />
+                <MenubarSeparator />
+                <Link href="/members">
+                  <MenubarItem>Members</MenubarItem>
+                </Link>
+                
+                <MenubarSeparator />
+                <Link href="/auth/login">
+                  <MenubarItem>ログイン</MenubarItem>
+                </Link>
+              </MenubarContent>
+            </MenubarMenu>
+          </Menubar>
+          {children}
+          <FloatingButton />
+          <SpeedInsights />
+        </AuthProvider>
       </body>
       <GoogleTagManager gtmId={process.env.GOOGLE_TAG_MANAGER_ID ?? ''} />
     </html>
