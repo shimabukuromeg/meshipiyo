@@ -11,13 +11,17 @@ datasource db {
 }
 
 model User {
-  id                Int     @id @default(autoincrement())
+  id                Int       @id @default(autoincrement())
   name              String
-  displayName       String  @map("display_name")
-  email             String  @unique
-  iconImageURL      String? @map("icon_image_url")
+  displayName       String    @map("display_name")
+  email             String    @unique
+  iconImageURL      String?   @map("icon_image_url")
   description       String?
-  twitterProfileUrl String? @map("twitter_profile_url")
+  twitterProfileUrl String?   @map("twitter_profile_url")
+  firebaseUid       String?   @unique @map("firebase_uid")
+  authProvider      String[]  @map("auth_provider")
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   @@map("users")
 }

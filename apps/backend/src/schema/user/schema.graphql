@@ -1,6 +1,11 @@
 extend type Query {
   user(id: ID!): User!
   users: [User!]!
+  me: User
+}
+
+extend type Mutation {
+  updateUser(input: UpdateUserInput!): User!
 }
 
 type User {
@@ -8,6 +13,18 @@ type User {
   name: String!
   displayName: String!
   email: String!
+  iconImageURL: String
+  description: String
+  twitterProfileUrl: String
+  firebaseUid: String
+  authProvider: [String!]!
+  createdAt: String!
+  updatedAt: String!
+}
+
+input UpdateUserInput {
+  name: String
+  displayName: String
   iconImageURL: String
   description: String
   twitterProfileUrl: String
