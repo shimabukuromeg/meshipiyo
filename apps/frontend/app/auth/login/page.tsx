@@ -130,7 +130,9 @@ export default function LoginPage() {
               className="w-5 h-5 mr-2"
               viewBox="0 0 24 24"
               fill="currentColor"
+              aria-label="LINE"
             >
+              <title>LINE</title>
               <path d="M20.4 12.3c0-4.5-4.5-8.1-10-8.1s-10 3.6-10 8.1c0 4 3.5 7.3 8.3 7.9.3.1.8.2.9.4.1.2.1.5 0 .7l-.2 1c-.1.3-.1.6.2.8.2.1.5 0 .8-.1l1.7-1c.5-.3 1-.5 1.5-.7 2.9-.8 4.8-3.5 4.8-6.7v-.3z" />
             </svg>
             {isLoading ? 'ログイン中...' : 'LINEでログイン'}

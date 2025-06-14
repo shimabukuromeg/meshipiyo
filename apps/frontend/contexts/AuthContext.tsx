@@ -66,8 +66,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setError(null)
       setLoading(true)
 
+      // 環境変数からベースURLを取得、デフォルトは現在のオリジン
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin
+
       const actionCodeSettings = {
-        url: window.location.origin + '/auth/callback',
+        url: `${baseUrl}/auth/callback`,
         handleCodeInApp: true,
       }
 
@@ -91,6 +94,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setLoading(true)
 
       const provider = new OAuthProvider('oidc.line')
+      // 必要なスコープを明示的に追加
+      provider.addScope('profile')
+      provider.addScope('openid')
 
       await signInWithPopup(auth, provider)
     } catch (err) {

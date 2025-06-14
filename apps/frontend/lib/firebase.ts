@@ -1,5 +1,5 @@
-import { initializeApp } from 'firebase/app'
-import { getAuth } from 'firebase/auth'
+import { getApps, initializeApp } from 'firebase/app'
+import { browserLocalPersistence, getAuth, setPersistence } from 'firebase/auth'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -10,6 +10,15 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 }
 
-const app = initializeApp(firebaseConfig)
+// アプリが既に初期化されているかチェック
+const app =
+  getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
+
 export const auth = getAuth(app)
+
+// 認証状態の永続化を設定（ブラウザのローカルストレージに保存）
+setPersistence(auth, browserLocalPersistence).catch((error) => {
+  console.error('認証永続化の設定に失敗しました:', error)
+})
+
 export default app

@@ -63,12 +63,21 @@ export async function authenticateUser(
   }
 }
 
-function getAuthProvider(decodedToken: any): string {
+interface DecodedToken {
+  firebase?: {
+    identities?: {
+      'line.signin'?: string[]
+      email?: string[]
+    }
+  }
+}
+
+function getAuthProvider(decodedToken: DecodedToken): string {
   // Firebase認証プロバイダーを判定
   if (decodedToken.firebase?.identities) {
     const identities = decodedToken.firebase.identities
     if (identities['line.signin']) return 'line'
-    if (identities['email']) return 'email'
+    if (identities.email) return 'email'
   }
   return 'unknown'
 }

@@ -61,7 +61,7 @@ export default function AuthCallbackPage() {
         <CardContent>
           {status === 'loading' && (
             <div className="flex items-center justify-center space-x-2">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600" />
               <span>認証を処理中です...</span>
             </div>
           )}
@@ -81,6 +81,7 @@ export default function AuthCallbackPage() {
             <div className="text-center space-y-4">
               <div className="text-red-600">{errorMessage}</div>
               <button
+                type="button"
                 onClick={() => router.push('/auth/login')}
                 className="text-blue-600 hover:underline"
               >
