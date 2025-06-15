@@ -14,6 +14,8 @@ import { OAuthProvider } from 'firebase/auth'
 import type React from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { auth } from '../lib/firebase'
+import { graphqlClient } from '../lib/graphql-client'
+import { graphql } from '../src/gql'
 
 interface AuthContextType {
   user: User | null
@@ -45,18 +47,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user)
+      
+      // ユーザーがログインした場合、バックエンドでユーザー情報を同期
+      if (user) {
+        try {
+          // meクエリを実行してバックエンドの認証ミドルウェアを動作させる
+          const MeQuery = graphql(`query Me {
+  me {
+    id
+    name
+    displayName
+    email
+    iconImageURL
+    description
+    twitterProfileUrl
+    firebaseUid
+    authProvider
+    createdAt
+    updatedAt
+  }
+}`)
+          
+          await graphqlClient.requestWithAuth(MeQuery)
+          console.log('ユーザー情報をバックエンドと同期しました')
+        } catch (error) {
+          console.error('ユーザー情報の同期に失敗しました:', error)
+        }
+      }
+      
       setLoading(false)
     })
-
-    // URL check for email link sign-in
-    if (isSignInWithEmailLink(auth, window.location.href)) {
-      const email = window.localStorage.getItem('emailForSignIn')
-      if (email) {
-        completeSignInFromEmailLink(email, window.location.href)
-      }
-    }
 
     return () => unsubscribe()
   }, [])
@@ -117,10 +139,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setError(null)
       setLoading(true)
 
+      console.log('🔍 メールリンク認証開始:', { email, url })
+      
+      // URLがメールリンクであることを確認
+      if (!isSignInWithEmailLink(auth, url)) {
+        throw new Error('無効なメールリンクです')
+      }
+
       await signInWithEmailLink(auth, email, url)
       window.localStorage.removeItem('emailForSignIn')
+      console.log('✅ メールリンク認証成功')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'メール認証に失敗しました')
+      console.error('❌ メールリンク認証エラー:', err)
+      
+      // 特定のエラータイプに応じた処理
+      if (err instanceof Error) {
+        if (err.message.includes('auth/invalid-action-code')) {
+          setError('認証コードが無効です。再度ログインを試してください。')
+        } else if (err.message.includes('auth/email-already-in-use')) {
+          setError('このメールアドレスは既に登録されています。別の方法でログインしてください。')
+        } else if (err.message.includes('auth/expired-action-code')) {
+          setError('認証コードの有効期限が切れています。再度ログインを試してください。')
+        } else {
+          setError(err.message)
+        }
+      } else {
+        setError('メール認証に失敗しました')
+      }
       throw err
     } finally {
       setLoading(false)
@@ -131,6 +176,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       setError(null)
       await firebaseSignOut(auth)
+      // ログアウト成功時にユーザー状態をクリア
+      setUser(null)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'ログアウトに失敗しました')
       throw err

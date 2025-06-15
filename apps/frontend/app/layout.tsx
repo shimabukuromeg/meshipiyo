@@ -18,6 +18,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata } from 'next'
 import { Noto_Sans_JP } from 'next/font/google'
 import Link from 'next/link'
+import { AuthMenu } from '@/components/auth/AuthMenu'
 
 const noto = Noto_Sans_JP({
   weight: ['400', '700'],
@@ -58,14 +59,7 @@ export default function RootLayout({
                 </Link>
 
                 <MenubarSeparator />
-                <Link href="/members">
-                  <MenubarItem>Members</MenubarItem>
-                </Link>
-
-                <MenubarSeparator />
-                <Link href="/auth/login">
-                  <MenubarItem>ログイン</MenubarItem>
-                </Link>
+                <AuthMenu />
               </MenubarContent>
             </MenubarMenu>
           </Menubar>
