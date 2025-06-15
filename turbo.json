@@ -32,6 +32,10 @@
     "typecheck": {
       "cache": false,
       "persistent": true
+    },
+    "codegen": {
+      "cache": false,
+      "outputs": ["src/**/*.generated.ts", "src/**/*.gen.ts", "**/*.generated.ts"]
     }
   }
 }
