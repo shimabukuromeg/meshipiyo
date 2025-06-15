@@ -13,6 +13,7 @@
     "format": "turbo run format",
     "ci": "turbo run ci",
     "typecheck": "turbo run typecheck",
+    "codegen": "turbo run codegen",
     "db:init": "pnpm --filter backend db:init"
   },
   "keywords": [],
