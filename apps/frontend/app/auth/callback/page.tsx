@@ -82,7 +82,7 @@ export default function AuthCallbackPage() {
     return () => {
       sessionStorage.removeItem('authProcessId')
     }
-  }, [])
+  }, [completeSignInFromEmailLink, router])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
