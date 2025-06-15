@@ -10,6 +10,12 @@ export const User: UserResolvers = {
   twitterProfileUrl: (parent) => parent.twitterProfileUrl,
   firebaseUid: (parent) => parent.firebaseUid,
   authProvider: (parent) => parent.authProvider,
-  createdAt: (parent) => parent.createdAt instanceof Date ? parent.createdAt.toISOString() : parent.createdAt,
-  updatedAt: (parent) => parent.updatedAt instanceof Date ? parent.updatedAt.toISOString() : parent.updatedAt,
+  createdAt: (parent) =>
+    parent.createdAt instanceof Date
+      ? parent.createdAt.toISOString()
+      : parent.createdAt,
+  updatedAt: (parent) =>
+    parent.updatedAt instanceof Date
+      ? parent.updatedAt.toISOString()
+      : parent.updatedAt,
 }

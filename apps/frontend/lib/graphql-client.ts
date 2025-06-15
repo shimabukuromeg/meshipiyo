@@ -77,7 +77,7 @@ class AuthGraphQLClient {
     const token = await this.getValidToken(user)
     console.log('🔍 GraphQLクライアント: 認証トークン送信中', {
       userId: user.uid,
-      tokenPreview: token.substring(0, 20) + '...',
+      tokenPreview: `${token.substring(0, 20)}...`,
       endpoint,
     })
 
