@@ -31,7 +31,7 @@ class AuthGraphQLClient {
 
     // 新しいトークンを取得（forceRefreshは必要な場合のみ）
     const forceRefresh = this.tokenCache && this.tokenCache.expiresAt <= now
-    const token = await user.getIdToken(forceRefresh)
+    const token = await user.getIdToken(forceRefresh || undefined)
 
     // トークンをキャッシュ（有効期限は約1時間）
     this.tokenCache = {
