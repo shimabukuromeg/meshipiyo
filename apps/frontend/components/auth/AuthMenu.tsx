@@ -25,12 +25,8 @@ export function AuthMenu() {
   if (user) {
     return (
       <>
-        <MenubarItem disabled>
-          {user.displayName || user.email}
-        </MenubarItem>
-        <MenubarItem onClick={handleSignOut}>
-          ログアウト
-        </MenubarItem>
+        <MenubarItem disabled>{user.displayName || user.email}</MenubarItem>
+        <MenubarItem onClick={handleSignOut}>ログアウト</MenubarItem>
       </>
     )
   }

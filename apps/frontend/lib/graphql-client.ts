@@ -78,9 +78,9 @@ class AuthGraphQLClient {
     console.log('🔍 GraphQLクライアント: 認証トークン送信中', {
       userId: user.uid,
       tokenPreview: token.substring(0, 20) + '...',
-      endpoint
+      endpoint,
     })
-    
+
     this.client.setHeader('Authorization', `Bearer ${token}`)
 
     try {

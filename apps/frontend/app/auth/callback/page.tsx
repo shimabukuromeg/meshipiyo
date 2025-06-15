@@ -20,7 +20,7 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     const processId = `auth-process-${Date.now()}`
-    
+
     const handleEmailSignIn = async () => {
       // 処理中フラグをセッションストレージで管理
       const currentProcessId = sessionStorage.getItem('authProcessId')
@@ -33,7 +33,7 @@ export default function AuthCallbackPage() {
 
       try {
         console.log('🚀 Callback処理開始:', window.location.href)
-        
+
         const email = window.localStorage.getItem('emailForSignIn')
         if (!email) {
           console.error('❌ LocalStorageにメールアドレスが見つかりません')
@@ -47,7 +47,7 @@ export default function AuthCallbackPage() {
         console.log('📧 保存されたメールアドレス:', email)
 
         await completeSignInFromEmailLink(email, window.location.href)
-        
+
         console.log('🎉 認証完了！')
         setStatus('success')
 
@@ -77,7 +77,7 @@ export default function AuthCallbackPage() {
       setStatus('error')
       setErrorMessage('無効な認証URLです。')
     }
-    
+
     // コンポーネントアンマウント時にフラグをクリア
     return () => {
       sessionStorage.removeItem('authProcessId')

@@ -11,6 +11,7 @@ import {
 import { AuthProvider } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
 import './globals.css'
+import { AuthMenu } from '@/components/auth/AuthMenu'
 // @ts-ignore
 import { GoogleTagManager } from '@next/third-parties/google'
 import { HamburgerMenuIcon } from '@radix-ui/react-icons'
@@ -18,7 +19,6 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata } from 'next'
 import { Noto_Sans_JP } from 'next/font/google'
 import Link from 'next/link'
-import { AuthMenu } from '@/components/auth/AuthMenu'
 
 const noto = Noto_Sans_JP({
   weight: ['400', '700'],

@@ -49,7 +49,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user)
-      
+
       // ユーザーがログインした場合、バックエンドでユーザー情報を同期
       if (user) {
         try {
@@ -69,14 +69,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     updatedAt
   }
 }`)
-          
+
           await graphqlClient.requestWithAuth(MeQuery)
           console.log('ユーザー情報をバックエンドと同期しました')
         } catch (error) {
           console.error('ユーザー情報の同期に失敗しました:', error)
         }
       }
-      
+
       setLoading(false)
     })
 
@@ -140,7 +140,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setLoading(true)
 
       console.log('🔍 メールリンク認証開始:', { email, url })
-      
+
       // URLがメールリンクであることを確認
       if (!isSignInWithEmailLink(auth, url)) {
         throw new Error('無効なメールリンクです')
@@ -151,15 +151,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log('✅ メールリンク認証成功')
     } catch (err) {
       console.error('❌ メールリンク認証エラー:', err)
-      
+
       // 特定のエラータイプに応じた処理
       if (err instanceof Error) {
         if (err.message.includes('auth/invalid-action-code')) {
           setError('認証コードが無効です。再度ログインを試してください。')
         } else if (err.message.includes('auth/email-already-in-use')) {
-          setError('このメールアドレスは既に登録されています。別の方法でログインしてください。')
+          setError(
+            'このメールアドレスは既に登録されています。別の方法でログインしてください。',
+          )
         } else if (err.message.includes('auth/expired-action-code')) {
-          setError('認証コードの有効期限が切れています。再度ログインを試してください。')
+          setError(
+            '認証コードの有効期限が切れています。再度ログインを試してください。',
+          )
         } else {
           setError(err.message)
         }
