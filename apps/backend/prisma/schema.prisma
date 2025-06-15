@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,17 +8,17 @@ datasource db {
 }
 
 model User {
-  id                Int       @id @default(autoincrement())
+  id                Int      @id @default(autoincrement())
   name              String
-  displayName       String    @map("display_name")
-  email             String    @unique
-  iconImageURL      String?   @map("icon_image_url")
+  email             String   @unique
   description       String?
-  twitterProfileUrl String?   @map("twitter_profile_url")
-  firebaseUid       String?   @unique @map("firebase_uid")
-  authProvider      String[]  @map("auth_provider")
-  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  iconImageURL      String?  @map("icon_image_url")
+  twitterProfileUrl String?  @map("twitter_profile_url")
+  displayName       String   @map("display_name")
+  authProvider      String[] @map("auth_provider")
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  firebaseUid       String?  @unique @map("firebase_uid")
+  updatedAt         DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   @@map("users")
 }
@@ -30,29 +27,27 @@ model Municipality {
   id        Int      @id @default(autoincrement())
   name      String   @unique
   zipcode   String?
-  createdAt DateTime @map("created_at") @db.Timestamptz
-
-  meshis Meshi[]
+  createdAt DateTime @map("created_at") @db.Timestamptz(6)
+  meshis    Meshi[]
 
   @@map("municipalities")
 }
 
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model Meshi {
-  id            Int      @id @default(autoincrement())
-  articleId     String   @unique @map("article_id")
-  title         String   @default("unknown")
-  imageUrl      String   @default("unknown") @map("image_url")
-  storeName     String   @default("unknown") @map("store_name")
-  address       String   @default("unknown")
-  siteUrl       String   @default("unknown") @map("site_url")
-  publishedDate DateTime @map("published_date")
-  latitude      Float
-  longitude     Float
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  municipalityMeshis Int? @map("municipality_meshis")
-
-  municipality Municipality? @relation(fields: [municipalityMeshis], references: [id])
+  id                 Int           @id @default(autoincrement())
+  articleId          String        @unique @map("article_id")
+  title              String        @default("unknown")
+  imageUrl           String        @default("unknown") @map("image_url")
+  storeName          String        @default("unknown") @map("store_name")
+  address            String        @default("unknown")
+  siteUrl            String        @default("unknown") @map("site_url")
+  publishedDate      DateTime      @map("published_date")
+  latitude           Float
+  longitude          Float
+  createdAt          DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  municipalityMeshis Int?          @map("municipality_meshis")
+  municipality       Municipality? @relation(fields: [municipalityMeshis], references: [id])
 
   @@map("meshis")
 }

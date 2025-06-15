@@ -27,6 +27,11 @@ export async function authenticateUser(
 
   try {
     const decodedToken = await adminAuth.verifyIdToken(token)
+    console.log('Firebase認証トークン検証成功:', { 
+      uid: decodedToken.uid, 
+      email: decodedToken.email,
+      name: decodedToken.name 
+    })
 
     // Firebase UIDでユーザーを検索
     let user = await prisma.user.findUnique({
@@ -35,6 +40,13 @@ export async function authenticateUser(
 
     // ユーザーが存在しない場合は新規作成
     if (!user) {
+      const authProvider = getAuthProvider(decodedToken)
+      console.log('新規ユーザー作成開始:', {
+        firebaseUid: decodedToken.uid,
+        email: decodedToken.email,
+        authProvider
+      })
+      
       user = await prisma.user.create({
         data: {
           firebaseUid: decodedToken.uid,
@@ -42,9 +54,13 @@ export async function authenticateUser(
           name: decodedToken.name || decodedToken.email?.split('@')[0] || '',
           displayName:
             decodedToken.name || decodedToken.email?.split('@')[0] || '',
-          authProvider: [getAuthProvider(decodedToken)],
+          authProvider: [authProvider],
         },
       })
+      
+      console.log('新規ユーザー作成完了:', { userId: user.id, email: user.email })
+    } else {
+      console.log('既存ユーザーでログイン:', { userId: user.id, email: user.email })
     }
 
     return {

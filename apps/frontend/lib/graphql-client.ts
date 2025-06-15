@@ -75,9 +75,22 @@ class AuthGraphQLClient {
     }
 
     const token = await this.getValidToken(user)
+    console.log('🔍 GraphQLクライアント: 認証トークン送信中', {
+      userId: user.uid,
+      tokenPreview: token.substring(0, 20) + '...',
+      endpoint
+    })
+    
     this.client.setHeader('Authorization', `Bearer ${token}`)
 
-    return await this.client.request<T>(document, variables)
+    try {
+      const result = await this.client.request<T>(document, variables)
+      console.log('✅ GraphQLクライアント: リクエスト成功')
+      return result
+    } catch (error) {
+      console.error('❌ GraphQLクライアント: リクエスト失敗', error)
+      throw error
+    }
   }
 
   // 認証状態が変更された時にキャッシュをクリア
