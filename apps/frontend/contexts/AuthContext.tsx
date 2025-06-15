@@ -13,6 +13,7 @@ import {
 import { OAuthProvider } from 'firebase/auth'
 import type React from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
+import { print } from 'graphql'
 import { auth } from '../lib/firebase'
 import { graphqlClient } from '../lib/graphql-client'
 import { graphql } from '../src/gql'
@@ -70,7 +71,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }
 }`)
 
-          await graphqlClient.requestWithAuth(MeQuery)
+          await graphqlClient.requestWithAuth(print(MeQuery))
           console.log('ユーザー情報をバックエンドと同期しました')
         } catch (error) {
           console.error('ユーザー情報の同期に失敗しました:', error)
