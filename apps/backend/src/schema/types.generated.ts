@@ -67,6 +67,16 @@ export type Municipality = {
   name: Scalars['String']['output'];
 };
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  updateUser: User;
+};
+
+
+export type MutationupdateUserArgs = {
+  input: UpdateUserInput;
+};
+
 export type PageInfo = {
   __typename?: 'PageInfo';
   endCursor?: Maybe<Scalars['String']['output']>;
@@ -77,6 +87,7 @@ export type PageInfo = {
 
 export type Query = {
   __typename?: 'Query';
+  me?: Maybe<User>;
   meshi?: Maybe<Meshi>;
   meshis: MeshiConnection;
   municipalities: Array<Municipality>;
@@ -107,15 +118,27 @@ export type QueryuserArgs = {
   id: Scalars['ID']['input'];
 };
 
+export type UpdateUserInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  displayName?: InputMaybe<Scalars['String']['input']>;
+  iconImageURL?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  twitterProfileUrl?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type User = {
   __typename?: 'User';
+  authProvider: Array<Scalars['String']['output']>;
+  createdAt: Scalars['String']['output'];
   description?: Maybe<Scalars['String']['output']>;
   displayName: Scalars['String']['output'];
   email: Scalars['String']['output'];
+  firebaseUid?: Maybe<Scalars['String']['output']>;
   iconImageURL?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   twitterProfileUrl?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['String']['output'];
 };
 
 
@@ -200,9 +223,11 @@ export type ResolversTypes = {
   MeshiEdge: ResolverTypeWrapper<Omit<MeshiEdge, 'node'> & { node: ResolversTypes['Meshi'] }>;
   MicroCmsImage: ResolverTypeWrapper<MicroCmsImage>;
   Municipality: ResolverTypeWrapper<Municipality_Mapper>;
+  Mutation: ResolverTypeWrapper<{}>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Query: ResolverTypeWrapper<{}>;
+  UpdateUserInput: UpdateUserInput;
   User: ResolverTypeWrapper<User_Mapper>;
 };
 
@@ -219,9 +244,11 @@ export type ResolversParentTypes = {
   MeshiEdge: Omit<MeshiEdge, 'node'> & { node: ResolversParentTypes['Meshi'] };
   MicroCmsImage: MicroCmsImage;
   Municipality: Municipality_Mapper;
+  Mutation: {};
   PageInfo: PageInfo;
   Boolean: Scalars['Boolean']['output'];
   Query: {};
+  UpdateUserInput: UpdateUserInput;
   User: User_Mapper;
 };
 
@@ -277,6 +304,10 @@ export type MunicipalityResolvers<ContextType = any, ParentType extends Resolver
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationupdateUserArgs, 'input'>>;
+};
+
 export type PageInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = {
   endCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -286,6 +317,7 @@ export type PageInfoResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   meshi?: Resolver<Maybe<ResolversTypes['Meshi']>, ParentType, ContextType, RequireFields<QuerymeshiArgs, 'id'>>;
   meshis?: Resolver<ResolversTypes['MeshiConnection'], ParentType, ContextType, RequireFields<QuerymeshisArgs, 'first'>>;
   municipalities?: Resolver<Array<ResolversTypes['Municipality']>, ParentType, ContextType>;
@@ -295,13 +327,17 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+  authProvider?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   displayName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  firebaseUid?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   iconImageURL?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   twitterProfileUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -313,6 +349,7 @@ export type Resolvers<ContextType = any> = {
   MeshiEdge?: MeshiEdgeResolvers<ContextType>;
   MicroCmsImage?: MicroCmsImageResolvers<ContextType>;
   Municipality?: MunicipalityResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
   PageInfo?: PageInfoResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;

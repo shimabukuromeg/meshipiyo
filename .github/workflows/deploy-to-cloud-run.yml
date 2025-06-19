@@ -15,6 +15,12 @@ on:
         required: true
       DATABASE_URL:
         required: true
+      FIREBASE_PROJECT_ID:
+        required: true
+      FIREBASE_CLIENT_EMAIL:
+        required: true
+      FIREBASE_PRIVATE_KEY:
+        required: true
 
 concurrency:
   group: "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
@@ -30,6 +36,9 @@ env:
   IMAGE_HOST: "asia-northeast1-docker.pkg.dev"
   IMAGE_TAG_BASE: ${{ secrets.IMAGE_TAG_BASE }}
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+  FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
+  FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
   ENABLE_EXPERIMENTAL_COREPACK: 1
 
 jobs:
@@ -67,7 +76,7 @@ jobs:
           fi
           echo ": $jobs_cmd a job"
 
-          gcloud beta run jobs $jobs_cmd migration --image="${{ env.IMAGE_HOST }}/${{ env.IMAGE_TAG_BASE }}:latest" --max-retries=1 --args="pnpm,prisma,migrate,deploy" --service-account="${{ env.RUN_SERVICE_ACCOUNT }}" --set-secrets="DATABASE_URL=DATABASE_URL:latest,MICRO_CMS_API_KEY=MICRO_CMS_API_KEY:latest"
+          gcloud beta run jobs $jobs_cmd migration --image="${{ env.IMAGE_HOST }}/${{ env.IMAGE_TAG_BASE }}:latest" --max-retries=1 --args="pnpm,prisma,migrate,deploy" --service-account="${{ env.RUN_SERVICE_ACCOUNT }}" --set-secrets="DATABASE_URL=DATABASE_URL:latest,MICRO_CMS_API_KEY=MICRO_CMS_API_KEY:latest,FIREBASE_PROJECT_ID=FIREBASE_PROJECT_ID:latest,FIREBASE_CLIENT_EMAIL=FIREBASE_CLIENT_EMAIL:latest,FIREBASE_PRIVATE_KEY=FIREBASE_PRIVATE_KEY:latest"
           gcloud beta run jobs execute migration --wait --format=json
 
   cloudrun-deploy:
@@ -112,3 +121,6 @@ jobs:
           secrets: |
             DATABASE_URL=DATABASE_URL:latest
             MICRO_CMS_API_KEY=MICRO_CMS_API_KEY:latest
+            FIREBASE_PROJECT_ID=FIREBASE_PROJECT_ID:latest
+            FIREBASE_CLIENT_EMAIL=FIREBASE_CLIENT_EMAIL:latest
+            FIREBASE_PRIVATE_KEY=FIREBASE_PRIVATE_KEY:latest

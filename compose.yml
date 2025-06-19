@@ -16,6 +16,23 @@ services:
     networks:
       - app-network
 
+  firebase-emulator:
+    build:
+      context: .
+      dockerfile: ./docker/firebase-emulator/Dockerfile
+    container_name: firebase-emulator
+    working_dir: /app
+    volumes:
+      - ./firebase.json:/app/firebase.json
+    ports:
+      - "9099:9099"  # Auth Emulator
+      - "4000:4000"  # Emulator UI
+      - "8080:8080"  # Firestore Emulator
+    environment:
+      - JAVA_TOOL_OPTIONS=-Xmx512m
+    networks:
+      - app-network
+
   backend:
     build:
       context: .
@@ -27,6 +44,7 @@ services:
       - ./apps/backend/.env
     depends_on:
       - db
+      - firebase-emulator
     networks:
       - app-network
 

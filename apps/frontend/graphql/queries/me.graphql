@@ -1,0 +1,15 @@
+query Me {
+  me {
+    id
+    name
+    displayName
+    email
+    iconImageURL
+    description
+    twitterProfileUrl
+    firebaseUid
+    authProvider
+    createdAt
+    updatedAt
+  }
+}

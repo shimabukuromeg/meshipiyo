@@ -79,7 +79,8 @@ pnpm backend db:migrate:reset   # Reset database (WARNING: deletes all data)
 The project uses code generation extensively:
 - Prisma generates TypeScript types from database schema
 - GraphQL Code Generator creates types from GraphQL schema
-- Always run codegen commands after schema changes to maintain type safety
+- **CRITICAL**: Always run codegen commands after schema changes to maintain type safety
+- **IMPORTANT**: After modifying any GraphQL schema files (*.graphql), you MUST run `pnpm --filter backend codegen` before starting the backend server
 
 ### Important Notes
 - Frontend uses `graphql-request` for API calls, not Apollo or Relay
