@@ -9,6 +9,8 @@ import {
   sendSignInLinkToEmail,
   signInWithEmailLink,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
 } from 'firebase/auth'
 import { OAuthProvider } from 'firebase/auth'
 import type React from 'react'
@@ -48,6 +50,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    // リダイレクト後の認証結果を確認
+    const checkRedirectResult = async () => {
+      try {
+        const result = await getRedirectResult(auth)
+        if (result) {
+          console.log('リダイレクト認証成功:', result)
+        }
+      } catch (err) {
+        console.error('リダイレクト認証エラー:', err)
+        if (err instanceof Error) {
+          if (err.message.includes('auth/invalid-credential')) {
+            setError('LINE認証の設定に問題があります。管理者に連絡してください。')
+          } else if (err.message.includes('ACCESS_DENIED')) {
+            setError('LINE認証がキャンセルされました。')
+          } else {
+            setError(err.message)
+          }
+        }
+      }
+    }
+    
+    checkRedirectResult()
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user)
 
@@ -121,11 +146,35 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       provider.addScope('profile')
       provider.addScope('openid')
 
-      await signInWithPopup(auth, provider)
+      // モバイルデバイスの検出
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+      
+      if (isMobile) {
+        // モバイルデバイスではリダイレクト認証を使用
+        await signInWithRedirect(auth, provider)
+      } else {
+        // デスクトップではポップアップ認証を使用
+        await signInWithPopup(auth, provider)
+      }
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'LINEログインに失敗しました',
-      )
+      console.error('LINEログインエラー:', err)
+      
+      // FirebaseのLINEログイン特有のエラーハンドリング
+      if (err instanceof Error) {
+        if (err.message.includes('auth/invalid-credential')) {
+          setError('LINE認証の設定に問題があります。管理者に連絡してください。')
+        } else if (err.message.includes('ACCESS_DENIED')) {
+          setError('LINE認証がキャンセルされました。')
+        } else if (err.message.includes('auth/popup-closed-by-user')) {
+          setError('認証ウィンドウが閉じられました。')
+        } else if (err.message.includes('auth/popup-blocked')) {
+          setError('ポップアップがブロックされています。ブラウザの設定を確認してください。')
+        } else {
+          setError(err.message)
+        }
+      } else {
+        setError('LINEログインに失敗しました')
+      }
       throw err
     } finally {
       setLoading(false)
