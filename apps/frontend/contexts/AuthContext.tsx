@@ -56,6 +56,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const result = await getRedirectResult(auth)
         if (result) {
           console.log('リダイレクト認証成功:', result)
+          // 保存していたURLに戻る
+          const redirectUrl = window.localStorage.getItem('authRedirectUrl')
+          if (redirectUrl) {
+            window.localStorage.removeItem('authRedirectUrl')
+            window.location.href = redirectUrl
+          }
         }
       } catch (err) {
         console.error('リダイレクト認証エラー:', err)
@@ -64,6 +70,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setError('LINE認証の設定に問題があります。管理者に連絡してください。')
           } else if (err.message.includes('ACCESS_DENIED')) {
             setError('LINE認証がキャンセルされました。')
+          } else if (err.message.includes('missing initial state')) {
+            setError('ブラウザの設定により認証できません。プライベートブラウジングを無効にするか、別のブラウザをお試しください。')
           } else {
             setError(err.message)
           }
@@ -146,15 +154,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       provider.addScope('profile')
       provider.addScope('openid')
 
-      // モバイルデバイスの検出
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-      
-      if (isMobile) {
-        // モバイルデバイスではリダイレクト認証を使用
-        await signInWithRedirect(auth, provider)
-      } else {
-        // デスクトップではポップアップ認証を使用
+      // カスタムパラメータを追加してsessionStorageの問題を回避
+      provider.setCustomParameters({
+        prompt: 'consent'
+      })
+
+      // モバイルデバイスでもポップアップ認証を使用
+      // リダイレクト認証はsessionStorageの問題があるため避ける
+      try {
         await signInWithPopup(auth, provider)
+      } catch (popupError) {
+        // ポップアップがブロックされた場合のみリダイレクトを試す
+        if (popupError instanceof Error && 
+            (popupError.message.includes('auth/popup-blocked') || 
+             popupError.message.includes('auth/unauthorized-domain'))) {
+          console.log('ポップアップがブロックされたため、リダイレクト認証を試行')
+          // リダイレクト前に現在のURLを保存
+          window.localStorage.setItem('authRedirectUrl', window.location.href)
+          await signInWithRedirect(auth, provider)
+        } else {
+          throw popupError
+        }
       }
     } catch (err) {
       console.error('LINEログインエラー:', err)
@@ -169,6 +189,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setError('認証ウィンドウが閉じられました。')
         } else if (err.message.includes('auth/popup-blocked')) {
           setError('ポップアップがブロックされています。ブラウザの設定を確認してください。')
+        } else if (err.message.includes('missing initial state')) {
+          setError('ブラウザの設定により認証できません。プライベートブラウジングを無効にするか、別のブラウザをお試しください。')
         } else {
           setError(err.message)
         }
