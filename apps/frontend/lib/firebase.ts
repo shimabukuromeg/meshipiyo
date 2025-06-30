@@ -10,7 +10,8 @@ const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'demo-api-key',
   authDomain:
     process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ||
-    'demo-meshipiyo.firebaseapp.com',
+    // 開発環境と本番環境で適切なドメインを使用
+    (typeof window !== 'undefined' ? window.location.hostname : 'localhost'),
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'demo-meshipiyo',
   storageBucket:
     process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
