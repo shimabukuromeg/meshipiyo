@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    serverComponentsHmrCache: false, // 開発時のHMRキャッシュを無効化
+  },
   logging: {
     fetches: {
       fullUrl: true,
