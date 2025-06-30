@@ -4,21 +4,22 @@ import {
   type Auth,
   type User,
   signOut as firebaseSignOut,
+  getRedirectResult,
   isSignInWithEmailLink,
   onAuthStateChanged,
   sendSignInLinkToEmail,
   signInWithEmailLink,
   signInWithPopup,
   signInWithRedirect,
-  getRedirectResult,
 } from 'firebase/auth'
 import { OAuthProvider } from 'firebase/auth'
+import { print } from 'graphql'
 import type React from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
-import { print } from 'graphql'
 import { auth } from '../lib/firebase'
 import { graphqlClient } from '../lib/graphql-client'
 import { graphql } from '../src/gql'
+import { isMobileDevice } from '../utils/device'
 
 interface AuthContextType {
   user: User | null
@@ -56,6 +57,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const result = await getRedirectResult(auth)
         if (result) {
           console.log('リダイレクト認証成功:', result)
+          // LINEログインの場合、追加のエラーハンドリング
+          if (result.providerId === 'oidc.line') {
+            console.log('LINEログインが成功しました')
+          }
           // 保存していたURLに戻る
           const redirectUrl = window.localStorage.getItem('authRedirectUrl')
           if (redirectUrl) {
@@ -67,18 +72,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.error('リダイレクト認証エラー:', err)
         if (err instanceof Error) {
           if (err.message.includes('auth/invalid-credential')) {
-            setError('LINE認証の設定に問題があります。管理者に連絡してください。')
+            setError(
+              'LINE認証の設定に問題があります。管理者に連絡してください。',
+            )
           } else if (err.message.includes('ACCESS_DENIED')) {
             setError('LINE認証がキャンセルされました。')
           } else if (err.message.includes('missing initial state')) {
-            setError('ブラウザの設定により認証できません。プライベートブラウジングを無効にするか、別のブラウザをお試しください。')
+            // モバイルSafariでよく発生するエラー
+            if (isMobileDevice()) {
+              setError(
+                'モバイルブラウザでの認証に失敗しました。プライベートブラウジングモードを無効にしてから再度お試しください。',
+              )
+            } else {
+              setError(
+                'ブラウザの設定により認証できません。プライベートブラウジングを無効にするか、別のブラウザをお試しください。',
+              )
+            }
+          } else if (err.message.includes('auth/unauthorized-domain')) {
+            setError(
+              '認証ドメインが許可されていません。管理者に連絡してください。',
+            )
           } else {
             setError(err.message)
           }
         }
       }
     }
-    
+
     checkRedirectResult()
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -154,31 +174,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       provider.addScope('profile')
       provider.addScope('openid')
 
-      // カスタムパラメータを追加してsessionStorageの問題を回避
-      provider.setCustomParameters({
-        prompt: 'consent'
-      })
-
-      // モバイルデバイスでもポップアップ認証を使用
-      // リダイレクト認証はsessionStorageの問題があるため避ける
-      try {
+      // モバイルデバイスの場合はリダイレクト、それ以外はポップアップを使用
+      if (isMobileDevice()) {
+        // 現在のURLを保存（リダイレクト後に戻るため）
+        window.localStorage.setItem('authRedirectUrl', window.location.href)
+        await signInWithRedirect(auth, provider)
+      } else {
+        // デスクトップではポップアップを使用
         await signInWithPopup(auth, provider)
-      } catch (popupError) {
-        // ポップアップがブロックされた場合のみリダイレクトを試す
-        if (popupError instanceof Error && 
-            (popupError.message.includes('auth/popup-blocked') || 
-             popupError.message.includes('auth/unauthorized-domain'))) {
-          console.log('ポップアップがブロックされたため、リダイレクト認証を試行')
-          // リダイレクト前に現在のURLを保存
-          window.localStorage.setItem('authRedirectUrl', window.location.href)
-          await signInWithRedirect(auth, provider)
-        } else {
-          throw popupError
-        }
       }
     } catch (err) {
       console.error('LINEログインエラー:', err)
-      
+
       // FirebaseのLINEログイン特有のエラーハンドリング
       if (err instanceof Error) {
         if (err.message.includes('auth/invalid-credential')) {
@@ -188,9 +195,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         } else if (err.message.includes('auth/popup-closed-by-user')) {
           setError('認証ウィンドウが閉じられました。')
         } else if (err.message.includes('auth/popup-blocked')) {
-          setError('ポップアップがブロックされています。ブラウザの設定を確認してください。')
+          // モバイルでポップアップがブロックされた場合、リダイレクトに切り替え
+          if (isMobileDevice()) {
+            console.log(
+              'ポップアップがブロックされたため、リダイレクトに切り替えます',
+            )
+            window.localStorage.setItem('authRedirectUrl', window.location.href)
+            const newProvider = new OAuthProvider('oidc.line')
+            newProvider.addScope('profile')
+            newProvider.addScope('openid')
+            await signInWithRedirect(auth, newProvider)
+            return
+          }
+          setError(
+            'ポップアップがブロックされています。ブラウザの設定を確認してください。',
+          )
         } else if (err.message.includes('missing initial state')) {
-          setError('ブラウザの設定により認証できません。プライベートブラウジングを無効にするか、別のブラウザをお試しください。')
+          setError(
+            'ブラウザの設定により認証できません。プライベートブラウジングを無効にするか、別のブラウザをお試しください。',
+          )
         } else {
           setError(err.message)
         }
