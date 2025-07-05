@@ -1,0 +1,28 @@
+query MyLikes($first: Int, $after: String) {
+  myLikes(first: $first, after: $after) {
+    edges {
+      node {
+        id
+        createdAt
+        meshi {
+          id
+          title
+          imageUrl
+          storeName
+          municipality {
+            id
+            name
+          }
+        }
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
