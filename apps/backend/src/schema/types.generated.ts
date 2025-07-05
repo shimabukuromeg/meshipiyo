@@ -22,6 +22,27 @@ export type Scalars = {
   DateTime: { input: Date | string; output: Date | string; }
 };
 
+export type Like = {
+  __typename?: 'Like';
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  meshi: Meshi;
+  user: User;
+};
+
+export type LikeConnection = {
+  __typename?: 'LikeConnection';
+  edges: Array<LikeEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type LikeEdge = {
+  __typename?: 'LikeEdge';
+  cursor: Scalars['String']['output'];
+  node: Like;
+};
+
 export type Meshi = {
   __typename?: 'Meshi';
   address: Scalars['String']['output'];
@@ -29,7 +50,9 @@ export type Meshi = {
   createdAt: Scalars['Date']['output'];
   id: Scalars['ID']['output'];
   imageUrl: Scalars['String']['output'];
+  isLiked: Scalars['Boolean']['output'];
   latitude: Scalars['Float']['output'];
+  likeCount: Scalars['Int']['output'];
   longitude: Scalars['Float']['output'];
   municipality?: Maybe<Municipality>;
   publishedDate: Scalars['Date']['output'];
@@ -69,7 +92,19 @@ export type Municipality = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  likeMeshi: Like;
+  unlikeMeshi: Scalars['Boolean']['output'];
   updateUser: User;
+};
+
+
+export type MutationlikeMeshiArgs = {
+  meshiId: Scalars['ID']['input'];
+};
+
+
+export type MutationunlikeMeshiArgs = {
+  meshiId: Scalars['ID']['input'];
 };
 
 
@@ -92,6 +127,7 @@ export type Query = {
   meshis: MeshiConnection;
   municipalities: Array<Municipality>;
   municipality?: Maybe<Municipality>;
+  myLikes: LikeConnection;
   user: User;
   users: Array<User>;
 };
@@ -111,6 +147,12 @@ export type QuerymeshisArgs = {
 
 export type QuerymunicipalityArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QuerymyLikesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -136,6 +178,7 @@ export type User = {
   firebaseUid?: Maybe<Scalars['String']['output']>;
   iconImageURL?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
+  likeCount: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   twitterProfileUrl?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['String']['output'];
@@ -214,18 +257,21 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Date: ResolverTypeWrapper<Scalars['Date']['output']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
-  Meshi: ResolverTypeWrapper<Meshi_Mapper>;
-  String: ResolverTypeWrapper<Scalars['String']['output']>;
+  Like: ResolverTypeWrapper<Omit<Like, 'meshi' | 'user'> & { meshi: ResolversTypes['Meshi'], user: ResolversTypes['User'] }>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  LikeConnection: ResolverTypeWrapper<Omit<LikeConnection, 'edges'> & { edges: Array<ResolversTypes['LikeEdge']> }>;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  LikeEdge: ResolverTypeWrapper<Omit<LikeEdge, 'node'> & { node: ResolversTypes['Like'] }>;
+  String: ResolverTypeWrapper<Scalars['String']['output']>;
+  Meshi: ResolverTypeWrapper<Meshi_Mapper>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   MeshiConnection: ResolverTypeWrapper<Omit<MeshiConnection, 'edges'> & { edges: Array<ResolversTypes['MeshiEdge']> }>;
-  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   MeshiEdge: ResolverTypeWrapper<Omit<MeshiEdge, 'node'> & { node: ResolversTypes['Meshi'] }>;
   MicroCmsImage: ResolverTypeWrapper<MicroCmsImage>;
   Municipality: ResolverTypeWrapper<Municipality_Mapper>;
   Mutation: ResolverTypeWrapper<{}>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Query: ResolverTypeWrapper<{}>;
   UpdateUserInput: UpdateUserInput;
   User: ResolverTypeWrapper<User_Mapper>;
@@ -235,18 +281,21 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Date: Scalars['Date']['output'];
   DateTime: Scalars['DateTime']['output'];
-  Meshi: Meshi_Mapper;
-  String: Scalars['String']['output'];
+  Like: Omit<Like, 'meshi' | 'user'> & { meshi: ResolversParentTypes['Meshi'], user: ResolversParentTypes['User'] };
   ID: Scalars['ID']['output'];
+  LikeConnection: Omit<LikeConnection, 'edges'> & { edges: Array<ResolversParentTypes['LikeEdge']> };
+  Int: Scalars['Int']['output'];
+  LikeEdge: Omit<LikeEdge, 'node'> & { node: ResolversParentTypes['Like'] };
+  String: Scalars['String']['output'];
+  Meshi: Meshi_Mapper;
+  Boolean: Scalars['Boolean']['output'];
   Float: Scalars['Float']['output'];
   MeshiConnection: Omit<MeshiConnection, 'edges'> & { edges: Array<ResolversParentTypes['MeshiEdge']> };
-  Int: Scalars['Int']['output'];
   MeshiEdge: Omit<MeshiEdge, 'node'> & { node: ResolversParentTypes['Meshi'] };
   MicroCmsImage: MicroCmsImage;
   Municipality: Municipality_Mapper;
   Mutation: {};
   PageInfo: PageInfo;
-  Boolean: Scalars['Boolean']['output'];
   Query: {};
   UpdateUserInput: UpdateUserInput;
   User: User_Mapper;
@@ -260,13 +309,36 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
   name: 'DateTime';
 }
 
+export type LikeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Like'] = ResolversParentTypes['Like']> = {
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  meshi?: Resolver<ResolversTypes['Meshi'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LikeConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['LikeConnection'] = ResolversParentTypes['LikeConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['LikeEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LikeEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['LikeEdge'] = ResolversParentTypes['LikeEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Like'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MeshiResolvers<ContextType = any, ParentType extends ResolversParentTypes['Meshi'] = ResolversParentTypes['Meshi']> = {
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   articleId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  isLiked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   latitude?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  likeCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   longitude?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   municipality?: Resolver<Maybe<ResolversTypes['Municipality']>, ParentType, ContextType>;
   publishedDate?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
@@ -305,6 +377,8 @@ export type MunicipalityResolvers<ContextType = any, ParentType extends Resolver
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  likeMeshi?: Resolver<ResolversTypes['Like'], ParentType, ContextType, RequireFields<MutationlikeMeshiArgs, 'meshiId'>>;
+  unlikeMeshi?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationunlikeMeshiArgs, 'meshiId'>>;
   updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationupdateUserArgs, 'input'>>;
 };
 
@@ -322,6 +396,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   meshis?: Resolver<ResolversTypes['MeshiConnection'], ParentType, ContextType, RequireFields<QuerymeshisArgs, 'first'>>;
   municipalities?: Resolver<Array<ResolversTypes['Municipality']>, ParentType, ContextType>;
   municipality?: Resolver<Maybe<ResolversTypes['Municipality']>, ParentType, ContextType, RequireFields<QuerymunicipalityArgs, 'id'>>;
+  myLikes?: Resolver<ResolversTypes['LikeConnection'], ParentType, ContextType, RequireFields<QuerymyLikesArgs, 'first'>>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryuserArgs, 'id'>>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
 };
@@ -335,6 +410,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   firebaseUid?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   iconImageURL?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  likeCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   twitterProfileUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -344,6 +420,9 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 export type Resolvers<ContextType = any> = {
   Date?: GraphQLScalarType;
   DateTime?: GraphQLScalarType;
+  Like?: LikeResolvers<ContextType>;
+  LikeConnection?: LikeConnectionResolvers<ContextType>;
+  LikeEdge?: LikeEdgeResolvers<ContextType>;
   Meshi?: MeshiResolvers<ContextType>;
   MeshiConnection?: MeshiConnectionResolvers<ContextType>;
   MeshiEdge?: MeshiEdgeResolvers<ContextType>;
