@@ -1,0 +1,18 @@
+mutation LikeMeshi($meshiId: ID!) {
+  likeMeshi(meshiId: $meshiId) {
+    id
+    createdAt
+    user {
+      id
+      name
+    }
+    meshi {
+      id
+      title
+    }
+  }
+}
+
+mutation UnlikeMeshi($meshiId: ID!) {
+  unlikeMeshi(meshiId: $meshiId)
+}

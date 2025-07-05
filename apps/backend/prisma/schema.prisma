@@ -20,6 +20,8 @@ model User {
   firebaseUid       String?  @unique @map("firebase_uid")
   updatedAt         DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
+  likes Like[]
+
   @@map("users")
 }
 
@@ -49,5 +51,21 @@ model Meshi {
   municipalityMeshis Int?          @map("municipality_meshis")
   municipality       Municipality? @relation(fields: [municipalityMeshis], references: [id])
 
+  likes Like[]
+
   @@map("meshis")
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  meshiId   Int      @map("meshi_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user  User  @relation(fields: [userId], references: [id])
+  meshi Meshi @relation(fields: [meshiId], references: [id])
+
+  @@unique([userId, meshiId])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("likes")
 }

@@ -89,5 +89,42 @@ The project uses code generation extensively:
 - The project uses Biome for formatting and linting (not ESLint/Prettier)
 - All GraphQL queries should be defined in `.graphql` files for code generation
 
+## 🚀 Recently Implemented Features (2025-01-05)
+
+### Like & MyPage System (COMPLETE)
+A comprehensive like and user profile system has been implemented:
+
+#### Database Layer
+- **Like table**: User-Meshi relationship with unique constraints and performance indexes
+- **User.likeCount field**: Real-time like count for user profiles
+- **Meshi.isLiked/likeCount fields**: Like status and counts for restaurants
+
+#### Backend API
+- **GraphQL Schema**: Like, LikeConnection, LikeEdge types with cursor-based pagination
+- **LikeService**: Business logic for CRUD operations with N+1 prevention
+- **Resolvers**: Complete implementation with authentication checks
+- **Mutations**: `likeMeshi`, `unlikeMeshi` with error handling
+- **Queries**: `myLikes` with infinite scroll support
+
+#### Frontend Features
+- **LikeButton Component**: Heart icon with optimistic updates and animations
+- **MyPage Route** (`/mypage`): Complete user profile and liked items display
+- **Infinite Scroll**: Intersection Observer implementation for liked items list
+- **Authentication Integration**: Firebase token management and login redirects
+
+#### Key Technical Implementations
+- ✅ N+1 query prevention using DataLoader patterns
+- ✅ Optimistic UI updates with error rollback
+- ✅ Cursor-based pagination for performance
+- ✅ Type-safe GraphQL integration throughout the stack
+- ✅ Comprehensive unit tests for service layer
+
+### Usage
+- Users can like/unlike restaurants from any Meshi card
+- Authenticated users get redirected to login when not signed in
+- MyPage displays user profile with total like count
+- Liked restaurants are displayed with infinite scroll pagination
+- Real-time like counts update across the UI
+
 ## Interaction Guidelines
 - **IMPORTANT**: 日本語で会話してください

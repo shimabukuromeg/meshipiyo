@@ -20,6 +20,7 @@ type User {
   authProvider: [String!]!
   createdAt: String!
   updatedAt: String!
+  likeCount: Int!
 }
 
 input UpdateUserInput {

@@ -1,0 +1,36 @@
+extend type Query {
+  # マイページ用のいいね一覧取得
+  myLikes(first: Int = 20, after: String): LikeConnection!
+}
+
+extend type Mutation {
+  # いいねをつける
+  likeMeshi(meshiId: ID!): Like!
+  
+  # いいねを取り消す
+  unlikeMeshi(meshiId: ID!): Boolean!
+}
+
+# いいね機能のためのMeshiタイプ拡張
+extend type Meshi {
+  isLiked: Boolean!
+  likeCount: Int!
+}
+
+type Like {
+  id: ID!
+  user: User!
+  meshi: Meshi!
+  createdAt: DateTime!
+}
+
+type LikeConnection {
+  edges: [LikeEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type LikeEdge {
+  node: Like!
+  cursor: String!
+}

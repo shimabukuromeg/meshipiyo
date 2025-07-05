@@ -3,6 +3,7 @@ import { type FragmentType, graphql, useFragment } from '@/src/gql'
 import { MapPin } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { LikeButton } from './like-button'
 
 export const MeshiCardFragment = graphql(`
   fragment MeshiCard on Meshi {
@@ -13,6 +14,8 @@ export const MeshiCardFragment = graphql(`
     storeName
     publishedDate
     createdAt
+    isLiked
+    likeCount
     municipality {
       id
       name
@@ -45,19 +48,33 @@ export const MeshiCard = (props: Props) => {
           </Link>
         </div>
         <div className="flex flex-row items-center justify-between flex-wrap gap-1 pt-3 pb-1">
-          <Link
-            href={`/municipality/${meshi.municipality?.id}`}
-            className="px-4 py-1 rounded-xl font-bold text-[12px] text-white w-fit bg-primary"
-          >
-            {meshi.municipality?.name}
-          </Link>
-          <Link
-            href={`https://www.google.com/maps/search/?api=1&query=${meshi?.storeName}`}
-            target="_blank"
-            passHref
-          >
-            <MapPin className="h-6 w-6" color="#8d7658" fill="#fff" />
-          </Link>
+          {meshi.municipality?.id ? (
+            <Link
+              href={`/municipality/${meshi.municipality.id}`}
+              className="px-4 py-1 rounded-xl font-bold text-[12px] text-white w-fit bg-primary"
+            >
+              {meshi.municipality.name}
+            </Link>
+          ) : (
+            <span className="px-4 py-1 rounded-xl font-bold text-[12px] text-white w-fit bg-gray-400">
+              {meshi.municipality?.name || '不明'}
+            </span>
+          )}
+          <div className="flex items-center gap-1">
+            <LikeButton
+              meshiId={meshi.id}
+              isLiked={meshi.isLiked}
+              likeCount={meshi.likeCount}
+              size="small"
+            />
+            <Link
+              href={`https://www.google.com/maps/search/?api=1&query=${meshi?.storeName}`}
+              target="_blank"
+              passHref
+            >
+              <MapPin className="h-6 w-6" color="#8d7658" fill="#fff" />
+            </Link>
+          </div>
         </div>
       </CardContent>
       <CardFooter className="p-0">
