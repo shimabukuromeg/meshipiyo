@@ -26,6 +26,9 @@ export function AuthMenu() {
     return (
       <>
         <MenubarItem disabled>{user.displayName || user.email}</MenubarItem>
+        <Link href="/mypage">
+          <MenubarItem>マイページ</MenubarItem>
+        </Link>
         <MenubarItem onClick={handleSignOut}>ログアウト</MenubarItem>
       </>
     )

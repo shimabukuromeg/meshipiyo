@@ -13,18 +13,17 @@ import {
   signInWithRedirect,
 } from 'firebase/auth'
 import { OAuthProvider } from 'firebase/auth'
-import { print } from 'graphql'
 import type React from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { auth } from '../lib/firebase'
 import { graphqlClient } from '../lib/graphql-client'
-import { graphql } from '../src/gql'
 import { isMobileDevice } from '../utils/device'
 
 interface AuthContextType {
   user: User | null
   loading: boolean
   error: string | null
+  token: string | null
   signInWithMagicLink: (email: string) => Promise<void>
   signInWithLine: () => Promise<void>
   signOut: () => Promise<void>
@@ -49,6 +48,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [token, setToken] = useState<string | null>(null)
 
   useEffect(() => {
     // リダイレクト後の認証結果を確認
@@ -104,11 +104,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user)
 
-      // ユーザーがログインした場合、バックエンドでユーザー情報を同期
+      // ユーザーがログインした場合、IDトークンを取得してバックエンドと同期
       if (user) {
         try {
+          // IDトークンを取得
+          const idToken = await user.getIdToken()
+          setToken(idToken)
+
           // meクエリを実行してバックエンドの認証ミドルウェアを動作させる
-          const MeQuery = graphql(`query Me {
+          const meQuery = `query Me {
   me {
     id
     name
@@ -121,14 +125,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     authProvider
     createdAt
     updatedAt
+    likeCount
   }
-}`)
+}`
 
-          await graphqlClient.requestWithAuth(print(MeQuery))
+          await graphqlClient.requestWithAuth(meQuery)
           console.log('ユーザー情報をバックエンドと同期しました')
         } catch (error) {
           console.error('ユーザー情報の同期に失敗しました:', error)
         }
+      } else {
+        setToken(null)
       }
 
       setLoading(false)
@@ -287,6 +294,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     user,
     loading,
     error,
+    token,
     signInWithMagicLink,
     signInWithLine,
     signOut,
