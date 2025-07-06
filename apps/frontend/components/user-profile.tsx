@@ -18,14 +18,27 @@ interface UserProfileProps {
 }
 
 export const UserProfile = ({ user, likeCount }: UserProfileProps) => {
+  // URLの妥当性をチェックする関数
+  const isValidUrl = (url: string | null | undefined): boolean => {
+    if (!url || url.trim() === '') return false
+    try {
+      new URL(url)
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  const hasValidIconUrl = isValidUrl(user.iconImageURL)
+
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="text-center">
         <div className="flex justify-center mb-4">
           <Avatar className="w-20 h-20">
-            {user.iconImageURL ? (
+            {hasValidIconUrl ? (
               <Image
-                src={user.iconImageURL}
+                src={user.iconImageURL!}
                 alt={`${user.displayName}のアイコン`}
                 width={80}
                 height={80}

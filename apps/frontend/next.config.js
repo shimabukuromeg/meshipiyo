@@ -20,6 +20,21 @@ const nextConfig = {
         hostname: 'flowbite.s3.amazonaws.com',
         port: '',
       },
+      {
+        protocol: 'https',
+        hostname: 'profile.line-scdn.net',
+        port: '',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        port: '',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.googleusercontent.com',
+        port: '',
+      },
     ],
   },
 }

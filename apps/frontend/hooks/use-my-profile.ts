@@ -1,8 +1,8 @@
 'use client'
 
-import { request } from 'graphql-request'
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
+import { graphqlClient } from '@/lib/graphql-client'
 
 const MeQuery = `
   query Me {
@@ -49,29 +49,10 @@ export const useMyProfile = (): UseMyProfileReturn => {
   const [profile, setProfile] = useState<MyProfileData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
-  const { token } = useAuth()
-
-  const getGraphQLEndpoint = () => {
-    if (process.env.NODE_ENV === 'development') {
-      return 'http://localhost:44000/graphql'
-    }
-    return process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || '/api/graphql'
-  }
-
-  const getHeaders = () => {
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    }
-    
-    if (token) {
-      headers.Authorization = `Bearer ${token}`
-    }
-    
-    return headers
-  }
+  const { user } = useAuth()
 
   const fetchProfile = async () => {
-    if (!token) {
+    if (!user) {
       setProfile(null)
       setLoading(false)
       return
@@ -81,7 +62,7 @@ export const useMyProfile = (): UseMyProfileReturn => {
       setLoading(true)
       setError(null)
 
-      const data = await request<{
+      const data = await graphqlClient.requestWithAuth<{
         me: {
           id: string
           name: string
@@ -96,12 +77,7 @@ export const useMyProfile = (): UseMyProfileReturn => {
           updatedAt: string
           likeCount: number
         } | null
-      }>(
-        getGraphQLEndpoint(),
-        MeQuery,
-        {},
-        getHeaders(),
-      )
+      }>(MeQuery, {})
 
       if (data.me) {
         setProfile(data.me)
@@ -119,7 +95,7 @@ export const useMyProfile = (): UseMyProfileReturn => {
 
   useEffect(() => {
     fetchProfile()
-  }, [token])
+  }, [user])
 
   return {
     profile,
