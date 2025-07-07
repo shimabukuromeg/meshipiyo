@@ -6,10 +6,12 @@ import { createSchema, createYoga } from 'graphql-yoga'
 import { createContext } from './context'
 import { resolvers } from './schema/resolvers.generated'
 import { typeDefs } from './schema/typeDefs.generated'
+import { logger } from './lib/logger'
+import { graphqlLoggerPlugin } from './plugins/graphql-logger'
 
 function main() {
   // This is the fastify instance you have created
-  const app = fastify({ logger: true })
+  const app = fastify({ logger })
 
   // TODO: スキーマ読み込み
   const yoga = createYoga<{
@@ -24,6 +26,7 @@ function main() {
     ),
     context: createContext,
     graphiql: true,
+    plugins: [graphqlLoggerPlugin()],
     // Integrate Fastify logger
     logging: {
       debug: (...args) => {
@@ -63,13 +66,13 @@ function main() {
     },
   })
 
-  console.info('starting http server')
+  logger.info('starting http server')
   app.listen({ port: 44000, host: '0.0.0.0' }, (err, address) => {
     if (err) {
-      console.error(err)
+      logger.error(err)
       process.exit(1)
     }
-    console.info(`server listening on ${address}`)
+    logger.info(`server listening on ${address}`)
   })
 }
 

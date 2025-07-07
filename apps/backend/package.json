@@ -47,6 +47,7 @@
   "dependencies": {
     "@graphql-tools/schema": "10.0.23",
     "@prisma/client": "6.7.0",
+    "@types/uuid": "10.0.0",
     "cheerio": "1.0.0",
     "fastify": "5.3.2",
     "firebase-admin": "13.4.0",
@@ -55,7 +56,10 @@
     "graphql-scalars": "1.24.2",
     "graphql-yoga": "5.13.4",
     "microcms_sdk_generator": "0.1.1",
+    "pino": "9.7.0",
+    "pino-pretty": "13.0.0",
     "prisma": "6.7.0",
+    "uuid": "11.1.0",
     "zod": "3.24.3"
   }
 }
