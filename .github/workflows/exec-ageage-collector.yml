@@ -15,6 +15,7 @@ env:
   WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
   SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
   RUN_SERVICE_ACCOUNT: ${{ secrets.RUN_SERVICE_ACCOUNT }}
+  PROJECT_ID: ${{ secrets.PROJECT_ID }}
   IMAGE_HOST: "asia-northeast1-docker.pkg.dev"
   IMAGE_TAG_BASE: ${{ secrets.IMAGE_TAG_BASE }} # 例. プロジェクトID/artifact_registry名/イメージ名
   GCP_REGION: asia-northeast1
@@ -42,6 +43,7 @@ jobs:
       - name: Exec Ageage Collector
         id: ageage-collector
         run: |
+          gcloud config set project $PROJECT_ID
           gcloud config set run/region $GCP_REGION
           set +e
           gcloud run jobs describe ageagecli --quiet >/dev/null
