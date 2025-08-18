@@ -1,4 +1,9 @@
-import type { PrismaClient, Like as PrismaLike, User, Meshi } from '@prisma/client'
+import type {
+  Meshi,
+  PrismaClient,
+  Like as PrismaLike,
+  User,
+} from '@prisma/client'
 import { createChildLogger } from '../lib/logger'
 
 export interface LikeConnection {
@@ -42,12 +47,20 @@ export class LikeService {
           meshi: true,
         },
       })
-      
+
       this.logger.info({ userId, meshiId, likeId: like.id }, 'likeMeshi成功')
       return like
     } catch (error: unknown) {
-      if (error && typeof error === 'object' && 'code' in error && error.code === 'P2002') {
-        this.logger.warn({ userId, meshiId, error: error.code }, 'likeMeshi失敗: 既にいいね済み')
+      if (
+        error &&
+        typeof error === 'object' &&
+        'code' in error &&
+        error.code === 'P2002'
+      ) {
+        this.logger.warn(
+          { userId, meshiId, error: error.code },
+          'likeMeshi失敗: 既にいいね済み',
+        )
         throw new Error('既にいいねしています')
       }
       this.logger.error({ userId, meshiId, error }, 'likeMeshiエラー')
@@ -69,8 +82,16 @@ export class LikeService {
       this.logger.info({ userId, meshiId }, 'unlikeMeshi成功')
       return true
     } catch (error: unknown) {
-      if (error && typeof error === 'object' && 'code' in error && error.code === 'P2025') {
-        this.logger.warn({ userId, meshiId, error: error.code }, 'unlikeMeshi失敗: いいねが見つからない')
+      if (
+        error &&
+        typeof error === 'object' &&
+        'code' in error &&
+        error.code === 'P2025'
+      ) {
+        this.logger.warn(
+          { userId, meshiId, error: error.code },
+          'unlikeMeshi失敗: いいねが見つからない',
+        )
         throw new Error('いいねが見つかりません')
       }
       this.logger.error({ userId, meshiId, error }, 'unlikeMeshiエラー')
@@ -119,14 +140,18 @@ export class LikeService {
       cursor: like.id.toString(),
     }))
 
-    this.logger.info({ userId, returnedCount: edges.length, totalCount, hasNextPage }, 'getUserLikes成功')
+    this.logger.info(
+      { userId, returnedCount: edges.length, totalCount, hasNextPage },
+      'getUserLikes成功',
+    )
     return {
       edges,
       pageInfo: {
         hasNextPage,
         hasPreviousPage: !!cursor,
         startCursor: edges.length > 0 ? edges[0].cursor : undefined,
-        endCursor: edges.length > 0 ? edges[edges.length - 1].cursor : undefined,
+        endCursor:
+          edges.length > 0 ? edges[edges.length - 1].cursor : undefined,
       },
       totalCount,
     }
@@ -148,7 +173,7 @@ export class LikeService {
     for (const meshiId of meshiIds) {
       likeMap.set(meshiId, false)
     }
-    
+
     for (const like of likes) {
       likeMap.set(like.meshiId, true)
     }

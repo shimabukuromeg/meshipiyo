@@ -6,7 +6,7 @@ extend type Query {
 extend type Mutation {
   # いいねをつける
   likeMeshi(meshiId: ID!): Like!
-  
+
   # いいねを取り消す
   unlikeMeshi(meshiId: ID!): Boolean!
 }

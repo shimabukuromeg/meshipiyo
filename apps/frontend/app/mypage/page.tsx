@@ -1,9 +1,9 @@
 'use client'
 
-import { UserProfile } from '@/components/user-profile'
 import { LikedMeshiList } from '@/components/liked-meshi-list'
-import { useMyProfile } from '@/hooks/use-my-profile'
+import { UserProfile } from '@/components/user-profile'
 import { useAuth } from '@/contexts/AuthContext'
+import { useMyProfile } from '@/hooks/use-my-profile'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
@@ -32,7 +32,9 @@ export default function MyPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
-          <p className="text-red-500 mb-4">プロフィールの読み込みに失敗しました</p>
+          <p className="text-red-500 mb-4">
+            プロフィールの読み込みに失敗しました
+          </p>
           <p className="text-gray-600">{error.message}</p>
         </div>
       </div>
@@ -53,16 +55,13 @@ export default function MyPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-center mb-8">マイページ</h1>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* プロフィール情報 */}
           <div className="lg:col-span-1">
-            <UserProfile 
-              user={profile} 
-              likeCount={profile.likeCount}
-            />
+            <UserProfile user={profile} likeCount={profile.likeCount} />
           </div>
-          
+
           {/* いいね一覧エリア */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow p-6">

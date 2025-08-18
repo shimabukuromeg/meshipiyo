@@ -1,11 +1,11 @@
 'use client'
 
-import { useMyLikes } from '@/hooks/use-my-likes'
-import { useEffect, useRef } from 'react'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
+import { useMyLikes } from '@/hooks/use-my-likes'
 import { MapPin } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useEffect, useRef } from 'react'
 import { LikeButton } from './like-button'
 
 export const LikedMeshiList = () => {
@@ -22,7 +22,7 @@ export const LikedMeshiList = () => {
           loadMore()
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     )
 
     if (loadMoreRef.current) {
@@ -58,9 +58,7 @@ export const LikedMeshiList = () => {
         <h3 className="text-lg font-semibold text-gray-700 mb-2">
           まだいいねした飲食店がありません
         </h3>
-        <p className="text-gray-500">
-          気になる飲食店にいいねしてみましょう！
-        </p>
+        <p className="text-gray-500">気になる飲食店にいいねしてみましょう！</p>
       </div>
     )
   }
@@ -121,7 +119,9 @@ export const LikedMeshiList = () => {
                   </Link>
                   <div className="flex justify-end mt-1">
                     <p className="text-sm text-gray-500">
-                      {new Date(like.meshi.publishedDate).toLocaleDateString('ja-JP')}
+                      {new Date(like.meshi.publishedDate).toLocaleDateString(
+                        'ja-JP',
+                      )}
                     </p>
                   </div>
                 </div>
