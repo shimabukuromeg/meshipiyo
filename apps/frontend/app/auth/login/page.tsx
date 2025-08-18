@@ -1,5 +1,8 @@
 'use client'
 
+// This page requires authentication context and should not be statically generated
+export const dynamic = 'force-dynamic'
+
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Button } from '../../../components/ui/button'
@@ -13,7 +16,7 @@ import {
 } from '../../../components/ui/card'
 import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
-import { useAuth } from '../../../contexts/AuthContext'
+import { useAuth } from '../../../contexts/AuthContextDynamic'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')

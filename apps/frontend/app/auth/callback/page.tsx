@@ -1,5 +1,8 @@
 'use client'
 
+// This page requires authentication context and should not be statically generated
+export const dynamic = 'force-dynamic'
+
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import {
@@ -8,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from '../../../components/ui/card'
-import { useAuth } from '../../../contexts/AuthContext'
+import { useAuth } from '../../../contexts/AuthContextDynamic'
 
 export default function AuthCallbackPage() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>(
