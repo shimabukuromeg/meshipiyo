@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContextDynamic'
 import { graphqlClient } from '@/lib/graphql-client'
 
 const MeQuery = `
@@ -23,7 +23,7 @@ const MeQuery = `
   }
 `
 
-interface MyProfileData {
+type MyProfileData = {
   id: string
   name: string
   displayName: string
@@ -38,7 +38,7 @@ interface MyProfileData {
   likeCount: number
 }
 
-interface UseMyProfileReturn {
+type UseMyProfileReturn = {
   profile: MyProfileData | null
   loading: boolean
   error: Error | null

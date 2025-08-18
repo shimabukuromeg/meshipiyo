@@ -8,7 +8,7 @@ import {
   MenubarSeparator,
   MenubarTrigger,
 } from '@/components/ui/menubar'
-import { AuthProvider } from '@/contexts/AuthContext'
+import { AuthProvider } from '@/contexts/AuthContextDynamic'
 import { cn } from '@/lib/utils'
 import './globals.css'
 import { AuthMenu } from '@/components/auth/AuthMenu'

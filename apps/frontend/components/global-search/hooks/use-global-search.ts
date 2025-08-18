@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useGlobalSearchStore } from '../store/global-search-store'
 
 // APIレスポンスの型を定義
-interface MeshiApiResponse {
+type MeshiApiResponse = {
   items: SearchItem[]
   pageInfo: {
     hasNextPage: boolean

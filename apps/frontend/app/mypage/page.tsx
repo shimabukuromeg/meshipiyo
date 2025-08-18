@@ -3,9 +3,12 @@
 import { UserProfile } from '@/components/user-profile'
 import { LikedMeshiList } from '@/components/liked-meshi-list'
 import { useMyProfile } from '@/hooks/use-my-profile'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContextDynamic'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+
+// This page requires authentication and should not be statically generated
+export const dynamic = 'force-dynamic'
 
 export default function MyPage() {
   const { user, loading: authLoading } = useAuth()

@@ -2,7 +2,7 @@
 
 import { request } from 'graphql-request'
 import { useCallback, useState } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContextDynamic'
 
 const LikeMeshiMutation = `
   mutation LikeMeshi($meshiId: ID!) {
@@ -27,7 +27,7 @@ const UnlikeMeshiMutation = `
   }
 `
 
-interface UseLikeReturn {
+type UseLikeReturn = {
   likeMeshi: (meshiId: string) => Promise<void>
   unlikeMeshi: (meshiId: string) => Promise<void>
   isLoading: boolean

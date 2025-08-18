@@ -2,7 +2,7 @@
 
 import { request } from 'graphql-request'
 import { useCallback, useEffect, useState } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContextDynamic'
 
 const MyLikesQuery = `
   query MyLikes($first: Int, $after: String) {
@@ -40,7 +40,7 @@ const MyLikesQuery = `
   }
 `
 
-interface Like {
+type Like = {
   id: string
   createdAt: string
   meshi: {
@@ -60,7 +60,7 @@ interface Like {
   }
 }
 
-interface UseMyLikesReturn {
+type UseMyLikesReturn = {
   likes: Like[]
   loading: boolean
   error: Error | null
