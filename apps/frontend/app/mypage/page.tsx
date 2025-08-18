@@ -1,11 +1,11 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
 import { LikedMeshiList } from '@/components/liked-meshi-list'
 import { UserProfile } from '@/components/user-profile'
 import { useAuth } from '@/contexts/AuthContextDynamic'
 import { useMyProfile } from '@/hooks/use-my-profile'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 // This page requires authentication and should not be statically generated
 export const dynamic = 'force-dynamic'

@@ -15,7 +15,7 @@ export const Meshi: Pick<
   | 'title'
   | '__isTypeOf'
 > = {
-  municipality: (parent, _arg, ctx) => {
+  municipality: (parent, arg, ctx) => {
     return ctx.prisma.meshi
       .findUnique({
         where: { id: parent.id },

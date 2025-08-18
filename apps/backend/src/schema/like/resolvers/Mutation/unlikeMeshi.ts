@@ -14,3 +14,4 @@ export const unlikeMeshi: NonNullable<
     Number.parseInt(meshiId, 10),
   )
 }
+

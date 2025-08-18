@@ -4,20 +4,34 @@ import fastify, { type FastifyReply, type FastifyRequest } from 'fastify'
 import { applyMiddleware } from 'graphql-middleware'
 import { createSchema, createYoga } from 'graphql-yoga'
 import { createContext } from './context'
-import { resolvers } from './schema/resolvers.generated'
-import { typeDefs } from './schema/typeDefs.generated'
 import { logger } from './lib/logger'
 import { graphqlLoggerPlugin } from './plugins/graphql-logger'
+import { resolvers } from './schema/resolvers.generated'
+import { typeDefs } from './schema/typeDefs.generated'
 
 function main() {
   // This is the fastify instance you have created
-  const app = fastify({ logger })
+  const app = fastify({ 
+    logger: process.env.NODE_ENV === 'development' 
+      ? {
+          level: 'debug',
+          transport: {
+            target: 'pino-pretty',
+            options: {
+              colorize: true,
+              ignore: 'pid,hostname',
+              translateTime: 'HH:MM:ss',
+              singleLine: true,
+            },
+          },
+        }
+      : {
+          level: process.env.LOG_LEVEL || 'info',
+        }
+  })
 
   // TODO: スキーマ読み込み
-  const yoga = createYoga<{
-    req: FastifyRequest
-    reply: FastifyReply
-  }>({
+  const yoga = createYoga({
     schema: applyMiddleware(
       createSchema({
         typeDefs,
@@ -49,10 +63,9 @@ function main() {
     url: yoga.graphqlEndpoint,
     method: ['GET', 'POST', 'OPTIONS'],
     handler: async (req, reply) => {
-      // Second parameter adds Fastify's `req` and `reply` to the GraphQL Context
+      // Second parameter adds Fastify's `req` to the GraphQL Context
       const response = await yoga.handleNodeRequest(req, {
         req,
-        reply,
       })
       response.headers.forEach((value, key) => {
         reply.header(key, value)

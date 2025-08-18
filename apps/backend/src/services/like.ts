@@ -48,6 +48,7 @@ export class LikeService {
         },
       })
 
+
       this.logger.info({ userId, meshiId, likeId: like.id }, 'likeMeshi成功')
       return like
     } catch (error: unknown) {
@@ -57,6 +58,10 @@ export class LikeService {
         'code' in error &&
         error.code === 'P2002'
       ) {
+        this.logger.warn(
+          { userId, meshiId, error: error.code },
+          'likeMeshi失敗: 既にいいね済み',
+        )
         throw new Error('既にいいねしています')
       }
       this.logger.error({ userId, meshiId, error }, 'likeMeshiエラー')
@@ -84,7 +89,10 @@ export class LikeService {
         'code' in error &&
         error.code === 'P2025'
       ) {
-        this.logger.warn({ userId, meshiId, error: error.code }, 'unlikeMeshi失敗: いいねが見つからない')
+        this.logger.warn(
+          { userId, meshiId, error: error.code },
+          'unlikeMeshi失敗: いいねが見つからない',
+        )
         throw new Error('いいねが見つかりません')
       }
       this.logger.error({ userId, meshiId, error }, 'unlikeMeshiエラー')
@@ -166,7 +174,7 @@ export class LikeService {
     for (const meshiId of meshiIds) {
       likeMap.set(meshiId, false)
     }
-
+    
     for (const like of likes) {
       likeMap.set(like.meshiId, true)
     }
