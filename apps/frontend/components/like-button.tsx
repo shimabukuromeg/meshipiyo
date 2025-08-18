@@ -1,14 +1,14 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContextDynamic'
 import { useLike } from '@/hooks/use-like'
 import { useMeshiLikeState } from '@/hooks/use-meshi-like-state'
 import { Heart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 
-interface LikeButtonProps {
+type LikeButtonProps = {
   meshiId: string
   isLiked: boolean
   likeCount: number
