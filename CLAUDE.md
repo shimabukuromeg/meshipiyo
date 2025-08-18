@@ -126,5 +126,33 @@ A comprehensive like and user profile system has been implemented:
 - Liked restaurants are displayed with infinite scroll pagination
 - Real-time like counts update across the UI
 
+## Logging Configuration
+
+### Environment Variables
+```bash
+LOG_LEVEL=debug          # ログレベル (debug, info, warn, error) - 開発環境ではdebug、本番環境ではinfo推奨
+NODE_ENV=development     # 開発環境ではpino-prettyで見やすく、本番環境では構造化JSON
+```
+
+### Logging Features
+- **Structured Logging**: Pino使用で一貫性のあるJSON形式ログ
+- **GraphQL Operation Logging**: operationName、実行時間、変数、エラーを記録
+- **Request Context**: requestId、userIdを各ログに自動付与
+- **Service Layer Logging**: 主要操作（作成、削除、取得）の詳細ログ
+- **Authentication Logging**: 認証成功/失敗、新規ユーザー作成ログ
+
+### Log Output Examples
+```json
+{
+  "level": "info",
+  "time": "2025-01-07T10:30:00.000Z",
+  "msg": "GraphQL operation completed: getMeshiList",
+  "operationName": "getMeshiList",
+  "requestId": "abc123",
+  "userId": 42,
+  "variables": { "cursor": null, "limit": 20 }
+}
+```
+
 ## Interaction Guidelines
 - **IMPORTANT**: 日本語で会話してください
