@@ -11,7 +11,8 @@
     "codegen": "graphql-codegen",
     "codegen:watch": "graphql-codegen --watch",
     "format": "biome check --write .",
-    "ci": "biome ci"
+    "ci": "biome ci",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "@graphql-typed-document-node/core": "3.2.0",
@@ -56,6 +57,7 @@
     "@biomejs/biome": "1.9.4",
     "@graphql-codegen/cli": "5.0.5",
     "@graphql-codegen/client-preset": "4.8.0",
+    "@next/bundle-analyzer": "15.4.6",
     "@playwright/test": "1.52.0",
     "encoding": "0.1.13",
     "ts-node": "10.9.2",
