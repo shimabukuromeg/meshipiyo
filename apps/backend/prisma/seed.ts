@@ -25,6 +25,7 @@ async function main() {
           'https://vnbnghhfpjhiwnipemcz.supabase.co/storage/v1/object/public/graphql-yoga-sample/profile2.jpg',
         description: '1991年うまれ。ソフトウェアエンジニア🧑‍💻',
         twitterProfileUrl: 'https://twitter.com/20092014',
+        authProvider: [],
       },
       {
         name: 'シマブクロメグミ2',
@@ -34,6 +35,7 @@ async function main() {
           'https://vnbnghhfpjhiwnipemcz.supabase.co/storage/v1/object/public/graphql-yoga-sample/profile2.jpg',
         description: '1992年うまれ。ソフトウェアエンジニア🧑‍💻',
         twitterProfileUrl: 'https://twitter.com/20092014',
+        authProvider: [],
       },
       {
         name: 'シマブクロメグミ3',
@@ -43,6 +45,7 @@ async function main() {
           'https://vnbnghhfpjhiwnipemcz.supabase.co/storage/v1/object/public/graphql-yoga-sample/profile2.jpg',
         description: '1993年うまれ。ソフトウェアエンジニア🧑‍💻',
         twitterProfileUrl: 'https://twitter.com/20092014',
+        authProvider: [],
       },
     ],
   })
