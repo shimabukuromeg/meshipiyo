@@ -25,7 +25,7 @@ $ pnpm i
 
 ```bash
 $ docker compose up -d db
-$ pnpm backend db:migrate:dev
+$ pnpm --filter backend db:migrate:dev
 ```
 
 ### 開発環境の起動
@@ -89,8 +89,8 @@ $ make clean       # コンテナとボリューム削除
 $ pnpm dev         # フロントエンド + バックエンド起動
 
 # 個別起動
-$ pnpm frontend dev  # フロントエンドのみ
-$ pnpm backend dev   # バックエンドのみ
+$ pnpm --filter frontend dev  # フロントエンドのみ
+$ pnpm --filter backend dev   # バックエンドのみ
 ```
 
 ### 環境変数

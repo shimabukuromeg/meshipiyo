@@ -42,16 +42,16 @@ meshipiyoのバックエンドAPIサーバーです。GraphQL Yoga、Prisma ORM�
    ```bash
    # リポジトリルートで実行
    # データベースリセット + 1ページ分のレストランデータ取得
-   pnpm backend db:init
+   pnpm --filter backend db:init
    
    # またはすべてのレストランデータを取得する場合
-   pnpm backend db:init:all
+   pnpm --filter backend db:init:all
    ```
 
    **方法2: 個別にコマンドを実行**
    ```bash
    # データベースリセットとシード実行
-   pnpm backend db:migrate:reset
+   pnpm --filter backend db:migrate:reset
    
    # レストランデータの取得
    cd apps/backend
@@ -68,7 +68,7 @@ meshipiyoのバックエンドAPIサーバーです。GraphQL Yoga、Prisma ORM�
 5. **開発サーバーの起動**
    ```bash
    # リポジトリルートで実行
-   pnpm backend dev
+   pnpm --filter backend dev
 
    # またはフロントエンドと同時に起動
    pnpm dev
@@ -85,17 +85,17 @@ meshipiyoのバックエンドAPIサーバーです。GraphQL Yoga、Prisma ORM�
 docker compose up -d db
 
 # 開発サーバーの起動
-pnpm backend dev
+pnpm --filter backend dev
 ```
 
 ## 開発コマンド
 
 ```bash
 # 開発サーバー起動
-pnpm backend dev
+pnpm --filter backend dev
 
 # コード生成（GraphQL + Prisma）
-pnpm backend codegen
+pnpm --filter backend codegen
 
 # スクレイピング（レストランデータ取得）
 # apps/backendディレクトリで実行
@@ -104,17 +104,17 @@ pnpm ageage:scrape 10      # 1〜10ページ
 pnpm ageage:scrape all     # 全ページ
 
 # データベース操作
-pnpm backend db:migrate:dev     # 新しいマイグレーションを作成・実行
-pnpm backend db:migrate:deploy  # 本番環境へのマイグレーション
-pnpm backend db:studio          # Prisma Studio起動
-pnpm backend db:migrate:reset   # データベースリセット（注意：全データ削除）
-pnpm backend db:init            # DB初期化 + レストランデータ取得（1ページ）
-pnpm backend db:init:all        # DB初期化 + レストランデータ取得（全ページ）
+pnpm --filter backend db:migrate:dev     # 新しいマイグレーションを作成・実行
+pnpm --filter backend db:migrate:deploy  # 本番環境へのマイグレーション
+pnpm --filter backend db:studio          # Prisma Studio起動
+pnpm --filter backend db:migrate:reset   # データベースリセット（注意：全データ削除）
+pnpm --filter backend db:init            # DB初期化 + レストランデータ取得（1ページ）
+pnpm --filter backend db:init:all        # DB初期化 + レストランデータ取得（全ページ）
 
 # テスト・品質チェック
-pnpm backend test               # テスト実行
-pnpm backend lint               # リンター実行
-pnpm backend typecheck          # 型チェック
+pnpm --filter backend test               # テスト実行
+pnpm --filter backend lint               # リンター実行
+pnpm --filter backend typecheck          # 型チェック
 ```
 
 ## プロジェクト構成
@@ -163,23 +163,23 @@ docker compose logs db
 ### マイグレーションエラー
 ```bash
 # データベースをリセットして再マイグレーション
-pnpm backend db:migrate:reset
+pnpm --filter backend db:migrate:reset
 ```
 
 ### 型エラー
 ```bash
 # コード生成を再実行
-pnpm backend codegen
+pnpm --filter backend codegen
 ```
 
 ## 開発のヒント
 
 1. **GraphQLスキーマを変更した場合**
-   - `pnpm backend codegen`を実行して型定義を更新
+   - `pnpm --filter backend codegen`を実行して型定義を更新
 
 2. **データベーススキーマを変更した場合**
-   - `pnpm backend db:migrate:dev`で新しいマイグレーションを作成
-   - `pnpm backend codegen`を実行して型定義を更新
+   - `pnpm --filter backend db:migrate:dev`で新しいマイグレーションを作成
+   - `pnpm --filter backend codegen`を実行して型定義を更新
 
 3. **GraphQL Playground**
    - http://localhost:44000 でクエリをテスト可能

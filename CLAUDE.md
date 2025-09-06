@@ -14,20 +14,20 @@ meshipiyo is a restaurant/food discovery platform built as a monorepo using pnpm
 ```bash
 pnpm i                    # Install all dependencies
 docker compose up -d db   # Start PostgreSQL database (port 55432)
-pnpm backend db:migrate:dev  # Run database migrations
+pnpm --filter backend db:migrate:dev  # Run database migrations
 ```
 
 ### Development
 ```bash
 pnpm dev                  # Start all services (frontend + backend)
-pnpm frontend dev         # Start only frontend (http://localhost:33000)
-pnpm backend dev          # Start only backend (http://localhost:44000)
+pnpm --filter frontend dev         # Start only frontend (http://localhost:33000)
+pnpm --filter backend dev          # Start only backend (http://localhost:44000)
 ```
 
 ### Code Generation (Run when GraphQL schema or database schema changes)
 ```bash
-pnpm backend codegen      # Generate backend types (Prisma + GraphQL)
-pnpm frontend codegen     # Generate frontend GraphQL types
+pnpm --filter backend codegen      # Generate backend types (Prisma + GraphQL)
+pnpm --filter frontend codegen     # Generate frontend GraphQL types
 ```
 
 ### Testing & Quality Checks
@@ -41,10 +41,10 @@ pnpm ci                   # Run all CI checks
 
 ### Database Management
 ```bash
-pnpm backend db:migrate:dev     # Create and run new migrations
-pnpm backend db:migrate:deploy  # Deploy migrations to production
-pnpm backend db:studio          # Open Prisma Studio GUI
-pnpm backend db:migrate:reset   # Reset database (WARNING: deletes all data)
+pnpm --filter backend db:migrate:dev     # Create and run new migrations
+pnpm --filter backend db:migrate:deploy  # Deploy migrations to production
+pnpm --filter backend db:studio          # Open Prisma Studio GUI
+pnpm --filter backend db:migrate:reset   # Reset database (WARNING: deletes all data)
 ```
 
 ## Architecture Overview
