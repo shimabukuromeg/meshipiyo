@@ -1,9 +1,17 @@
+'use client'
+
 import { MapPin } from 'lucide-react'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { type FragmentType, graphql, useFragment } from '@/src/gql'
-import { LikeButton } from './like-button'
+
+// LikeButtonを動的インポートに変更し、SSRを無効化
+const LikeButton = dynamic(() => import('./like-button').then(mod => ({ default: mod.LikeButton })), {
+  ssr: false,
+  loading: () => <div className="w-6 h-6" /> // ローディング中のプレースホルダー
+})
 
 export const MeshiCardFragment = graphql(`
   fragment MeshiCard on Meshi {

@@ -4,7 +4,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata } from 'next'
 import { Noto_Sans_JP } from 'next/font/google'
 import Link from 'next/link'
-import { AuthMenu } from '@/components/auth/AuthMenu'
+import { AuthMenuWrapper } from '@/components/auth/AuthMenuWrapper'
 import { FloatingButton } from '@/components/ui/floating-button'
 import { Icons } from '@/components/ui/icons'
 import {
@@ -57,7 +57,7 @@ export default function RootLayout({
                 </Link>
 
                 <MenubarSeparator />
-                <AuthMenu />
+                <AuthMenuWrapper />
               </MenubarContent>
             </MenubarMenu>
           </Menubar>
