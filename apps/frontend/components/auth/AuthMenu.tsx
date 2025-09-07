@@ -1,9 +1,9 @@
 'use client'
 
-import { MenubarItem } from '@/components/ui/menubar'
-import { useAuth } from '@/contexts/AuthContextDynamic'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { MenubarItem } from '@/components/ui/menubar'
+import { useAuth } from '@/contexts/AuthContextDynamic'
 
 export function AuthMenu() {
   const { user, signOut, loading } = useAuth()

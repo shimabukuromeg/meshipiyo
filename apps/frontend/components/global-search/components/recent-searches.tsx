@@ -1,5 +1,5 @@
-import type { SearchItem } from '@/types/global-search'
 import type React from 'react'
+import type { SearchItem } from '@/types/global-search'
 import { SearchResults } from './search-results'
 
 interface RecentSearchesProps {
@@ -14,10 +14,7 @@ interface RecentSearchesProps {
  */
 export const RecentSearches: React.FC<RecentSearchesProps> = ({ results }) => (
   <section className="mb-4" aria-labelledby="recent-searches-heading">
-    <h3
-      id="recent-searches-heading"
-      className="mb-2 text-sm font-semibold text-gray-600"
-    >
+    <h3 className="mb-2 text-sm font-semibold text-gray-600">
       Recent Searches
     </h3>
     <SearchResults results={results} />

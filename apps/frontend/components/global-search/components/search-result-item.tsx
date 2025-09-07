@@ -1,7 +1,6 @@
 'use client'
 
 import { useIsClient } from '@uidotdev/usehooks'
-import { ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import type React from 'react'

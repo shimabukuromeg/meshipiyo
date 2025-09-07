@@ -11,14 +11,14 @@ import {
 import { AuthProvider } from '@/contexts/AuthContextDynamic'
 import { cn } from '@/lib/utils'
 import './globals.css'
-import { AuthMenu } from '@/components/auth/AuthMenu'
-// @ts-ignore
+// @ts-expect-error
 import { GoogleTagManager } from '@next/third-parties/google'
 import { HamburgerMenuIcon } from '@radix-ui/react-icons'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata } from 'next'
 import { Noto_Sans_JP } from 'next/font/google'
 import Link from 'next/link'
+import { AuthMenu } from '@/components/auth/AuthMenu'
 
 const noto = Noto_Sans_JP({
   weight: ['400', '700'],
@@ -37,7 +37,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    // biome-ignore lint/a11y/useValidLang: <explanation>
+    // biome-ignore lint/a11y/useValidLang: Using jp for Japanese locale per project convention
     <html lang="jp">
       <body className={cn('font-sans bg-background', noto.variable)}>
         <AuthProvider>

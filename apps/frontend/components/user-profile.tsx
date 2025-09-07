@@ -1,9 +1,9 @@
 'use client'
 
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { Avatar } from '@/components/ui/avatar'
 import { Heart, User } from 'lucide-react'
 import Image from 'next/image'
+import { Avatar } from '@/components/ui/avatar'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 
 interface UserProfileProps {
   user: {
@@ -54,7 +54,7 @@ export const UserProfile = ({ user, likeCount }: UserProfileProps) => {
         <h1 className="text-2xl font-bold">{user.displayName}</h1>
         <p className="text-gray-600">{user.email}</p>
       </CardHeader>
-      
+
       <CardContent className="space-y-4">
         {user.description && (
           <div>
@@ -62,7 +62,7 @@ export const UserProfile = ({ user, likeCount }: UserProfileProps) => {
             <p className="text-gray-700">{user.description}</p>
           </div>
         )}
-        
+
         <div className="flex items-center justify-center gap-2 p-4 bg-red-50 rounded-lg">
           <Heart className="w-6 h-6 text-red-500 fill-red-500" />
           <div className="text-center">

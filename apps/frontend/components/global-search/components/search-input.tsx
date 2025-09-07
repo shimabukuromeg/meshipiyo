@@ -1,17 +1,7 @@
 'use client'
 
 import { useDebounce } from '@uidotdev/usehooks'
-import {
-  BarChart2,
-  Briefcase,
-  Calendar,
-  ChevronDown,
-  FileText,
-  Globe,
-  Search,
-  Users,
-  X,
-} from 'lucide-react'
+import { ChevronDown, X } from 'lucide-react'
 import type React from 'react'
 import { useEffect } from 'react'
 

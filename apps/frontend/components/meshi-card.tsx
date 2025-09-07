@@ -1,8 +1,8 @@
-import { Card, CardContent, CardFooter } from '@/components/ui/card'
-import { type FragmentType, graphql, useFragment } from '@/src/gql'
 import { MapPin } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Card, CardContent, CardFooter } from '@/components/ui/card'
+import { type FragmentType, graphql, useFragment } from '@/src/gql'
 import { LikeButton } from './like-button'
 
 export const MeshiCardFragment = graphql(`
@@ -36,7 +36,7 @@ export const MeshiCard = (props: Props) => {
       <CardContent className="p-0">
         <div className="flex justify-center">
           {/* 中央に寄せる */}
-          <Link id="meshi" target="_blank" href={meshi.siteUrl} key={meshi.id}>
+          <Link target="_blank" href={meshi.siteUrl} key={meshi.id}>
             <Image
               className="h-auto max-w-full rounded-lg"
               width={313}
@@ -79,7 +79,7 @@ export const MeshiCard = (props: Props) => {
       </CardContent>
       <CardFooter className="p-0">
         <div className="w-full">
-          <Link id="meshi" href={`/meshi/${meshi.id}`} key={meshi.id}>
+          <Link href={`/meshi/${meshi.id}`} key={meshi.id}>
             <p className="font-bold line-clamp-3">{meshi.title}</p>
           </Link>
           <div className="flex justify-end mt-1">

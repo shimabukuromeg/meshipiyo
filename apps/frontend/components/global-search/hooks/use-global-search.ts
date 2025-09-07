@@ -1,7 +1,7 @@
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { PAGE_SIZE, TRADING_PAGE_SIZE } from '@/src/constants/common'
 // import { useSearch } from "../queries/use-search-query";
 import type { SearchItem } from '@/types/global-search'
-import { useEffect, useMemo, useRef, useState } from 'react'
 import { useGlobalSearchStore } from '../store/global-search-store'
 
 // APIレスポンスの型を定義
@@ -40,7 +40,6 @@ const useGlobalSearch = () => {
   // Determine if we should fetch trending items
   const fetchTrending = useMemo(() => !searchQuery, [searchQuery])
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: PAGE_SIZE and TRADING_PAGE_SIZE are constants but included for clarity
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true)
@@ -79,16 +78,15 @@ const useGlobalSearch = () => {
       }
     }
     loadData()
-  }, [searchQuery, fetchTrending, TRADING_PAGE_SIZE, PAGE_SIZE]) // searchFilterも依存配列に追加
+  }, [searchQuery, fetchTrending]) // searchFilterも依存配列に追加
 
   // Extract trending items from the search results
-  // biome-ignore lint/correctness/useExhaustiveDependencies: TRADING_PAGE_SIZE is a constant but included for clarity
   const trendingItems = useMemo(() => {
     if (fetchTrending) {
       return searchResults.slice(0, TRADING_PAGE_SIZE)
     }
     return []
-  }, [searchResults, fetchTrending, TRADING_PAGE_SIZE])
+  }, [searchResults, fetchTrending])
 
   // Scroll to top when search filter changes
   useEffect(() => {

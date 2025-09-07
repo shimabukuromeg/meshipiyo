@@ -1,15 +1,15 @@
+import { GraphQLClient } from 'graphql-request'
+import { NextResponse } from 'next/server'
+import { cache } from 'react'
 import { graphql } from '@/src/gql'
 import type {
   MeshiSearchQuery,
   MeshiSearchQueryVariables,
 } from '@/src/gql/graphql'
-import { GraphQLClient } from 'graphql-request'
-import { NextResponse } from 'next/server'
-import { cache } from 'react'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
-  const first = Number.parseInt(searchParams.get('first') ?? '1000')
+  const first = Number.parseInt(searchParams.get('first') ?? '1000', 10)
   const query = searchParams.get('query') ?? undefined
 
   const backendEndpoint =
@@ -18,7 +18,7 @@ export async function GET(request: Request) {
   console.log('backendEndpoint', process.env.BACKEND_ENDPOINT)
 
   const client = new GraphQLClient(backendEndpoint, {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    // biome-ignore lint/suspicious/noExplicitAny: Next.js fetch cache requires any for generic fetch signature
     fetch: cache(async (url: any, params: any) =>
       fetch(url, { ...params, next: { revalidate: 60, tags: ['meshi-data'] } }),
     ),

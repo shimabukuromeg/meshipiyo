@@ -70,7 +70,7 @@ type UseMyLikesReturn = {
   refetch: () => Promise<void>
 }
 
-export const useMyLikes = (limit: number = 10): UseMyLikesReturn => {
+export const useMyLikes = (limit = 10): UseMyLikesReturn => {
   const [likes, setLikes] = useState<Like[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
@@ -90,11 +90,11 @@ export const useMyLikes = (limit: number = 10): UseMyLikesReturn => {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     }
-    
+
     if (token) {
       headers.Authorization = `Bearer ${token}`
     }
-    
+
     return headers
   }
 
@@ -168,7 +168,10 @@ export const useMyLikes = (limit: number = 10): UseMyLikesReturn => {
         setTotalCount(data.myLikes.totalCount)
         setEndCursor(data.myLikes.pageInfo.endCursor || null)
       } catch (err) {
-        const error = err instanceof Error ? err : new Error('いいね一覧の取得に失敗しました')
+        const error =
+          err instanceof Error
+            ? err
+            : new Error('いいね一覧の取得に失敗しました')
         setError(error)
       } finally {
         setLoading(false)
