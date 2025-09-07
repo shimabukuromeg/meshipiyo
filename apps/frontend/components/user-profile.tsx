@@ -1,9 +1,9 @@
 'use client'
 
-import { Avatar } from '@/components/ui/avatar'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Heart, User } from 'lucide-react'
 import Image from 'next/image'
+import { Avatar } from '@/components/ui/avatar'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 
 interface UserProfileProps {
   user: {

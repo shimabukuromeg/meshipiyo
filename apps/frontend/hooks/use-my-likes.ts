@@ -1,8 +1,8 @@
 'use client'
 
-import { useAuth } from '@/contexts/AuthContextDynamic'
 import { request } from 'graphql-request'
 import { useCallback, useEffect, useState } from 'react'
+import { useAuth } from '@/contexts/AuthContextDynamic'
 
 const MyLikesQuery = `
   query MyLikes($first: Int, $after: String) {

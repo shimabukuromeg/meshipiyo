@@ -1,8 +1,8 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContextDynamic'
 import { graphqlClient } from '@/lib/graphql-client'
-import { useEffect, useState } from 'react'
 
 const MeQuery = `
   query Me {

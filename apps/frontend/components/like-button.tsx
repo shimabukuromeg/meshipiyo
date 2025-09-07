@@ -1,12 +1,12 @@
 'use client'
 
+import { Heart } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContextDynamic'
 import { useLike } from '@/hooks/use-like'
 import { useMeshiLikeState } from '@/hooks/use-meshi-like-state'
 import { cn } from '@/lib/utils'
-import { Heart } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
 
 type LikeButtonProps = {
   meshiId: string
@@ -33,7 +33,7 @@ export const LikeButton = ({
     likeCount: actualLikeCount,
     refetch,
   } = useMeshiLikeState(meshiId, initialIsLiked, initialLikeCount)
-  
+
   const [optimisticLiked, setOptimisticLiked] = useState(actualIsLiked)
   const [optimisticCount, setOptimisticCount] = useState(actualLikeCount)
 
@@ -58,7 +58,7 @@ export const LikeButton = ({
     // 楽観的更新
     const newLikedState = !optimisticLiked
     setOptimisticLiked(newLikedState)
-    setOptimisticCount(prev => newLikedState ? prev + 1 : prev - 1)
+    setOptimisticCount((prev) => (newLikedState ? prev + 1 : prev - 1))
 
     try {
       if (newLikedState) {
@@ -109,9 +109,7 @@ export const LikeButton = ({
         />
       </div>
       {optimisticCount > 0 && (
-        <span className={cn('font-medium', textSize)}>
-          {optimisticCount}
-        </span>
+        <span className={cn('font-medium', textSize)}>{optimisticCount}</span>
       )}
     </button>
   )
