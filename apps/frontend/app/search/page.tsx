@@ -1,5 +1,4 @@
 import GlobalSearch from '@/components/global-search'
-import { UseCaseLink } from './use-case-link'
 
 /**
  * Home Page Component

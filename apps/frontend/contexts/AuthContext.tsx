@@ -1,18 +1,17 @@
 'use client'
 
 import {
-  type Auth,
-  type User,
   signOut as firebaseSignOut,
   getRedirectResult,
   isSignInWithEmailLink,
+  OAuthProvider,
   onAuthStateChanged,
   sendSignInLinkToEmail,
   signInWithEmailLink,
   signInWithPopup,
   signInWithRedirect,
+  type User,
 } from 'firebase/auth'
-import { OAuthProvider } from 'firebase/auth'
 import type React from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { auth } from '../lib/firebase'

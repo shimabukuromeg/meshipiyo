@@ -85,7 +85,8 @@ export const useMyProfile = (): UseMyProfileReturn => {
         setProfile(null)
       }
     } catch (err) {
-      const error = err instanceof Error ? err : new Error('プロフィール取得に失敗しました')
+      const error =
+        err instanceof Error ? err : new Error('プロフィール取得に失敗しました')
       setError(error)
       setProfile(null)
     } finally {

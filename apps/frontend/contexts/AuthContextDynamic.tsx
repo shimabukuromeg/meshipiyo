@@ -3,7 +3,7 @@
 import type { Auth, User } from 'firebase/auth'
 import type React from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
-import { initFirebase, getFirebaseAuthFunctions } from '../lib/firebase-dynamic'
+import { getFirebaseAuthFunctions, initFirebase } from '../lib/firebase-dynamic'
 import { graphqlClient } from '../lib/graphql-client'
 import { isMobileDevice } from '../utils/device'
 
@@ -47,7 +47,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const { auth } = await initFirebase()
         const authFunctions = await getFirebaseAuthFunctions()
         setAuthInstance(auth)
-        
+
         // リダイレクト後の認証結果を確認
         try {
           const result = await authFunctions.getRedirectResult(auth)
@@ -92,16 +92,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
         }
 
         // 認証状態の監視
-        const unsubscribe = authFunctions.onAuthStateChanged(auth, async (user) => {
-          setUser(user)
+        const unsubscribe = authFunctions.onAuthStateChanged(
+          auth,
+          async (user) => {
+            setUser(user)
 
-          // ユーザーがログインした場合、IDトークンを取得してバックエンドと同期
-          if (user) {
-            try {
-              const idToken = await user.getIdToken()
-              setToken(idToken)
+            // ユーザーがログインした場合、IDトークンを取得してバックエンドと同期
+            if (user) {
+              try {
+                const idToken = await user.getIdToken()
+                setToken(idToken)
 
-              const meQuery = `query Me {
+                const meQuery = `query Me {
   me {
     id
     name
@@ -118,17 +120,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 }`
 
-              await graphqlClient.requestWithAuth(meQuery)
-              console.log('ユーザー情報をバックエンドと同期しました')
-            } catch (error) {
-              console.error('ユーザー情報の同期に失敗しました:', error)
+                await graphqlClient.requestWithAuth(meQuery)
+                console.log('ユーザー情報をバックエンドと同期しました')
+              } catch (error) {
+                console.error('ユーザー情報の同期に失敗しました:', error)
+              }
+            } else {
+              setToken(null)
             }
-          } else {
-            setToken(null)
-          }
 
-          setLoading(false)
-        })
+            setLoading(false)
+          },
+        )
 
         setFirebaseReady(true)
         return () => unsubscribe()
@@ -159,7 +162,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
         handleCodeInApp: true,
       }
 
-      await authFunctions.sendSignInLinkToEmail(authInstance, email, actionCodeSettings)
+      await authFunctions.sendSignInLinkToEmail(
+        authInstance,
+        email,
+        actionCodeSettings,
+      )
       window.localStorage.setItem('emailForSignIn', email)
     } catch (err) {
       setError(
@@ -250,7 +257,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       console.log('🔍 メールリンク認証開始:', { email, url })
 
       const authFunctions = await getFirebaseAuthFunctions()
-      
+
       if (!authFunctions.isSignInWithEmailLink(authInstance, url)) {
         throw new Error('無効なメールリンクです')
       }

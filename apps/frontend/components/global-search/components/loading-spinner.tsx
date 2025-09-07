@@ -1,6 +1,6 @@
-import { cn } from '@/lib/utils'
 import { Loader2 } from 'lucide-react'
 import type { JSX } from 'react'
+import { cn } from '@/lib/utils'
 
 interface LoadingSpinnerProps {
   className?: string

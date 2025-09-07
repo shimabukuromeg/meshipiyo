@@ -50,11 +50,11 @@ export const useLike = (): UseLikeReturn => {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     }
-    
+
     if (token) {
       headers.Authorization = `Bearer ${token}`
     }
-    
+
     return headers
   }
 
@@ -75,7 +75,8 @@ export const useLike = (): UseLikeReturn => {
           getHeaders(),
         )
       } catch (err) {
-        const error = err instanceof Error ? err : new Error('いいねに失敗しました')
+        const error =
+          err instanceof Error ? err : new Error('いいねに失敗しました')
         setError(error)
         throw error
       } finally {
@@ -102,7 +103,8 @@ export const useLike = (): UseLikeReturn => {
           getHeaders(),
         )
       } catch (err) {
-        const error = err instanceof Error ? err : new Error('いいね取り消しに失敗しました')
+        const error =
+          err instanceof Error ? err : new Error('いいね取り消しに失敗しました')
         setError(error)
         throw error
       } finally {

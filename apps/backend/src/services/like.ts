@@ -1,4 +1,9 @@
-import type { PrismaClient, Like as PrismaLike, User, Meshi } from '@prisma/client'
+import type {
+  Meshi,
+  PrismaClient,
+  Like as PrismaLike,
+  User,
+} from '@prisma/client'
 
 export interface LikeConnection {
   edges: LikeEdge[]
@@ -38,10 +43,15 @@ export class LikeService {
           meshi: true,
         },
       })
-      
+
       return like
     } catch (error: unknown) {
-      if (error && typeof error === 'object' && 'code' in error && error.code === 'P2002') {
+      if (
+        error &&
+        typeof error === 'object' &&
+        'code' in error &&
+        error.code === 'P2002'
+      ) {
         throw new Error('既にいいねしています')
       }
       throw error
@@ -60,7 +70,12 @@ export class LikeService {
       })
       return true
     } catch (error: unknown) {
-      if (error && typeof error === 'object' && 'code' in error && error.code === 'P2025') {
+      if (
+        error &&
+        typeof error === 'object' &&
+        'code' in error &&
+        error.code === 'P2025'
+      ) {
         throw new Error('いいねが見つかりません')
       }
       throw error
@@ -78,7 +93,7 @@ export class LikeService {
     let cursorWhere = {}
     if (cursor) {
       const cursorLike = await this.prisma.like.findUnique({
-        where: { id: Number.parseInt(cursor) },
+        where: { id: Number.parseInt(cursor, 10) },
       })
       if (cursorLike) {
         cursorWhere = {
@@ -113,7 +128,8 @@ export class LikeService {
         hasNextPage,
         hasPreviousPage: !!cursor,
         startCursor: edges.length > 0 ? edges[0].cursor : undefined,
-        endCursor: edges.length > 0 ? edges[edges.length - 1].cursor : undefined,
+        endCursor:
+          edges.length > 0 ? edges[edges.length - 1].cursor : undefined,
       },
       totalCount,
     }
@@ -135,7 +151,7 @@ export class LikeService {
     for (const meshiId of meshiIds) {
       likeMap.set(meshiId, false)
     }
-    
+
     for (const like of likes) {
       likeMap.set(like.meshiId, true)
     }

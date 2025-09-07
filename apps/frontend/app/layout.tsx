@@ -1,3 +1,10 @@
+import { GoogleTagManager } from '@next/third-parties/google'
+import { HamburgerMenuIcon } from '@radix-ui/react-icons'
+import { SpeedInsights } from '@vercel/speed-insights/next'
+import type { Metadata } from 'next'
+import { Noto_Sans_JP } from 'next/font/google'
+import Link from 'next/link'
+import { AuthMenu } from '@/components/auth/AuthMenu'
 import { FloatingButton } from '@/components/ui/floating-button'
 import { Icons } from '@/components/ui/icons'
 import {
@@ -11,14 +18,6 @@ import {
 import { AuthProvider } from '@/contexts/AuthContextDynamic'
 import { cn } from '@/lib/utils'
 import './globals.css'
-import { AuthMenu } from '@/components/auth/AuthMenu'
-// @ts-ignore
-import { GoogleTagManager } from '@next/third-parties/google'
-import { HamburgerMenuIcon } from '@radix-ui/react-icons'
-import { SpeedInsights } from '@vercel/speed-insights/next'
-import type { Metadata } from 'next'
-import { Noto_Sans_JP } from 'next/font/google'
-import Link from 'next/link'
 
 const noto = Noto_Sans_JP({
   weight: ['400', '700'],
@@ -37,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    // biome-ignore lint/a11y/useValidLang: <explanation>
+    // biome-ignore lint/a11y/useValidLang: Using jp for Japanese locale per project convention
     <html lang="jp">
       <body className={cn('font-sans bg-background', noto.variable)}>
         <AuthProvider>

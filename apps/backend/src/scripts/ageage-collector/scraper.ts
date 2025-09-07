@@ -179,7 +179,7 @@ export const scrapeAgeagePage = async (
 
     // 記事の一覧を取得
     const articlePattern = /.*\/okitive\/article\/([0-9]+)\//
-    const articles: MeshiData[] = []
+    const _articles: MeshiData[] = []
 
     // 記事要素を収集して処理
     const articlePromises = $('ul li article a')

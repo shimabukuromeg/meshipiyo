@@ -1,7 +1,4 @@
-import type { SearchItem } from '@/types/global-search'
 import type React from 'react'
-import { SearchResults } from './search-results'
-
 /**
  * TrendingSearches component displays a list of top trending searches.
  *
@@ -9,16 +6,20 @@ import { SearchResults } from './search-results'
  * @param {SearchItem[]} props.results - Array of trending search items
  * @returns {React.ReactElement} Rendered component
  */
+import { useId } from 'react'
+import type { SearchItem } from '@/types/global-search'
+import { SearchResults } from './search-results'
+
 export const TrendingSearches: React.FC<{ results: SearchItem[] }> = ({
   results,
-}) => (
-  <section className="mb-4" aria-labelledby="trending-searches-heading">
-    <h3
-      id="trending-searches-heading"
-      className="mb-2 text-sm font-semibold text-gray-600"
-    >
-      Top Trending Searches
-    </h3>
-    <SearchResults results={results} />
-  </section>
-)
+}) => {
+  const headingId = useId()
+  return (
+    <section className="mb-4" aria-labelledby={headingId}>
+      <h3 id={headingId} className="mb-2 text-sm font-semibold text-gray-600">
+        Top Trending Searches
+      </h3>
+      <SearchResults results={results} />
+    </section>
+  )
+}

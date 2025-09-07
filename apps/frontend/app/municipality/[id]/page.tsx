@@ -1,8 +1,8 @@
-import { MeshiCard } from '@/components/meshi-card'
-import { graphql } from '@/src/gql'
 import type { VariablesOf } from '@graphql-typed-document-node/core'
 import { GraphQLClient } from 'graphql-request'
 import { cache } from 'react'
+import { MeshiCard } from '@/components/meshi-card'
+import { graphql } from '@/src/gql'
 
 type Props = {
   params: Promise<{
@@ -51,7 +51,7 @@ const fetchMunicipality = async (
     process.env.BACKEND_ENDPOINT ?? 'http://localhost:44000/graphql'
 
   const client = new GraphQLClient(backendEndpoint, {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    // biome-ignore lint/suspicious/noExplicitAny: Next.js fetch cache requires any for generic fetch signature
     fetch: cache(async (url: any, params: any) =>
       fetch(url, { ...params, next: { revalidate: 60 } }),
     ),

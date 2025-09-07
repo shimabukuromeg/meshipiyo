@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@prisma/client'
-import { vi, describe, it, expect, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { LikeService } from './like'
 
 const prismaMock = {
@@ -44,7 +44,9 @@ describe('LikeService', () => {
     })
 
     it('should throw error for duplicate like', async () => {
-      const error = new Error('Unique constraint failed') as Error & { code: string }
+      const error = new Error('Unique constraint failed') as Error & {
+        code: string
+      }
       error.code = 'P2002'
       prismaMock.like.create = vi.fn().mockRejectedValue(error)
 

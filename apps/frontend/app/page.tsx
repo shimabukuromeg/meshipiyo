@@ -1,8 +1,8 @@
+import { GraphQLClient } from 'graphql-request'
+import { cache } from 'react'
 import { MeshiCard } from '@/components/meshi-card'
 import { graphql } from '@/src/gql'
 import type { MeshiQuery, MeshiQueryVariables } from '@/src/gql/graphql'
-import { GraphQLClient } from 'graphql-request'
-import { cache } from 'react'
 
 export default async function Home() {
   const data = await fetchMeshis(1000)
@@ -39,7 +39,7 @@ const fetchMeshis = async (first = 20, query?: string) => {
     process.env.BACKEND_ENDPOINT ?? 'http://localhost:44000/graphql'
 
   const client = new GraphQLClient(backendEndpoint, {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    // biome-ignore lint/suspicious/noExplicitAny: Next.js fetch cache requires any for generic fetch signature
     fetch: cache(async (url: any, params: any) =>
       fetch(url, { ...params, next: { revalidate: 60 } }),
     ),

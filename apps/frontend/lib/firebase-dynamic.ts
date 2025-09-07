@@ -1,6 +1,6 @@
-// Firebase の動的インポート版
-import type { Auth, User } from 'firebase/auth'
 import type { FirebaseApp } from 'firebase/app'
+// Firebase の動的インポート版
+import type { Auth } from 'firebase/auth'
 
 let firebaseApp: FirebaseApp | null = null
 let firebaseAuth: Auth | null = null
@@ -38,7 +38,7 @@ export async function initFirebase() {
   // アプリが既に初期化されているかチェック
   firebaseApp =
     getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
-  
+
   firebaseAuth = getAuth(firebaseApp)
 
   // 開発環境でEmulatorに接続

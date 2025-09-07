@@ -1,5 +1,5 @@
-import type { SearchItem } from '@/types/global-search'
 import { motion } from 'framer-motion'
+import type { SearchItem } from '@/types/global-search'
 import { RecentSearches } from './recent-searches'
 import { TrendingSearches } from './trending-searches'
 

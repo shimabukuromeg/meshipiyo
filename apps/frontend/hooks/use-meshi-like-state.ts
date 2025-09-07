@@ -23,8 +23,8 @@ type UseMeshiLikeStateReturn = {
 
 export const useMeshiLikeState = (
   meshiId: string,
-  initialIsLiked: boolean = false,
-  initialLikeCount: number = 0
+  initialIsLiked = false,
+  initialLikeCount = 0,
 ): UseMeshiLikeStateReturn => {
   const [isLiked, setIsLiked] = useState(initialIsLiked)
   const [likeCount, setLikeCount] = useState(initialLikeCount)
@@ -42,11 +42,11 @@ export const useMeshiLikeState = (
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     }
-    
+
     if (token) {
       headers.Authorization = `Bearer ${token}`
     }
-    
+
     return headers
   }
 
@@ -66,12 +66,7 @@ export const useMeshiLikeState = (
           isLiked: boolean
           likeCount: number
         }
-      }>(
-        getGraphQLEndpoint(),
-        MeshiLikeStateQuery,
-        { meshiId },
-        getHeaders(),
-      )
+      }>(getGraphQLEndpoint(), MeshiLikeStateQuery, { meshiId }, getHeaders())
 
       if (data.meshi) {
         setIsLiked(data.meshi.isLiked)

@@ -1,5 +1,5 @@
-import type { SearchItemType } from '@/types/global-search'
 import { create } from 'zustand'
+import type { SearchItemType } from '@/types/global-search'
 
 /**
  * Interface defining the state and actions for the global search store

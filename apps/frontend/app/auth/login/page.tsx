@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { Button } from '../../../components/ui/button'
 import {
   Card,
@@ -24,6 +24,7 @@ export default function LoginPage() {
   const [emailSent, setEmailSent] = useState(false)
   const { signInWithMagicLink, signInWithLine, error } = useAuth()
   const router = useRouter()
+  const emailId = useId()
 
   const handleMagicLinkSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -95,9 +96,9 @@ export default function LoginPage() {
 
           <form onSubmit={handleMagicLinkSignIn} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">メールアドレス</Label>
+              <Label htmlFor={emailId}>メールアドレス</Label>
               <Input
-                id="email"
+                id={emailId}
                 type="email"
                 placeholder="your@email.com"
                 value={email}
