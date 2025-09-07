@@ -1,3 +1,10 @@
+import { GoogleTagManager } from '@next/third-parties/google'
+import { HamburgerMenuIcon } from '@radix-ui/react-icons'
+import { SpeedInsights } from '@vercel/speed-insights/next'
+import type { Metadata } from 'next'
+import { Noto_Sans_JP } from 'next/font/google'
+import Link from 'next/link'
+import { AuthMenu } from '@/components/auth/AuthMenu'
 import { FloatingButton } from '@/components/ui/floating-button'
 import { Icons } from '@/components/ui/icons'
 import {
@@ -11,14 +18,6 @@ import {
 import { AuthProvider } from '@/contexts/AuthContextDynamic'
 import { cn } from '@/lib/utils'
 import './globals.css'
-// @ts-expect-error
-import { GoogleTagManager } from '@next/third-parties/google'
-import { HamburgerMenuIcon } from '@radix-ui/react-icons'
-import { SpeedInsights } from '@vercel/speed-insights/next'
-import type { Metadata } from 'next'
-import { Noto_Sans_JP } from 'next/font/google'
-import Link from 'next/link'
-import { AuthMenu } from '@/components/auth/AuthMenu'
 
 const noto = Noto_Sans_JP({
   weight: ['400', '700'],
