@@ -4,6 +4,7 @@ import type {
   Like as PrismaLike,
   User,
 } from '@prisma/client'
+import { createChildLogger } from '../lib/logger'
 
 export interface LikeConnection {
   edges: LikeEdge[]
@@ -29,9 +30,12 @@ export interface LikeWithRelations extends PrismaLike {
 }
 
 export class LikeService {
+  private logger = createChildLogger({ service: 'LikeService' })
+
   constructor(private prisma: PrismaClient) {}
 
   async likeMeshi(userId: number, meshiId: number): Promise<LikeWithRelations> {
+    this.logger.info({ userId, meshiId }, 'likeMeshi開始')
     try {
       const like = await this.prisma.like.create({
         data: {
@@ -44,6 +48,8 @@ export class LikeService {
         },
       })
 
+
+      this.logger.info({ userId, meshiId, likeId: like.id }, 'likeMeshi成功')
       return like
     } catch (error: unknown) {
       if (
@@ -52,13 +58,19 @@ export class LikeService {
         'code' in error &&
         error.code === 'P2002'
       ) {
+        this.logger.warn(
+          { userId, meshiId, error: error.code },
+          'likeMeshi失敗: 既にいいね済み',
+        )
         throw new Error('既にいいねしています')
       }
+      this.logger.error({ userId, meshiId, error }, 'likeMeshiエラー')
       throw error
     }
   }
 
   async unlikeMeshi(userId: number, meshiId: number): Promise<boolean> {
+    this.logger.info({ userId, meshiId }, 'unlikeMeshi開始')
     try {
       await this.prisma.like.delete({
         where: {
@@ -68,6 +80,7 @@ export class LikeService {
           },
         },
       })
+      this.logger.info({ userId, meshiId }, 'unlikeMeshi成功')
       return true
     } catch (error: unknown) {
       if (
@@ -76,8 +89,13 @@ export class LikeService {
         'code' in error &&
         error.code === 'P2025'
       ) {
+        this.logger.warn(
+          { userId, meshiId, error: error.code },
+          'unlikeMeshi失敗: いいねが見つからない',
+        )
         throw new Error('いいねが見つかりません')
       }
+      this.logger.error({ userId, meshiId, error }, 'unlikeMeshiエラー')
       throw error
     }
   }
@@ -87,6 +105,7 @@ export class LikeService {
     cursor?: string,
     limit = 20,
   ): Promise<LikeConnection> {
+    this.logger.info({ userId, cursor, limit }, 'getUserLikes開始')
     const where = { userId }
     const orderBy = { createdAt: 'desc' as const }
 
@@ -122,6 +141,10 @@ export class LikeService {
       cursor: like.id.toString(),
     }))
 
+    this.logger.info(
+      { userId, returnedCount: edges.length, totalCount, hasNextPage },
+      'getUserLikes成功',
+    )
     return {
       edges,
       pageInfo: {
@@ -151,7 +174,7 @@ export class LikeService {
     for (const meshiId of meshiIds) {
       likeMap.set(meshiId, false)
     }
-
+    
     for (const like of likes) {
       likeMap.set(like.meshiId, true)
     }

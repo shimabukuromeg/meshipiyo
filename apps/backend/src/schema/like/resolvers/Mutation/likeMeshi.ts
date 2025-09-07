@@ -13,7 +13,7 @@ export const likeMeshi: NonNullable<MutationResolvers['likeMeshi']> = async (
   const likeService = new LikeService(prisma)
   const like = await likeService.likeMeshi(
     auth.user.id,
-    Number.parseInt(meshiId, 10),
+    Number.parseInt(meshiId),
   )
 
   // GraphQLリゾルバーが期待する形式で返す

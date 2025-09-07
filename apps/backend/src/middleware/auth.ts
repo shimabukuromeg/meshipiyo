@@ -1,6 +1,7 @@
 import type { PrismaClient } from '@prisma/client'
 import type { FastifyRequest } from 'fastify'
 import { adminAuth } from '../lib/firebase-admin'
+import { logger } from '../lib/logger'
 
 export interface AuthContext {
   user?: {
@@ -27,11 +28,14 @@ export async function authenticateUser(
 
   try {
     const decodedToken = await adminAuth.verifyIdToken(token)
-    console.log('Firebase認証トークン検証成功:', {
-      uid: decodedToken.uid,
-      email: decodedToken.email,
-      name: decodedToken.name,
-    })
+    logger.info(
+      {
+        uid: decodedToken.uid,
+        email: decodedToken.email,
+        name: decodedToken.name,
+      },
+      'Firebase認証トークン検証成功',
+    )
 
     // Firebase UIDでユーザーを検索
     let user = await prisma.user.findUnique({
@@ -41,11 +45,14 @@ export async function authenticateUser(
     // ユーザーが存在しない場合は新規作成
     if (!user) {
       const authProvider = getAuthProvider(decodedToken)
-      console.log('新規ユーザー作成開始:', {
-        firebaseUid: decodedToken.uid,
-        email: decodedToken.email,
-        authProvider,
-      })
+      logger.info(
+        {
+          firebaseUid: decodedToken.uid,
+          email: decodedToken.email,
+          authProvider,
+        },
+        '新規ユーザー作成開始',
+      )
 
       user = await prisma.user.create({
         data: {
@@ -58,15 +65,21 @@ export async function authenticateUser(
         },
       })
 
-      console.log('新規ユーザー作成完了:', {
-        userId: user.id,
-        email: user.email,
-      })
+      logger.info(
+        {
+          userId: user.id,
+          email: user.email,
+        },
+        '新規ユーザー作成完了',
+      )
     } else {
-      console.log('既存ユーザーでログイン:', {
-        userId: user.id,
-        email: user.email,
-      })
+      logger.info(
+        {
+          userId: user.id,
+          email: user.email,
+        },
+        '既存ユーザーでログイン',
+      )
     }
 
     return {
@@ -80,7 +93,7 @@ export async function authenticateUser(
       isAuthenticated: true,
     }
   } catch (error) {
-    console.error('Authentication error:', error)
+    logger.error({ error }, 'Authentication error')
     return { isAuthenticated: false }
   }
 }

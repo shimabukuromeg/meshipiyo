@@ -5,7 +5,9 @@ import { createContext, useContext } from 'react'
 
 type GlobalSearchContextType = undefined
 
-const GlobalSearchContext = createContext<GlobalSearchContextType>(undefined)
+const GlobalSearchContext = createContext<GlobalSearchContextType | undefined>(
+  undefined,
+)
 
 export function GlobalSearchProvider({
   children,
