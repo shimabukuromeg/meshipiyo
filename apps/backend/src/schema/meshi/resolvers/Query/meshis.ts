@@ -1,8 +1,8 @@
 import { Prisma } from '@prisma/client'
 import { decodeCursor, encodeCursor } from '../../../../lib/cursor'
 import type {
-  QueryResolvers,
   QuerymeshisArgs,
+  QueryResolvers,
 } from './../../../types.generated'
 
 interface RawMeshiResult {
@@ -69,7 +69,7 @@ export const meshis: NonNullable<QueryResolvers['meshis']> = async (
   if (after) {
     try {
       cursor = decodeCursor(after)
-    } catch (error) {
+    } catch (_error) {
       throw new Error('Invalid cursor format')
     }
   }

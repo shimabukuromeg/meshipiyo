@@ -1,4 +1,4 @@
-// @ts-ignore
+// @ts-expect-error
 import { PrismaClient } from '@prisma/client'
 /**
  * アゲアゲスクレイピングスクリプト エントリーポイント

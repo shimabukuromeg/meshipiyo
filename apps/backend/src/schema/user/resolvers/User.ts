@@ -1,5 +1,5 @@
-import type { UserResolvers } from './../../types.generated'
 import { LikeService } from '../../../services/like'
+import type { UserResolvers } from './../../types.generated'
 
 export const User: UserResolvers = {
   id: (parent) => parent.id.toString(),
@@ -21,6 +21,10 @@ export const User: UserResolvers = {
       : parent.updatedAt,
   likeCount: async (parent, _arg, { prisma }) => {
     const likeService = new LikeService(prisma)
-    return await likeService.getUserLikeCount(typeof parent.id === 'string' ? Number.parseInt(parent.id) : parent.id)
+    return await likeService.getUserLikeCount(
+      typeof parent.id === 'string'
+        ? Number.parseInt(parent.id, 10)
+        : parent.id,
+    )
   },
 }

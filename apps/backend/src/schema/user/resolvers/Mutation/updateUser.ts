@@ -2,7 +2,7 @@ import { GraphQLError } from 'graphql'
 import type { MutationResolvers } from '../../../types.generated'
 
 export const updateUser: NonNullable<MutationResolvers['updateUser']> = async (
-  parent,
+  _parent,
   args,
   context,
 ) => {

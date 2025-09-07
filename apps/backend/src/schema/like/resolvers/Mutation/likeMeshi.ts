@@ -1,6 +1,5 @@
-
-import type { MutationResolvers } from './../../../types.generated'
 import { LikeService } from '../../../../services/like'
+import type { MutationResolvers } from './../../../types.generated'
 
 export const likeMeshi: NonNullable<MutationResolvers['likeMeshi']> = async (
   _parent,
@@ -12,7 +11,10 @@ export const likeMeshi: NonNullable<MutationResolvers['likeMeshi']> = async (
   }
 
   const likeService = new LikeService(prisma)
-  const like = await likeService.likeMeshi(auth.user.id, Number.parseInt(meshiId))
+  const like = await likeService.likeMeshi(
+    auth.user.id,
+    Number.parseInt(meshiId, 10),
+  )
 
   // GraphQLリゾルバーが期待する形式で返す
   // user と meshi フィールドはLikeリゾルバーで解決される

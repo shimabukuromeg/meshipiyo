@@ -1,8 +1,8 @@
 import type { QueryResolvers } from '../../../types.generated'
 
 export const me: NonNullable<QueryResolvers['me']> = async (
-  parent,
-  args,
+  _parent,
+  _args,
   context,
 ) => {
   if (!context.auth.isAuthenticated || !context.auth.user) {

@@ -1,12 +1,11 @@
+// fastify 導入した。
+// 参考: https://the-guild.dev/graphql/yoga-server/docs/integrations/integration-with-fastify
+import fastify, { type FastifyReply, type FastifyRequest } from 'fastify'
 import { applyMiddleware } from 'graphql-middleware'
 import { createSchema, createYoga } from 'graphql-yoga'
 import { createContext } from './context'
 import { resolvers } from './schema/resolvers.generated'
 import { typeDefs } from './schema/typeDefs.generated'
-
-// fastify 導入した。
-// 参考: https://the-guild.dev/graphql/yoga-server/docs/integrations/integration-with-fastify
-import fastify, { type FastifyReply, type FastifyRequest } from 'fastify'
 
 function main() {
   // This is the fastify instance you have created

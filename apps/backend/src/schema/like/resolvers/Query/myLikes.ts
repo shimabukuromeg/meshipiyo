@@ -1,6 +1,5 @@
-
-import type { QueryResolvers } from './../../../types.generated'
 import { LikeService } from '../../../../services/like'
+import type { QueryResolvers } from './../../../types.generated'
 
 export const myLikes: NonNullable<QueryResolvers['myLikes']> = async (
   _parent,
@@ -12,7 +11,11 @@ export const myLikes: NonNullable<QueryResolvers['myLikes']> = async (
   }
 
   const likeService = new LikeService(prisma)
-  const connection = await likeService.getUserLikes(auth.user.id, after || undefined, first)
+  const connection = await likeService.getUserLikes(
+    auth.user.id,
+    after || undefined,
+    first,
+  )
 
   return {
     edges: connection.edges.map((edge) => ({

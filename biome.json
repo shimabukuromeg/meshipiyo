@@ -1,22 +1,28 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.7.3/schema.json",
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "files": {
+    "includes": [
+      "**",
+      "!**/node_modules/**",
+      "!**/dist/**",
+      "!**/coverage/**",
+      "!**/.next/**",
+      "!**/generated/**",
+      "!**/*.generated.*",
+      "!**/generated.ts",
+      "!**/src/gql/**"
+    ]
+  },
+
   "formatter": {
     "enabled": true,
     "formatWithErrors": false,
     "indentStyle": "space",
     "indentWidth": 2,
     "lineWidth": 80,
-    "lineEnding": "lf",
-    "ignore": [
-      "**/dist/**",
-      "**/generated/**",
-      "**/*.generated.*",
-      "**/generated.ts",
-      "**/.next/**",
-      "**/node_modules/**",
-      "**/src/gql/**"
-    ]
+    "lineEnding": "lf"
   },
+
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
@@ -25,18 +31,9 @@
       "arrowParentheses": "always"
     }
   },
-  "organizeImports": {
-    "enabled": true,
-    "ignore": [
-      "**/dist/**",
-      "**/generated/**",
-      "**/*.generated.*",
-      "**/generated.ts",
-      "**/.next/**",
-      "**/node_modules/**",
-      "**/src/gql/**"
-    ]
-  },
+
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+
   "linter": {
     "enabled": true,
     "rules": {
@@ -46,19 +43,15 @@
         "noNonNullAssertion": "off"
       },
       "suspicious": {
-        "noConsoleLog": "off"
+        "noDebugger": "off",
+        "noUnknownAtRules": "off"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "off"
       }
-    },
-    "ignore": [
-      "**/dist/**",
-      "**/generated/**",
-      "**/*.generated.*",
-      "**/generated.ts",
-      "**/.next/**",
-      "**/node_modules/**",
-      "**/src/gql/**"
-    ]
+    }
   },
+
   "json": {
     "formatter": {}
   }
