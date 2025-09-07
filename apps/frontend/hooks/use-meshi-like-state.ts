@@ -1,8 +1,8 @@
 'use client'
 
+import { useAuth } from '@/contexts/AuthContext'
 import { request } from 'graphql-request'
 import { useEffect, useState } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
 
 const MeshiLikeStateQuery = `
   query MeshiLikeState($meshiId: ID!) {

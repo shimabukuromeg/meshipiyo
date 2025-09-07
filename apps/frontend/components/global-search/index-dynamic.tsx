@@ -1,7 +1,7 @@
 'use client'
 
-import { lazy, Suspense } from 'react'
 import { GlobalSearchProvider } from '@/components/global-search/global-search-provider'
+import { lazy, Suspense } from 'react'
 import type { GlobalSearchProps } from './types'
 
 // framer-motionを使用するコンポーネントを動的インポート

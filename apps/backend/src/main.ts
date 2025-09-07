@@ -11,23 +11,24 @@ import { typeDefs } from './schema/typeDefs.generated'
 
 function main() {
   // This is the fastify instance you have created
-  const app = fastify({ 
-    logger: process.env.NODE_ENV === 'development' 
-      ? {
-          level: 'debug',
-          transport: {
-            target: 'pino-pretty',
-            options: {
-              colorize: true,
-              ignore: 'pid,hostname',
-              translateTime: 'HH:MM:ss',
-              singleLine: true,
+  const app = fastify({
+    logger:
+      process.env.NODE_ENV === 'development'
+        ? {
+            level: 'debug',
+            transport: {
+              target: 'pino-pretty',
+              options: {
+                colorize: true,
+                ignore: 'pid,hostname',
+                translateTime: 'HH:MM:ss',
+                singleLine: true,
+              },
             },
+          }
+        : {
+            level: process.env.LOG_LEVEL || 'info',
           },
-        }
-      : {
-          level: process.env.LOG_LEVEL || 'info',
-        }
   })
 
   // TODO: スキーマ読み込み
