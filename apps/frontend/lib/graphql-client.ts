@@ -1,6 +1,7 @@
 import type { User } from 'firebase/auth'
 import { GraphQLClient } from 'graphql-request'
 import { auth } from './firebase'
+import type { MeshiQuery } from '@/src/gql/graphql'
 
 const endpoint =
   process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || 'http://localhost:44000/graphql'
@@ -113,7 +114,7 @@ export async function fetchMeshisClient(
   cursor?: string | null,
   first = 20,
   query?: string,
-) {
+): Promise<MeshiQuery> {
   console.log('🔄 Client-side GraphQL request:', {
     cursor,
     first,
@@ -157,7 +158,7 @@ export async function fetchMeshisClient(
   }
 
   try {
-    const data = await graphqlClient.request(meshiQuery, variables)
+    const data = await graphqlClient.request<MeshiQuery>(meshiQuery, variables)
 
     console.log('✅ Client-side GraphQL response:', {
       edgesLength: data.meshis.edges.length,
