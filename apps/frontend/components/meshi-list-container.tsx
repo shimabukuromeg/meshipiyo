@@ -40,6 +40,7 @@ export function MeshiListContainer({
     pageInfoRef.current = pageInfo
   }, [pageInfo])
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const loadMore = useCallback(async () => {
     // 最新のpageInfoを使用
     const currentPageInfo = pageInfoRef.current
@@ -115,7 +116,7 @@ export function MeshiListContainer({
         setIsLoadingMore(false)
       }
     })
-  }, [isLoadingMore, isPending, loadMoreAction, query]) // pageInfoを依存配列から除外
+  }, [isLoadingMore, isPending, loadMoreAction, query]) // pageInfoを依存配列から除外（pageInfoRefを使用）
 
   // 初回マウント後にフラグを更新
   useEffect(() => {
@@ -127,6 +128,7 @@ export function MeshiListContainer({
   }, [])
 
   // Intersection Observer for infinite scroll
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!pageInfo.hasNextPage || isLoadingMore || isPending || isInitialMount) {
       console.log('🚫 Intersection Observer setup skipped:', {
