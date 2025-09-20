@@ -20,10 +20,9 @@ export async function loadMoreMeshis(
     process.env.BACKEND_ENDPOINT ?? 'http://localhost:44000/graphql'
 
   const client = new GraphQLClient(backendEndpoint, {
-    // biome-ignore lint/suspicious/noExplicitAny: Next.js fetch cache requires any for generic fetch signature
-    fetch: cache(async (url: any, params: any) =>
-      fetch(url, { ...params, next: { revalidate: 60 } }),
-    ),
+    // Server Actionではキャッシュを無効化（無限スクロール対応）
+    fetch: async (url: any, params: any) =>
+      fetch(url, { ...params, cache: 'no-store' }),
   })
 
   // 変数オブジェクトを明示的に型付け
