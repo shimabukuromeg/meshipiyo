@@ -12,35 +12,36 @@ const nextConfig = {
       fullUrl: true,
     },
   },
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'data.otv.co.jp',
-        port: '',
-      },
-      {
-        protocol: 'https',
-        hostname: 'flowbite.s3.amazonaws.com',
-        port: '',
-      },
-      {
-        protocol: 'https',
-        hostname: 'profile.line-scdn.net',
-        port: '',
-      },
-      {
-        protocol: 'https',
-        hostname: 'lh3.googleusercontent.com',
-        port: '',
-      },
-      {
-        protocol: 'https',
-        hostname: '*.googleusercontent.com',
-        port: '',
-      },
-    ],
-  },
+  images: { unoptimized: true },
+  // images: {
+  //   remotePatterns: [
+  //     {
+  //       protocol: 'https',
+  //       hostname: 'data.otv.co.jp',
+  //       port: '',
+  //     },
+  //     {
+  //       protocol: 'https',
+  //       hostname: 'flowbite.s3.amazonaws.com',
+  //       port: '',
+  //     },
+  //     {
+  //       protocol: 'https',
+  //       hostname: 'profile.line-scdn.net',
+  //       port: '',
+  //     },
+  //     {
+  //       protocol: 'https',
+  //       hostname: 'lh3.googleusercontent.com',
+  //       port: '',
+  //     },
+  //     {
+  //       protocol: 'https',
+  //       hostname: '*.googleusercontent.com',
+  //       port: '',
+  //     },
+  //   ],
+  // },
 }
 
 module.exports = withBundleAnalyzer(nextConfig)
