@@ -48,7 +48,12 @@ export function MeshiListContainer({
         })
         setPageInfo(data.meshis.pageInfo)
       } catch (error) {
-        console.error('Failed to load more meshis:', error)
+        console.error('Failed to load more meshis:', {
+          error,
+          cursor: pageInfo.endCursor,
+          hasNextPage: pageInfo.hasNextPage,
+          query,
+        })
       } finally {
         setIsLoadingMore(false)
       }
