@@ -63,6 +63,7 @@ export const meshis: NonNullable<QueryResolvers['meshis']> = async (
   const { query, after } = args
   const first = args.first ?? 20
   const limit = Math.min(first, 1000) // 最大1000件に制限
+  const limitPlusOne = limit + 1 // hasNextPageを正確に判定するため+1件取得
 
   // カーソルがある場合はデコード
   let cursor: number | undefined
@@ -87,14 +88,14 @@ export const meshis: NonNullable<QueryResolvers['meshis']> = async (
     `
     totalCount = Number(countResult[0].count)
 
-    // 検索結果の取得
+    // 検索結果の取得（+1件取得してhasNextPageを判定）
     const results = await ctx.prisma.$queryRaw<RawMeshiResult[]>`
       SELECT *
       FROM meshis
       WHERE (title || ' ' || store_name) &@~ ${query}
         ${cursor ? Prisma.sql`AND id > ${cursor}` : Prisma.sql``}
       ORDER BY published_date DESC
-      LIMIT ${limit}
+      LIMIT ${limitPlusOne}
     `
 
     items = results.map(mapRawMeshiToDomain)
@@ -105,19 +106,22 @@ export const meshis: NonNullable<QueryResolvers['meshis']> = async (
     // 総件数を取得
     totalCount = await ctx.prisma.meshi.count()
 
-    // データ取得
+    // データ取得（+1件取得してhasNextPageを判定）
     items = await ctx.prisma.meshi.findMany({
       where: whereCondition,
       orderBy: { publishedDate: 'desc' },
-      take: limit,
+      take: limitPlusOne,
     })
   }
 
-  // 次のページがあるかの判定
-  const hasNextPage = items.length === limit
+  // 次のページがあるかの判定（+1件取得した結果で判定）
+  const hasNextPage = items.length > limit
+
+  // 実際に返すアイテムは制限数まで
+  const actualItems = items.slice(0, limit)
 
   // ページ情報の作成
-  const edges = items.map((item: MeshiModel) => ({
+  const edges = actualItems.map((item: MeshiModel) => ({
     cursor: encodeCursor(item.id),
     node: item,
   }))
