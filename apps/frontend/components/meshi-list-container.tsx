@@ -32,18 +32,29 @@ export function MeshiListContainer({
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [isInitialMount, setIsInitialMount] = useState(true)
 
+  // 最新のpageInfoを保持するRef（状態更新の遅延を回避）
+  const pageInfoRef = useRef(initialData.meshis.pageInfo)
+
+  // pageInfoが更新されたらRefも更新
+  useEffect(() => {
+    pageInfoRef.current = pageInfo
+  }, [pageInfo])
+
   const loadMore = useCallback(async () => {
+    // 最新のpageInfoを使用
+    const currentPageInfo = pageInfoRef.current
+
     console.log('🔍 loadMore called:', {
-      hasNextPage: pageInfo.hasNextPage,
+      hasNextPage: currentPageInfo.hasNextPage,
       isLoadingMore,
       isPending,
-      cursor: pageInfo.endCursor,
+      cursor: currentPageInfo.endCursor,
       query,
     })
 
-    if (!pageInfo.hasNextPage || isLoadingMore || isPending) {
+    if (!currentPageInfo.hasNextPage || isLoadingMore || isPending) {
       console.log('❌ loadMore blocked:', {
-        hasNextPage: pageInfo.hasNextPage,
+        hasNextPage: currentPageInfo.hasNextPage,
         isLoadingMore,
         isPending,
       })
@@ -55,12 +66,12 @@ export function MeshiListContainer({
     startTransition(async () => {
       try {
         console.log('📡 Calling loadMoreAction with:', {
-          cursor: pageInfo.endCursor,
+          cursor: currentPageInfo.endCursor,
           first: 20,
           query,
         })
 
-        const data = await loadMoreAction(pageInfo.endCursor, 20, query)
+        const data = await loadMoreAction(currentPageInfo.endCursor, 20, query)
 
         console.log('📦 Received data:', {
           edgesLength: data.meshis.edges.length,
@@ -82,6 +93,16 @@ export function MeshiListContainer({
           })
           return [...prev, ...uniqueNewMeshis]
         })
+
+        console.log('📝 Updating pageInfo:', {
+          oldCursor: currentPageInfo.endCursor,
+          newCursor: data.meshis.pageInfo.endCursor,
+          oldHasNextPage: currentPageInfo.hasNextPage,
+          newHasNextPage: data.meshis.pageInfo.hasNextPage,
+        })
+
+        // RefとStateを同時更新
+        pageInfoRef.current = data.meshis.pageInfo
         setPageInfo(data.meshis.pageInfo)
       } catch (error) {
         console.error('Failed to load more meshis:', {
@@ -94,7 +115,7 @@ export function MeshiListContainer({
         setIsLoadingMore(false)
       }
     })
-  }, [pageInfo, isLoadingMore, isPending, loadMoreAction, query])
+  }, [isLoadingMore, isPending, loadMoreAction, query]) // pageInfoを依存配列から除外
 
   // 初回マウント後にフラグを更新
   useEffect(() => {
@@ -107,7 +128,15 @@ export function MeshiListContainer({
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
-    if (!pageInfo.hasNextPage || isLoadingMore || isPending || isInitialMount) return
+    if (!pageInfo.hasNextPage || isLoadingMore || isPending || isInitialMount) {
+      console.log('🚫 Intersection Observer setup skipped:', {
+        hasNextPage: pageInfo.hasNextPage,
+        isLoadingMore,
+        isPending,
+        isInitialMount,
+      })
+      return
+    }
 
     let observer: IntersectionObserver | null = null
 
@@ -120,30 +149,42 @@ export function MeshiListContainer({
             isLoadingMore,
             isPending,
             hasNextPage: pageInfo.hasNextPage,
+            cursor: pageInfo.endCursor,
           })
-          if (entries[0].isIntersecting && !isLoadingMore && !isPending) {
+          // 最新のpageInfoを使用してチェック
+          const latestPageInfo = pageInfoRef.current
+          if (entries[0].isIntersecting && !isLoadingMore && !isPending && latestPageInfo.hasNextPage) {
             console.log('🎯 Calling loadMore from Intersection Observer')
             loadMore()
+          } else {
+            console.log('🛑 Intersection Observer blocked action:', {
+              isIntersecting: entries[0].isIntersecting,
+              isLoadingMore,
+              isPending,
+              hasNextPage: latestPageInfo.hasNextPage,
+            })
           }
         },
         {
-          rootMargin: '50px', // 100pxから50pxに減らす
+          rootMargin: '50px',
           threshold: 0.1,
         },
       )
 
       if (loadMoreRef.current) {
         observer.observe(loadMoreRef.current)
+        console.log('📍 Intersection Observer attached to element')
       }
-    }, 200) // 100msから200msに増やす
+    }, 500) // 200msから500msに増やして状態更新を待つ
 
     return () => {
       clearTimeout(timeoutId)
       if (observer) {
         observer.disconnect()
+        console.log('🔌 Intersection Observer disconnected')
       }
     }
-  }, [pageInfo.hasNextPage, isLoadingMore, isPending, isInitialMount, loadMore])
+  }, [isLoadingMore, isPending, isInitialMount, loadMore]) // pageInfoを依存配列から除外してRefを使用
 
   return (
     <>

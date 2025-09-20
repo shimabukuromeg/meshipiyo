@@ -107,3 +107,68 @@ auth.onAuthStateChanged((user) => {
     graphqlClient.clearTokenCache()
   }
 })
+
+// Server Actionの代替案：クライアントサイドでのメシデータ取得
+export async function fetchMeshisClient(
+  cursor?: string | null,
+  first = 20,
+  query?: string,
+) {
+  console.log('🔄 Client-side GraphQL request:', {
+    cursor,
+    first,
+    query,
+  })
+
+  const meshiQuery = /* GraphQL */ `
+    query Meshi($first: Int = 20, $after: String, $query: String) {
+      meshis(first: $first, after: $after, query: $query) {
+        edges {
+          node {
+            id
+            articleId
+            title
+            imageUrl
+            storeName
+            address
+            siteUrl
+            publishedDate
+            municipality {
+              id
+              name
+            }
+            isLiked
+            likeCount
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
+      }
+    }
+  `
+
+  const variables = {
+    first,
+    query,
+    after: cursor || undefined,
+  }
+
+  try {
+    const data = await graphqlClient.request(meshiQuery, variables)
+
+    console.log('✅ Client-side GraphQL response:', {
+      edgesLength: data.meshis.edges.length,
+      hasNextPage: data.meshis.pageInfo.hasNextPage,
+      endCursor: data.meshis.pageInfo.endCursor,
+      totalCount: data.meshis.totalCount,
+    })
+
+    return data
+  } catch (error) {
+    console.error('❌ Client-side GraphQL error:', error)
+    throw error
+  }
+}
