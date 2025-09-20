@@ -1,11 +1,12 @@
-import { GraphQLClient } from 'graphql-request'
-import { cache } from 'react'
-import { MeshiCard } from '@/components/meshi-card'
+import { loadMoreMeshis } from '@/app/actions/meshi'
+import { MeshiListContainer } from '@/components/meshi-list-container'
 import { graphql } from '@/src/gql'
 import type { MeshiQuery, MeshiQueryVariables } from '@/src/gql/graphql'
+import { GraphQLClient } from 'graphql-request'
+import { cache } from 'react'
 
 export default async function Home() {
-  const data = await fetchMeshis(1000)
+  const data = await fetchMeshis(10) // 初期表示を20件に制限
 
   return (
     <div className="flex justify-center">
@@ -16,13 +17,10 @@ export default async function Home() {
           </h1>
           <p className="text-gray-600">美味しいごはんを探そう！</p>
         </div>
-        <div className="flex justify-center">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {data.meshis.edges.map((edge) => (
-              <MeshiCard meshi={edge.node} key={edge.node.id} isEager={true} />
-            ))}
-          </div>
-        </div>
+        <MeshiListContainer
+          initialData={data}
+          loadMoreAction={loadMoreMeshis}
+        />
       </div>
     </div>
   )
@@ -53,8 +51,8 @@ const fetchMeshis = async (first = 20, query?: string) => {
 }
 
 const MeshiQueryDocument = graphql(/* GraphQL */ `
-  query Meshi($first: Int = 20, $query: String) {
-    meshis(first: $first, query: $query) {
+  query Meshi($first: Int = 20, $after: String, $query: String) {
+    meshis(first: $first, after: $after, query: $query) {
       edges {
         node {
           id

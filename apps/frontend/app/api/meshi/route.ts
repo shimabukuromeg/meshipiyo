@@ -9,8 +9,9 @@ import type {
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
-  const first = Number.parseInt(searchParams.get('first') ?? '1000', 10)
+  const first = Number.parseInt(searchParams.get('first') ?? '20', 10)
   const query = searchParams.get('query') ?? undefined
+  const after = searchParams.get('after') ?? undefined
 
   const backendEndpoint =
     process.env.BACKEND_ENDPOINT ?? 'http://localhost:44000/graphql'
@@ -25,7 +26,7 @@ export async function GET(request: Request) {
   })
 
   // 変数オブジェクトを明示的に型付け
-  const variables: MeshiSearchQueryVariables = { first, query }
+  const variables: MeshiSearchQueryVariables = { first, query, after }
 
   const data = await client.request<MeshiSearchQuery>(
     MeshiSearchQueryDocument,
@@ -48,8 +49,8 @@ export async function GET(request: Request) {
 }
 
 const MeshiSearchQueryDocument = graphql(/* GraphQL */ `
-  query MeshiSearch($first: Int = 1000, $query: String) {
-    meshis(first: $first, query: $query) {
+  query MeshiSearch($first: Int = 20, $after: String, $query: String) {
+    meshis(first: $first, after: $after, query: $query) {
       edges {
         node {
           id
