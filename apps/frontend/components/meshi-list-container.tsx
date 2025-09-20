@@ -41,7 +41,11 @@ export function MeshiListContainer({
         const data = await loadMoreAction(pageInfo.endCursor, 20, query)
         const newMeshis = data.meshis.edges.map((edge) => edge.node)
 
-        setMeshis((prev) => [...prev, ...newMeshis])
+        setMeshis((prev) => {
+          const existingIds = new Set(prev.map(meshi => meshi.id))
+          const uniqueNewMeshis = newMeshis.filter(meshi => !existingIds.has(meshi.id))
+          return [...prev, ...uniqueNewMeshis]
+        })
         setPageInfo(data.meshis.pageInfo)
       } catch (error) {
         console.error('Failed to load more meshis:', error)
