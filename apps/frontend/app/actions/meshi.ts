@@ -16,6 +16,13 @@ export async function loadMoreMeshis(
   first = 20,
   query?: string,
 ) {
+  console.log('🚀 Server Action loadMoreMeshis called:', {
+    cursor,
+    first,
+    query,
+    env: process.env.NODE_ENV,
+    backend: process.env.BACKEND_ENDPOINT,
+  })
   const backendEndpoint =
     process.env.BACKEND_ENDPOINT ?? 'http://localhost:44000/graphql'
 
@@ -33,6 +40,14 @@ export async function loadMoreMeshis(
   }
 
   const data = await client.request<MeshiQuery>(MeshiQueryDocument, variables)
+
+  console.log('📋 Server Action response:', {
+    edgesLength: data.meshis.edges.length,
+    hasNextPage: data.meshis.pageInfo.hasNextPage,
+    endCursor: data.meshis.pageInfo.endCursor,
+    totalCount: data.meshis.totalCount,
+  })
+
   return data
 }
 

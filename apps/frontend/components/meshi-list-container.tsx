@@ -33,17 +33,53 @@ export function MeshiListContainer({
   const [isInitialMount, setIsInitialMount] = useState(true)
 
   const loadMore = useCallback(async () => {
-    if (!pageInfo.hasNextPage || isLoadingMore || isPending) return
+    console.log('🔍 loadMore called:', {
+      hasNextPage: pageInfo.hasNextPage,
+      isLoadingMore,
+      isPending,
+      cursor: pageInfo.endCursor,
+      query,
+    })
 
+    if (!pageInfo.hasNextPage || isLoadingMore || isPending) {
+      console.log('❌ loadMore blocked:', {
+        hasNextPage: pageInfo.hasNextPage,
+        isLoadingMore,
+        isPending,
+      })
+      return
+    }
+
+    console.log('✅ Starting loadMore...')
     setIsLoadingMore(true)
     startTransition(async () => {
       try {
+        console.log('📡 Calling loadMoreAction with:', {
+          cursor: pageInfo.endCursor,
+          first: 20,
+          query,
+        })
+
         const data = await loadMoreAction(pageInfo.endCursor, 20, query)
+
+        console.log('📦 Received data:', {
+          edgesLength: data.meshis.edges.length,
+          hasNextPage: data.meshis.pageInfo.hasNextPage,
+          endCursor: data.meshis.pageInfo.endCursor,
+          totalCount: data.meshis.totalCount,
+        })
+
         const newMeshis = data.meshis.edges.map((edge) => edge.node)
 
         setMeshis((prev) => {
           const existingIds = new Set(prev.map(meshi => meshi.id))
           const uniqueNewMeshis = newMeshis.filter(meshi => !existingIds.has(meshi.id))
+          console.log('🔄 Updating meshis:', {
+            prevCount: prev.length,
+            newMeshisCount: newMeshis.length,
+            uniqueNewMeshisCount: uniqueNewMeshis.length,
+            finalCount: prev.length + uniqueNewMeshis.length,
+          })
           return [...prev, ...uniqueNewMeshis]
         })
         setPageInfo(data.meshis.pageInfo)
@@ -79,7 +115,14 @@ export function MeshiListContainer({
     const timeoutId = setTimeout(() => {
       observer = new IntersectionObserver(
         (entries) => {
+          console.log('👁️ Intersection Observer triggered:', {
+            isIntersecting: entries[0].isIntersecting,
+            isLoadingMore,
+            isPending,
+            hasNextPage: pageInfo.hasNextPage,
+          })
           if (entries[0].isIntersecting && !isLoadingMore && !isPending) {
+            console.log('🎯 Calling loadMore from Intersection Observer')
             loadMore()
           }
         },
