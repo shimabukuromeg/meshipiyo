@@ -11,7 +11,7 @@
     "rebaseStalePrs": true
   },
   "prConcurrentLimit": 10,
-  "prConcurrentLimitInMinutes": 10,
+  
   "packageRules": [
     {
       "matchUpdateTypes": ["patch"],
