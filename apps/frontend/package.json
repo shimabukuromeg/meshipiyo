@@ -59,7 +59,7 @@
     "@graphql-codegen/cli": "6.0.0",
     "@graphql-codegen/client-preset": "5.0.1",
     "@next/bundle-analyzer": "15.5.3",
-    "@playwright/test": "1.55.0",
+    "@playwright/test": "1.55.1",
     "encoding": "0.1.13",
     "ts-node": "10.9.2",
     "typescript": "5.8.3"
