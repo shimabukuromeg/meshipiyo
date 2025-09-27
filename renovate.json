@@ -24,6 +24,94 @@
     {
       "matchPackageNames": ["eslint"],
       "enabled": false
+    },
+    {
+      "groupName": "Next.js",
+      "groupSlug": "nextjs",
+      "matchPackageNames": [
+        "next",
+        "eslint-config-next",
+        "@next/third-parties",
+        "@next/bundle-analyzer"
+      ],
+      "addLabels": ["group:nextjs"]
+    },
+    {
+      "groupName": "GraphQL ecosystem",
+      "groupSlug": "graphql",
+      "matchPackageNames": [
+        "graphql",
+        "graphql-request",
+        "graphql-yoga",
+        "@graphql-typed-document-node/core",
+        "@graphql-tools/schema",
+        "graphql-scalars"
+      ],
+      "matchPackagePatterns": ["^@graphql-codegen/"],
+      "addLabels": ["group:graphql"]
+    },
+    {
+      "groupName": "Prisma",
+      "groupSlug": "prisma",
+      "matchPackageNames": ["@prisma/client", "prisma"],
+      "addLabels": ["group:prisma"]
+    },
+    {
+      "groupName": "Radix UI",
+      "groupSlug": "radix-ui",
+      "matchPackagePatterns": ["^@radix-ui/"]
+    },
+    {
+      "groupName": "Tailwind & PostCSS",
+      "groupSlug": "tailwind-postcss",
+      "matchPackageNames": [
+        "tailwindcss",
+        "tailwind-merge",
+        "postcss",
+        "autoprefixer"
+      ],
+      "matchPackagePatterns": ["^@tailwindcss/", "^tw-"],
+      "addLabels": ["group:tailwind"]
+    },
+    {
+      "groupName": "Vitest",
+      "groupSlug": "vitest",
+      "matchPackageNames": ["vitest", "@vitest/ui"],
+      "addLabels": ["group:test"]
+    },
+    {
+      "groupName": "Playwright",
+      "groupSlug": "playwright",
+      "matchPackageNames": ["playwright", "@playwright/test"],
+      "addLabels": ["group:test"]
+    },
+    {
+      "groupName": "TypeScript toolchain",
+      "groupSlug": "ts",
+      "matchPackageNames": ["typescript", "ts-node", "ts-node-dev"],
+      "addLabels": ["group:ts"]
+    },
+    {
+      "groupName": "Firebase",
+      "groupSlug": "firebase",
+      "matchPackageNames": ["firebase", "firebase-admin"],
+      "addLabels": ["group:firebase"]
+    },
+    {
+      "groupName": "Logging (pino)",
+      "groupSlug": "pino",
+      "matchPackageNames": ["pino", "pino-pretty"]
+    },
+    {
+      "groupName": "Biome",
+      "groupSlug": "biome",
+      "matchPackageNames": ["@biomejs/biome"]
+    },
+    {
+      "groupName": "GitHub Actions",
+      "groupSlug": "github-actions",
+      "matchManagers": ["github-actions"],
+      "addLabels": ["group:actions"]
     }
   ]
 }
