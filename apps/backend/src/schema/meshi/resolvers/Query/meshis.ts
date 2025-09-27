@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client'
-import { decodeCursor, encodeCursor } from '../../../../lib/cursor'
+import { decodeMeshiCursor, encodeMeshiCursor } from '../../../../lib/cursor'
 import type {
   QuerymeshisArgs,
   QueryResolvers,
@@ -65,11 +65,23 @@ export const meshis: NonNullable<QueryResolvers['meshis']> = async (
   const limit = Math.min(first, 1000) // 最大1000件に制限
   const limitPlusOne = limit + 1 // hasNextPageを正確に判定するため+1件取得
 
-  // カーソルがある場合はデコード
-  let cursor: number | undefined
+  // カーソルがある場合はデコード（複合キー: publishedDate, id）
+  let cursorId: number | undefined
+  let cursorPublishedDate: Date | undefined
   if (after) {
     try {
-      cursor = decodeCursor(after)
+      const decoded = decodeMeshiCursor(after)
+      cursorId = decoded.id
+      if (decoded.publishedDateMs != null) {
+        cursorPublishedDate = new Date(decoded.publishedDateMs)
+      } else {
+        // 旧フォーマット（idのみ）の場合はDBから取得
+        const rec = await ctx.prisma.meshi.findUnique({
+          where: { id: cursorId },
+          select: { publishedDate: true },
+        })
+        cursorPublishedDate = rec?.publishedDate
+      }
     } catch (_error) {
       throw new Error('Invalid cursor format')
     }
@@ -93,15 +105,25 @@ export const meshis: NonNullable<QueryResolvers['meshis']> = async (
       SELECT *
       FROM meshis
       WHERE (title || ' ' || store_name) &@~ ${query}
-        ${cursor ? Prisma.sql`AND id > ${cursor}` : Prisma.sql``}
-      ORDER BY published_date DESC
+        ${cursorId && cursorPublishedDate
+          ? Prisma.sql`AND (published_date < ${cursorPublishedDate} OR (published_date = ${cursorPublishedDate} AND id < ${cursorId}))`
+          : Prisma.sql``}
+      ORDER BY published_date DESC, id DESC
       LIMIT ${limitPlusOne}
     `
 
     items = results.map(mapRawMeshiToDomain)
   } else {
     // 通常のクエリ（全文検索なし）
-    const whereCondition = cursor ? { id: { gt: cursor } } : {}
+    // 並び順と一致する複合カーソル条件
+    const whereCondition = cursorId && cursorPublishedDate
+      ? {
+          OR: [
+            { publishedDate: { lt: cursorPublishedDate } },
+            { AND: [ { publishedDate: cursorPublishedDate }, { id: { lt: cursorId } } ] },
+          ],
+        }
+      : {}
 
     // 総件数を取得
     totalCount = await ctx.prisma.meshi.count()
@@ -109,7 +131,7 @@ export const meshis: NonNullable<QueryResolvers['meshis']> = async (
     // データ取得（+1件取得してhasNextPageを判定）
     items = await ctx.prisma.meshi.findMany({
       where: whereCondition,
-      orderBy: { publishedDate: 'desc' },
+      orderBy: [ { publishedDate: 'desc' }, { id: 'desc' } ],
       take: limitPlusOne,
     })
   }
@@ -122,7 +144,7 @@ export const meshis: NonNullable<QueryResolvers['meshis']> = async (
 
   // ページ情報の作成
   const edges = actualItems.map((item: MeshiModel) => ({
-    cursor: encodeCursor(item.id),
+    cursor: encodeMeshiCursor(item.publishedDate, item.id),
     node: item,
   }))
 
@@ -130,7 +152,7 @@ export const meshis: NonNullable<QueryResolvers['meshis']> = async (
     edges,
     pageInfo: {
       hasNextPage,
-      hasPreviousPage: Boolean(cursor),
+      hasPreviousPage: Boolean(cursorId),
       startCursor: edges.length > 0 ? edges[0].cursor : undefined,
       endCursor: edges.length > 0 ? edges[edges.length - 1].cursor : undefined,
     },

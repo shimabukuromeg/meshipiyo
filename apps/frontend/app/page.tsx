@@ -5,6 +5,9 @@ import type { MeshiQuery, MeshiQueryVariables } from '@/src/gql/graphql'
 import { GraphQLClient } from 'graphql-request'
 import { cache } from 'react'
 
+// 本ページは常に最新データを取得する（ISRキャッシュ無効化）
+export const dynamic = 'force-dynamic'
+
 export default async function Home() {
   const data = await fetchMeshis(10) // 初期表示を20件に制限
 
@@ -38,8 +41,9 @@ const fetchMeshis = async (first = 20, query?: string) => {
 
   const client = new GraphQLClient(backendEndpoint, {
     // biome-ignore lint/suspicious/noExplicitAny: Next.js fetch cache requires any for generic fetch signature
+    // 初回データ取得時もキャッシュを使用しない（本番でのhasNextPage不整合を回避）
     fetch: cache(async (url: any, params: any) =>
-      fetch(url, { ...params, next: { revalidate: 60 } }),
+      fetch(url, { ...params, cache: 'no-store' }),
     ),
   })
 

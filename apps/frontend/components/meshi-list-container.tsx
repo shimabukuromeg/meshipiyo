@@ -130,7 +130,7 @@ export function MeshiListContainer({
   // Intersection Observer for infinite scroll
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (!pageInfo.hasNextPage || isLoadingMore || isPending || isInitialMount) {
+    if (isLoadingMore || isPending || isInitialMount) {
       console.log('🚫 Intersection Observer setup skipped:', {
         hasNextPage: pageInfo.hasNextPage,
         isLoadingMore,
