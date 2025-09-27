@@ -26,7 +26,7 @@
     "yarn": "use pnpm please!"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.3",
+    "@biomejs/biome": "2.2.4",
     "turbo": "2.5.2"
   }
 }
