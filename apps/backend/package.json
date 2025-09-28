@@ -35,7 +35,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.2.4",
     "@eddeee888/gcg-typescript-resolver-files": "0.12.2",
-    "@graphql-codegen/cli": "5.0.5",
+    "@graphql-codegen/cli": "5.0.7",
     "@types/node": "22.15.3",
     "@vitest/ui": "3.1.2",
     "cross-env": "7.0.3",
@@ -45,7 +45,7 @@
     "vitest": "3.1.2"
   },
   "dependencies": {
-    "@graphql-tools/schema": "10.0.23",
+    "@graphql-tools/schema": "10.0.25",
     "@prisma/client": "6.7.0",
     "@types/uuid": "10.0.0",
     "cheerio": "1.0.0",
@@ -54,7 +54,7 @@
     "graphql": "16.11.0",
     "graphql-middleware": "6.1.35",
     "graphql-scalars": "1.24.2",
-    "graphql-yoga": "5.13.4",
+    "graphql-yoga": "5.16.0",
     "microcms_sdk_generator": "0.1.1",
     "pino": "9.7.0",
     "pino-pretty": "13.0.0",
