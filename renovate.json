@@ -1,6 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": [
+    "config:recommended",
+    "local>./.github/renovate/presets/checklist.json"
+  ],
   "timezone": "Asia/Tokyo",
   "labels": ["renovate"],
   "schedule": ["before 10:00"],
