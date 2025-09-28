@@ -32,9 +32,15 @@
 - PRs: include clear description, linked issues (e.g., `Closes #123`), and screenshots for UI changes.
 - Pre-PR checklist: `pnpm format`, `pnpm lint`, backend tests pass, Playwright checks relevant flows.
 
+### Commit/PR Language Policy
+- Conventional Commits の `type`/`scope` は英語、サブジェクト（`: `以降）は日本語で書く。
+- PR タイトルも同様に、日本語サブジェクトを用いる。PR 本文も日本語で記述する。
+- 例: `chore(renovate): PR本文にレビュー用チェックリストを自動挿入`
+- Bot/エージェント（Renovate 等）によるコミット/PR も本方針に従う。
+- Renovate の PR タイトル末尾に絵文字やタグは付与しない（既存ポリシーを尊重）。
+
 ## Security & Configuration Tips
 - Never commit secrets. Copy env files and edit locally:
   - Frontend: `cp apps/frontend/.env.local.example apps/frontend/.env.local`
   - Backend: `cp apps/backend/.env.example apps/backend/.env`
 - Local endpoints: FE `http://localhost:33000`, BE `http://localhost:44000`, Emulator UI `http://localhost:4000`.
-
