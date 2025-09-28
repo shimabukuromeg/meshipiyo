@@ -39,6 +39,8 @@ export default async function RestaurantDetail({ id }: Props) {
                   alt="Restaurant Image"
                   fill
                   loading="eager"
+                  priority
+                  sizes="(max-width: 768px) 100vw, 600px"
                 />
               </div>
             </Suspense>
