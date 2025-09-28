@@ -10,8 +10,8 @@
   "automergeSchedule": ["before 10:00"],
   "lockFileMaintenance": {
     "enabled": true,
-    "recreateClosed": true,
-    "rebaseStalePrs": true
+    "recreateWhen": "always",
+    "rebaseWhen": "behind-base-branch"
   },
   "prConcurrentLimit": 10,
   
@@ -48,9 +48,9 @@
         "graphql-yoga",
         "@graphql-typed-document-node/core",
         "@graphql-tools/schema",
-        "graphql-scalars"
+        "graphql-scalars",
+        "/^@graphql-codegen/"
       ],
-      "matchPackagePatterns": ["^@graphql-codegen/"],
       "addLabels": ["group:graphql"]
     },
     {
@@ -62,7 +62,7 @@
     {
       "groupName": "Radix UI",
       "groupSlug": "radix-ui",
-      "matchPackagePatterns": ["^@radix-ui/"]
+      "matchPackageNames": ["/^@radix-ui/"]
     },
     {
       "groupName": "Tailwind & PostCSS",
@@ -71,9 +71,10 @@
         "tailwindcss",
         "tailwind-merge",
         "postcss",
-        "autoprefixer"
+        "autoprefixer",
+        "/^@tailwindcss/",
+        "/^tw-/"
       ],
-      "matchPackagePatterns": ["^@tailwindcss/", "^tw-"],
       "addLabels": ["group:tailwind"]
     },
     {
