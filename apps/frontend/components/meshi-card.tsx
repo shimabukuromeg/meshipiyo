@@ -55,6 +55,7 @@ export const MeshiCard = (props: Props) => {
               src={meshi.imageUrl}
               alt=""
               loading={props.isEager ? 'eager' : 'lazy'}
+              fetchPriority={props.isEager ? 'high' : undefined}
             />
           </Link>
         </div>

@@ -67,7 +67,9 @@ export default function RootLayout({
         </AuthProvider>
         <Analytics />
       </body>
-      <GoogleTagManager gtmId={process.env.GOOGLE_TAG_MANAGER_ID ?? ''} />
+      {process.env.GOOGLE_TAG_MANAGER_ID && (
+        <GoogleTagManager gtmId={process.env.GOOGLE_TAG_MANAGER_ID} />
+      )}
     </html>
   )
 }
