@@ -1,9 +1,3 @@
-import { GoogleTagManager } from '@next/third-parties/google'
-import { HamburgerMenuIcon } from '@radix-ui/react-icons'
-import { SpeedInsights } from '@vercel/speed-insights/next'
-import type { Metadata } from 'next'
-import { Noto_Sans_JP } from 'next/font/google'
-import Link from 'next/link'
 import { AuthMenuWrapper } from '@/components/auth/AuthMenuWrapper'
 import { FloatingButton } from '@/components/ui/floating-button'
 import { Icons } from '@/components/ui/icons'
@@ -17,6 +11,13 @@ import {
 } from '@/components/ui/menubar'
 import { AuthProvider } from '@/contexts/AuthContextDynamic'
 import { cn } from '@/lib/utils'
+import { GoogleTagManager } from '@next/third-parties/google'
+import { HamburgerMenuIcon } from '@radix-ui/react-icons'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
+import type { Metadata } from 'next'
+import { Noto_Sans_JP } from 'next/font/google'
+import Link from 'next/link'
 import './globals.css'
 
 const noto = Noto_Sans_JP({
@@ -55,7 +56,6 @@ export default function RootLayout({
                 <Link href="/">
                   <MenubarItem>Top</MenubarItem>
                 </Link>
-
                 <MenubarSeparator />
                 <AuthMenuWrapper />
               </MenubarContent>
@@ -65,6 +65,7 @@ export default function RootLayout({
           <FloatingButton />
           <SpeedInsights />
         </AuthProvider>
+        <Analytics />
       </body>
       <GoogleTagManager gtmId={process.env.GOOGLE_TAG_MANAGER_ID ?? ''} />
     </html>
