@@ -32,7 +32,7 @@ export function SearchInput({ initialQuery = '' }: SearchInputProps) {
       params.delete('q')
     }
 
-    const newUrl = debouncedSearchTerm ? `/search?${params.toString()}` : '/search'
+    const newUrl = debouncedSearchTerm ? `/?${params.toString()}` : '/'
     router.push(newUrl)
   }, [debouncedSearchTerm, router, searchParams])
 
