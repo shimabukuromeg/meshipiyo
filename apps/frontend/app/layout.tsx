@@ -1,5 +1,4 @@
 import { AuthMenuWrapper } from '@/components/auth/AuthMenuWrapper'
-import { FloatingButton } from '@/components/ui/floating-button'
 import { Icons } from '@/components/ui/icons'
 import {
   Menubar,
@@ -62,7 +61,6 @@ export default function RootLayout({
             </MenubarMenu>
           </Menubar>
           {children}
-          <FloatingButton />
           <SpeedInsights />
         </AuthProvider>
         <Analytics />

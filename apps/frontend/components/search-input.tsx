@@ -32,7 +32,7 @@ export function SearchInput({ initialQuery = '' }: SearchInputProps) {
       params.delete('q')
     }
 
-    const newUrl = debouncedSearchTerm ? `/search?${params.toString()}` : '/search'
+    const newUrl = debouncedSearchTerm ? `/?${params.toString()}` : '/'
     router.push(newUrl)
   }, [debouncedSearchTerm, router, searchParams])
 
@@ -48,7 +48,7 @@ export function SearchInput({ initialQuery = '' }: SearchInputProps) {
         placeholder="お店の名前や料理を検索..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="w-full pl-10 pr-10"
+        className="w-full pl-10 pr-10 text-base"
         aria-label="Search restaurants"
       />
       {searchTerm && (
