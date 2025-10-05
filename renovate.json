@@ -8,15 +8,7 @@
   "schedule": ["before 10:00"],
   "automergeSchedule": ["before 10:00"],
   "prBodyNotes": [
-    "## レビュー チェックリスト",
-    "- [ ] メジャーバージョンアップか確認する（例: 1.x → 2.x）",
-    "- [ ] Breaking changes をリリースノートで確認する",
-    "- [ ] 依存関係（例: React/Next.js 等）の互換性を確認する",
-    "- [ ] セキュリティアップデート（CVE 対応）かどうか確認する",
-    "- [ ] ビルド/実行環境要件（Node.js 等）の変更有無を確認する",
-    "- [ ] 周辺ツール設定（ESLint/Prettier/Jest 等）との互換性を確認する",
-    "- [ ] テストが通っているか確認し、必要ならステージングで動作確認する",
-    "- [ ] patch/minor は automerge 対象か見直す（運用ポリシーに従う）"
+    "## レビュー チェックリスト\n- [ ] メジャーバージョンアップか確認する（例: 1.x → 2.x）\n- [ ] Breaking changes をリリースノートで確認する\n- [ ] 依存関係（例: React/Next.js 等）の互換性を確認する\n- [ ] セキュリティアップデート（CVE 対応）かどうか確認する\n- [ ] ビルド/実行環境要件（Node.js 等）の変更有無を確認する\n- [ ] 周辺ツール設定（ESLint/Prettier/Jest 等）との互換性を確認する\n- [ ] テストが通っているか確認し、必要ならステージングで動作確認する\n- [ ] patch/minor は automerge 対象か見直す（運用ポリシーに従う）"
   ],
   "lockFileMaintenance": {
     "enabled": true,
