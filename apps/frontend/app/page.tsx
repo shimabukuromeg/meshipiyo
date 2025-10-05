@@ -46,7 +46,7 @@ export default async function Home(props: HomePageProps) {
       </div>
 
       {/* 検索入力（画面下部固定） */}
-      <div className="fixed bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl z-50 p-4 md:bottom-6 md:left-6 md:right-6">
+      <div className="fixed bottom-4 left-4 right-4 bg-primary/20 backdrop-blur-sm rounded-2xl shadow-2xl z-50 p-4 md:bottom-6 md:left-6 md:right-6">
         <div className="max-w-[900px] mx-auto">
           <SearchInput initialQuery={query} />
         </div>
