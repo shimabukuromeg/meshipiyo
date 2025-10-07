@@ -57,7 +57,7 @@
     "@biomejs/biome": "2.2.5",
     "@eslint/eslintrc": "^3.3.1",
     "@graphql-codegen/cli": "6.0.0",
-    "@graphql-codegen/client-preset": "5.0.3",
+    "@graphql-codegen/client-preset": "5.1.0",
     "@next/bundle-analyzer": "15.5.4",
     "@playwright/test": "1.55.1",
     "encoding": "0.1.13",
