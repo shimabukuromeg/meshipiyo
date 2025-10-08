@@ -37,12 +37,12 @@
     "@eddeee888/gcg-typescript-resolver-files": "0.13.0",
     "@graphql-codegen/cli": "5.0.7",
     "@types/node": "22.15.3",
-    "@vitest/ui": "3.1.2",
+    "@vitest/ui": "3.2.4",
     "cross-env": "7.0.3",
     "ts-node": "10.9.2",
     "ts-node-dev": "2.0.0",
     "typescript": "5.9.3",
-    "vitest": "3.1.2"
+    "vitest": "3.2.4"
   },
   "dependencies": {
     "@graphql-tools/schema": "10.0.25",
