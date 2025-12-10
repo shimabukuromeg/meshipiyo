@@ -1,3 +1,10 @@
+import { GoogleTagManager } from '@next/third-parties/google'
+import { HamburgerMenuIcon } from '@radix-ui/react-icons'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
+import type { Metadata } from 'next'
+import { Noto_Sans_JP } from 'next/font/google'
+import Link from 'next/link'
 import { AuthMenuWrapper } from '@/components/auth/AuthMenuWrapper'
 import { Icons } from '@/components/ui/icons'
 import {
@@ -10,13 +17,6 @@ import {
 } from '@/components/ui/menubar'
 import { AuthProvider } from '@/contexts/AuthContextDynamic'
 import { cn } from '@/lib/utils'
-import { GoogleTagManager } from '@next/third-parties/google'
-import { HamburgerMenuIcon } from '@radix-ui/react-icons'
-import { Analytics } from '@vercel/analytics/next'
-import { SpeedInsights } from '@vercel/speed-insights/next'
-import type { Metadata } from 'next'
-import { Noto_Sans_JP } from 'next/font/google'
-import Link from 'next/link'
 import './globals.css'
 
 const noto = Noto_Sans_JP({
