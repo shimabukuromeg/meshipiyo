@@ -159,3 +159,31 @@ $ make status
 - **Emulator UIにアクセスできない場合**: `make restart` でサービス再起動
 - **マジックリンクが表示されない場合**: `docker logs firebase-emulator --tail 50` でログ確認
 - **認証エラーの場合**: http://localhost:4000/auth で設定確認
+
+## コード品質管理
+
+### 未使用コードの検出（knip）
+
+[knip](https://knip.dev/) を使用して、未使用のファイル、依存関係、エクスポートを検出できます。
+
+```bash
+# 未使用コードをチェック（全ワークスペース）
+$ pnpm knip
+
+# 自動修正可能な項目を修正（package.jsonの未使用依存関係削除など）
+$ pnpm knip:fix
+
+# 特定のワークスペースのみチェック
+$ pnpm knip --workspace apps/frontend
+$ pnpm knip --workspace apps/backend
+```
+
+**検出される項目：**
+- 未使用のファイル
+- 未使用の依存関係（dependencies / devDependencies）
+- 未使用のエクスポート（export）
+- 未使用の型エクスポート（export type）
+
+**設定ファイル：** `knip.json`
+
+定期的に実行して、コードベースをクリーンに保つことを推奨します。
