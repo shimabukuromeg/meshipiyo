@@ -1,8 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
   "packageManager": "pnpm@10.10.0",
   "scripts": {
     "test": "vitest",
@@ -48,8 +47,8 @@
     "@graphql-tools/schema": "10.0.25",
     "@prisma/client": "6.7.0",
     "@types/uuid": "10.0.0",
-    "cheerio": "1.0.0",
-    "fastify": "5.6.2",
+    "cheerio": "1.1.2",
+    "fastify": "5.3.2",
     "firebase-admin": "13.4.0",
     "graphql": "16.11.0",
     "graphql-middleware": "6.1.35",
