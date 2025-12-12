@@ -1,8 +1,9 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "private": true,
-  "packageManager": "pnpm@10.10.0",
+  "description": "",
+  "main": "index.js",
+  "packageManager": "pnpm@10.25.0",
   "scripts": {
     "test": "vitest",
     "dev": "cross-env NODE_ENV=development ts-node-dev --exit-child --respawn src/main.ts",
