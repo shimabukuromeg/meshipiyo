@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    revalidateTag('meshi-data')
+    revalidateTag('meshi-data', { expire: 0 })
     return NextResponse.json({ revalidated: true, now: Date.now() })
   } catch (error) {
     let errorMessage = 'Error revalidating'

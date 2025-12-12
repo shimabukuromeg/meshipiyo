@@ -1,8 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
   "packageManager": "pnpm@10.10.0",
   "scripts": {
     "test": "vitest",
