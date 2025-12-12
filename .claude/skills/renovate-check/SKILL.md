@@ -63,7 +63,52 @@ rg "<package-name>" -g "*.config.*" -g "*.json"
 
 影響を受けるファイル一覧と利用方法を出力する。
 
-### 6. ビルド/実行環境要件の変更確認
+### 6. 依存関係の互換性確認
+
+更新対象パッケージと、プロジェクト内の他のパッケージとの互換性を確認:
+
+#### 確認手順
+
+1. **package.json の依存関係を確認**:
+   ```bash
+   cat apps/frontend/package.json | jq '.dependencies, .devDependencies'
+   cat apps/backend/package.json | jq '.dependencies, .devDependencies'
+   ```
+
+2. **peerDependencies の確認**:
+   - 更新パッケージの npm ページまたは package.json で peerDependencies を確認
+   - WebSearch で「<package-name> <version> peer dependencies」を検索
+
+3. **主要な依存関係の組み合わせを確認**:
+
+| 更新対象 | 確認すべき関連パッケージ |
+|---------|------------------------|
+| React | Next.js, React DOM, @types/react, Radix UI, Framer Motion |
+| Next.js | React, React DOM, eslint-config-next, @next/* パッケージ |
+| TypeScript | @types/* パッケージ、ts-node、各種型定義 |
+| Prisma | @prisma/client と prisma CLI のバージョン一致 |
+| GraphQL | graphql-request, @graphql-codegen/*, graphql-yoga |
+| ESLint | eslint-config-*, eslint-plugin-*, @typescript-eslint/* |
+| Biome | @biomejs/biome（単独で動作、依存少ない） |
+
+4. **互換性マトリクスの確認**:
+   - Next.js: https://nextjs.org/docs/getting-started/installation で React バージョン要件確認
+   - Radix UI: 各コンポーネントの peerDependencies で React バージョン確認
+   - Prisma: Client と CLI のバージョンは一致が必要
+
+5. **バージョン制約の確認**:
+   ```bash
+   # npm でパッケージの peerDependencies を確認
+   npm view <package-name>@<version> peerDependencies
+   ```
+
+#### 出力に含める情報
+
+- 関連パッケージとの互換性状況（OK / 要アップデート / 非互換）
+- 同時にアップデートが必要なパッケージの有無
+- バージョン制約による問題の有無
+
+### 7. ビルド/実行環境要件の変更確認
 
 以下を確認:
 
@@ -72,7 +117,7 @@ rg "<package-name>" -g "*.config.*" -g "*.json"
 - peerDependencies の変更
 - その他のランタイム依存関係の変更
 
-### 7. 周辺ツール設定との互換性確認
+### 8. 周辺ツール設定との互換性確認
 
 本リポジトリで使用しているツールとの互換性をチェック:
 
@@ -130,6 +175,15 @@ rg "<package-name>" -g "*.config.*" -g "*.json"
 | `<file2>` | <usage2> |
 
 **影響範囲**: <影響の大きさを評価>
+
+## 依存関係の互換性
+
+| 関連パッケージ | 現在のバージョン | 互換性 | 備考 |
+|---------------|-----------------|--------|------|
+| `<package1>` | <version> | OK/要確認/要アップデート | <詳細> |
+| `<package2>` | <version> | OK/要確認/要アップデート | <詳細> |
+
+**同時アップデート必要**: <必要なパッケージがあれば記載>
 
 ## 環境要件の変更
 
