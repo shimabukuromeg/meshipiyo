@@ -9,27 +9,27 @@
   "semanticCommits": "disabled",
   "commitMessagePrefix": "chore:",
   "prBodyNotes": [
-    "## レビュー チェックリスト\n- [ ] メジャーバージョンアップか確認する（例: 1.x → 2.x）\n- [ ] Breaking changes をリリースノートで確認する\n- [ ] 依存関係（例: React/Next.js 等）の互換性を確認する\n- [ ] セキュリティアップデート（CVE 対応）かどうか確認する\n- [ ] ビルド/実行環境要件（Node.js 等）の変更有無を確認する\n- [ ] 周辺ツール設定（ESLint/Prettier/Jest 等）との互換性を確認する\n- [ ] テストが通っているか確認し、必要ならステージングで動作確認する\n- [ ] patch/minor は automerge 対象か見直す（運用ポリシーに従う）"
+    "## レビュー チェックリスト\n- [ ] メジャーバージョンアップか確認する（例: 1.x → 2.x）\n- [ ] Breaking changes をリリースノートで確認する\n- [ ] 依存関係（例: React/Next.js 等）の互換性を確認する\n- [ ] セキュリティアップデート（CVE 対応）かどうか確認する\n- [ ] ビルド/実行環境要件（Node.js 等）の変更有無を確認する\n- [ ] 周辺ツール設定（ESLint/Prettier/Jest 等）との互換性を確認する\n- [ ] テストが通っているか確認し、必要ならステージングで動作確認する\n- [ ] patch/minor は automerge 対象か見直す（運用ポリシーに従う）",
   ],
   "lockFileMaintenance": {
     "enabled": true,
     "recreateWhen": "always",
-    "rebaseWhen": "behind-base-branch"
+    "rebaseWhen": "behind-base-branch",
   },
   "prConcurrentLimit": 5,
 
   "packageRules": [
     {
       "matchUpdateTypes": ["patch"],
-      "automerge": true
+      "automerge": true,
     },
     {
       "matchDepTypes": ["devDependencies"],
-      "automerge": true
+      "automerge": true,
     },
     {
       "matchPackageNames": ["eslint"],
-      "enabled": false
+      "enabled": false,
     },
     {
       "groupName": "Next.js",
@@ -38,9 +38,9 @@
         "next",
         "eslint-config-next",
         "@next/third-parties",
-        "@next/bundle-analyzer"
+        "@next/bundle-analyzer",
       ],
-      "addLabels": ["group:nextjs"]
+      "addLabels": ["group:nextjs"],
     },
     {
       "groupName": "GraphQL ecosystem",
@@ -52,20 +52,20 @@
         "@graphql-typed-document-node/core",
         "@graphql-tools/schema",
         "graphql-scalars",
-        "/^@graphql-codegen/"
+        "/^@graphql-codegen/",
       ],
-      "addLabels": ["group:graphql"]
+      "addLabels": ["group:graphql"],
     },
     {
       "groupName": "Prisma",
       "groupSlug": "prisma",
       "matchPackageNames": ["@prisma/client", "prisma"],
-      "addLabels": ["group:prisma"]
+      "addLabels": ["group:prisma"],
     },
     {
       "groupName": "Radix UI",
       "groupSlug": "radix-ui",
-      "matchPackageNames": ["/^@radix-ui/"]
+      "matchPackageNames": ["/^@radix-ui/"],
     },
     {
       "groupName": "Tailwind & PostCSS",
@@ -76,27 +76,27 @@
         "postcss",
         "autoprefixer",
         "/^@tailwindcss/",
-        "/^tw-/"
+        "/^tw-/",
       ],
-      "addLabels": ["group:tailwind"]
+      "addLabels": ["group:tailwind"],
     },
     {
       "groupName": "Vitest",
       "groupSlug": "vitest",
       "matchPackageNames": ["vitest", "@vitest/ui"],
-      "addLabels": ["group:test"]
+      "addLabels": ["group:test"],
     },
     {
       "groupName": "Playwright",
       "groupSlug": "playwright",
       "matchPackageNames": ["playwright", "@playwright/test"],
-      "addLabels": ["group:test"]
+      "addLabels": ["group:test"],
     },
     {
       "groupName": "TypeScript toolchain",
       "groupSlug": "ts",
       "matchPackageNames": ["typescript", "ts-node", "ts-node-dev"],
-      "addLabels": ["group:ts"]
+      "addLabels": ["group:ts"],
     },
     {
       "groupName": "React monorepo",
@@ -105,31 +105,31 @@
         "react",
         "react-dom",
         "@types/react",
-        "@types/react-dom"
+        "@types/react-dom",
       ],
-      "addLabels": ["group:react"]
+      "addLabels": ["group:react"],
     },
     {
       "groupName": "Firebase",
       "groupSlug": "firebase",
       "matchPackageNames": ["firebase", "firebase-admin"],
-      "addLabels": ["group:firebase"]
+      "addLabels": ["group:firebase"],
     },
     {
       "groupName": "Logging (pino)",
       "groupSlug": "pino",
-      "matchPackageNames": ["pino", "pino-pretty"]
+      "matchPackageNames": ["pino", "pino-pretty"],
     },
     {
       "groupName": "Biome",
       "groupSlug": "biome",
-      "matchPackageNames": ["@biomejs/biome"]
+      "matchPackageNames": ["@biomejs/biome"],
     },
     {
       "groupName": "GitHub Actions",
       "groupSlug": "github-actions",
       "matchManagers": ["github-actions"],
-      "addLabels": ["group:actions"]
-    }
-  ]
+      "addLabels": ["group:actions"],
+    },
+  ],
 }
