@@ -67,8 +67,8 @@ importers:
         specifier: 11.1.0
         version: 11.1.0
       zod:
-        specifier: 3.24.3
-        version: 3.24.3
+        specifier: 3.25.76
+        version: 3.25.76
     devDependencies:
       '@biomejs/biome':
         specifier: 2.2.5
@@ -6087,8 +6087,8 @@ packages:
     peerDependencies:
       zod: ^3.25.0 || ^4.0.0
 
-  zod@3.24.3:
-    resolution: {integrity: sha512-HhY1oqzWCQWuUqvBFnsyrtZRhyPeR7SUGv+C4+MsisMuVfSPx8HpwWqH8tRahSlt6M3PiFAcoeFhZAqIXTxoSg==}
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
   zod@4.1.13:
     resolution: {integrity: sha512-AvvthqfqrAhNH9dnfmrfKzX5upOdjUVJYFqNSlkmGf64gRaTzlPwz99IHYnVs28qYAybvAlBV+H7pn0saFY4Ig==}
@@ -11308,7 +11308,7 @@ snapshots:
       '@deno/shim-deno': 0.16.1
       prettier: 3.5.3
       ts-pattern: 5.7.0
-      zod: 3.24.3
+      zod: 3.25.76
 
   micromatch@4.0.8:
     dependencies:
@@ -12850,7 +12850,7 @@ snapshots:
     dependencies:
       zod: 4.1.13
 
-  zod@3.24.3: {}
+  zod@3.25.76: {}
 
   zod@4.1.13: {}
 
