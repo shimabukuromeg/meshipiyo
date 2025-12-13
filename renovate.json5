@@ -1,36 +1,70 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+
+  // ベース設定: Renovate 推奨設定を継承
   "extends": ["config:recommended"],
+
+  // === スケジュール設定 ===
+  // 日本時間で動作
   "timezone": "Asia/Tokyo",
-  "labels": ["renovate"],
+  // 毎日 10:00 前に PR 作成・更新
   "schedule": ["before 10:00"],
+  // 自動マージも同じ時間帯に実行
   "automergeSchedule": ["before 10:00"],
+
+  // === PR 設定 ===
+  // renovate ラベルを自動付与
+  "labels": ["renovate"],
+  // コンフリクト時のみリベース（不要なリベースを防止）
   "rebaseWhen": "conflicted",
+  // 同時に作成する PR の上限
+  "prConcurrentLimit": 5,
+
+  // === コミットメッセージ設定 ===
+  // semantic commits は使用しない
   "semanticCommits": "disabled",
+  // コミットメッセージに chore: プレフィックスを付与
   "commitMessagePrefix": "chore:",
+
+  // === PR 本文に追加するレビューチェックリスト ===
   "prBodyNotes": [
     "## レビュー チェックリスト\n- [ ] メジャーバージョンアップか確認する（例: 1.x → 2.x）\n- [ ] Breaking changes をリリースノートで確認する\n- [ ] 依存関係（例: React/Next.js 等）の互換性を確認する\n- [ ] セキュリティアップデート（CVE 対応）かどうか確認する\n- [ ] ビルド/実行環境要件（Node.js 等）の変更有無を確認する\n- [ ] 周辺ツール設定（ESLint/Prettier/Jest 等）との互換性を確認する\n- [ ] テストが通っているか確認し、必要ならステージングで動作確認する\n- [ ] patch/minor は automerge 対象か見直す（運用ポリシーに従う）",
   ],
+
+  // === lockfile メンテナンス ===
+  // pnpm-lock.yaml を定期的に再生成
   "lockFileMaintenance": {
     "enabled": true,
+    // 常に再作成
     "recreateWhen": "always",
+    // ベースブランチより古い場合にリベース
     "rebaseWhen": "behind-base-branch",
   },
-  "prConcurrentLimit": 5,
 
+  // === パッケージルール ===
   "packageRules": [
+    // パッチバージョン（x.x.PATCH）は自動マージ
     {
       "matchUpdateTypes": ["patch"],
       "automerge": true,
     },
+
+    // devDependencies は自動マージ（本番に影響しないため）
     {
       "matchDepTypes": ["devDependencies"],
       "automerge": true,
     },
+
+    // ESLint は flat config 移行中のため一時的に無効化
     {
       "matchPackageNames": ["eslint"],
       "enabled": false,
     },
+
+    // --- グループ化設定 ---
+    // 関連パッケージをまとめて1つの PR にする
+
+    // Next.js 関連
     {
       "groupName": "Next.js",
       "groupSlug": "nextjs",
@@ -42,6 +76,8 @@
       ],
       "addLabels": ["group:nextjs"],
     },
+
+    // GraphQL エコシステム
     {
       "groupName": "GraphQL ecosystem",
       "groupSlug": "graphql",
@@ -56,17 +92,23 @@
       ],
       "addLabels": ["group:graphql"],
     },
+
+    // Prisma ORM
     {
       "groupName": "Prisma",
       "groupSlug": "prisma",
       "matchPackageNames": ["@prisma/client", "prisma"],
       "addLabels": ["group:prisma"],
     },
+
+    // Radix UI コンポーネント
     {
       "groupName": "Radix UI",
       "groupSlug": "radix-ui",
       "matchPackageNames": ["/^@radix-ui/"],
     },
+
+    // Tailwind CSS & PostCSS
     {
       "groupName": "Tailwind & PostCSS",
       "groupSlug": "tailwind-postcss",
@@ -80,24 +122,32 @@
       ],
       "addLabels": ["group:tailwind"],
     },
+
+    // Vitest テストフレームワーク
     {
       "groupName": "Vitest",
       "groupSlug": "vitest",
       "matchPackageNames": ["vitest", "@vitest/ui"],
       "addLabels": ["group:test"],
     },
+
+    // Playwright E2E テスト
     {
       "groupName": "Playwright",
       "groupSlug": "playwright",
       "matchPackageNames": ["playwright", "@playwright/test"],
       "addLabels": ["group:test"],
     },
+
+    // TypeScript ツールチェーン
     {
       "groupName": "TypeScript toolchain",
       "groupSlug": "ts",
       "matchPackageNames": ["typescript", "ts-node", "ts-node-dev"],
       "addLabels": ["group:ts"],
     },
+
+    // React コアパッケージ
     {
       "groupName": "React monorepo",
       "groupSlug": "react-monorepo",
@@ -109,22 +159,30 @@
       ],
       "addLabels": ["group:react"],
     },
+
+    // Firebase
     {
       "groupName": "Firebase",
       "groupSlug": "firebase",
       "matchPackageNames": ["firebase", "firebase-admin"],
       "addLabels": ["group:firebase"],
     },
+
+    // Pino ロギング
     {
       "groupName": "Logging (pino)",
       "groupSlug": "pino",
       "matchPackageNames": ["pino", "pino-pretty"],
     },
+
+    // Biome（リンター・フォーマッター）
     {
       "groupName": "Biome",
       "groupSlug": "biome",
       "matchPackageNames": ["@biomejs/biome"],
     },
+
+    // GitHub Actions
     {
       "groupName": "GitHub Actions",
       "groupSlug": "github-actions",
