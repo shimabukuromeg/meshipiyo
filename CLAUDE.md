@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 
 meshipiyo is a restaurant/food discovery platform built as a monorepo using pnpm workspaces and Turborepo. It consists of:
-- **Frontend**: Next.js 15 application (port 33000) with React 19, Tailwind CSS, and GraphQL client
+- **Frontend**: Next.js 16 application (port 33000) with React 19, Tailwind CSS, and GraphQL client
 - **Backend**: GraphQL API (port 44000) using GraphQL Yoga, Prisma ORM, and PostgreSQL with PGroonga for full-text search
 
 ## Essential Commands
@@ -153,6 +153,19 @@ NODE_ENV=development     # 開発環境ではpino-prettyで見やすく、本番
   "variables": { "cursor": null, "limit": 20 }
 }
 ```
+
+## Known Issues / TODOs
+
+### TODO: Turbopack対応 (favicon.ico)
+- **問題**: `apps/frontend/app/favicon.ico`がRGBA形式のPNGではないため、Turbopackでビルドエラーが発生する
+- **現状の回避策**: `package.json`の`dev`、`build`、`analyze`スクリプトに`--webpack`フラグを追加してWebpackを使用
+- **解決方法**: favicon.icoをRGBA形式のPNGに変換すれば、`--webpack`フラグを削除してTurbopack（Next.js 16のデフォルト）を使用可能
+  ```bash
+  # ImageMagickがある場合
+  convert apps/frontend/app/favicon.ico -define png:color-type=6 apps/frontend/app/favicon.png
+  # その後favicon.icoを削除
+  ```
+- **参考**: Next.js 16ではTurbopackがデフォルトのバンドラーになり、より高速なビルドが可能
 
 ## Interaction Guidelines
 - **IMPORTANT**: 日本語で会話してください
