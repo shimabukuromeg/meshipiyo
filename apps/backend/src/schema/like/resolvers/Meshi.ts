@@ -1,10 +1,7 @@
 import { LikeService } from '../../../services/like'
 import type { MeshiResolvers } from './../../types.generated'
 
-export const Meshi: Pick<
-  MeshiResolvers,
-  'isLiked' | 'likeCount' | '__isTypeOf'
-> = {
+export const Meshi: Pick<MeshiResolvers, 'isLiked'|'likeCount'> = {
   isLiked: async (parent, _arg, { prisma, auth }) => {
     if (!auth.isAuthenticated || !auth.user) {
       return false

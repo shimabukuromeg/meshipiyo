@@ -24,17 +24,18 @@ export function SearchInput({ initialQuery = '' }: SearchInputProps) {
 
   // Update URL when debounced search term changes
   useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString())
+    // 現在のURLのクエリパラメータを取得
+    const currentQuery = searchParams.get('q') ?? ''
 
-    if (debouncedSearchTerm) {
-      params.set('q', debouncedSearchTerm)
-    } else {
-      params.delete('q')
+    // 現在のクエリと同じ場合は何もしない（無限ループ防止）
+    if (debouncedSearchTerm === currentQuery) {
+      return
     }
 
-    const newUrl = debouncedSearchTerm ? `/?${params.toString()}` : '/'
+    const newUrl = debouncedSearchTerm ? `/?q=${encodeURIComponent(debouncedSearchTerm)}` : '/'
     router.push(newUrl)
-  }, [debouncedSearchTerm, router, searchParams])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearchTerm])
 
   const handleClear = () => {
     setSearchTerm('')

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "workspaces": {
+    ".": {
+      "entry": ["turbo.json"],
+      "ignore": ["apps/**"],
+      "ignoreDependencies": ["@biomejs/biome"]
+    },
+    "apps/frontend": {
+      "entry": [
+        "app/**/*.{ts,tsx}",
+        "components/**/*.{ts,tsx}",
+        "hooks/**/*.ts",
+        "lib/**/*.ts",
+        "utils/**/*.ts",
+        "contexts/**/*.tsx",
+        "types/**/*.ts",
+        "next.config.js",
+        "codegen.ts",
+        "playwright.config.ts",
+        "e2e/**/*.spec.ts"
+      ],
+      "project": ["**/*.{ts,tsx}"],
+      "ignore": [
+        "src/gql/**",
+        ".next/**",
+        "types/*.d.ts"
+      ],
+      "next": {
+        "entry": ["next.config.js", "app/**/*.{ts,tsx}"]
+      },
+      "eslint": true,
+      "playwright": true
+    },
+    "apps/backend": {
+      "entry": [
+        "src/main.ts",
+        "src/scripts/**/*.ts",
+        "src/schema/**/resolvers/**/*.ts",
+        "codegen.ts",
+        "prisma/seed.ts"
+      ],
+      "project": ["src/**/*.ts", "prisma/**/*.ts"],
+      "ignore": [
+        "src/schema/*.generated.ts",
+        "src/micro-cms-schemas/generated.ts"
+      ],
+      "vitest": true
+    }
+  },
+  "ignore": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/.turbo/**"
+  ],
+  "ignoreExportsUsedInFile": true
+}
