@@ -108,7 +108,7 @@ importers:
         version: 3.2.0(graphql@16.11.0)
       '@next/third-parties':
         specifier: 16.0.8
-        version: 16.0.8(next@16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
+        version: 16.0.8(next@16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
       '@parcel/watcher':
         specifier: 2.5.1
         version: 2.5.1
@@ -156,10 +156,10 @@ importers:
         version: 2.4.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@vercel/analytics':
         specifier: 1.5.0
-        version: 1.5.0(next@16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
+        version: 1.5.0(next@16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
       '@vercel/speed-insights':
         specifier: 1.2.0
-        version: 1.2.0(next@16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
+        version: 1.2.0(next@16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
       autoprefixer:
         specifier: 10.4.21
         version: 10.4.21(postcss@8.5.6)
@@ -192,7 +192,7 @@ importers:
         version: 0.559.0(react@19.2.3)
       next:
         specifier: 16.0.8
-        version: 16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        version: 16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       postcss:
         specifier: 8.5.6
         version: 8.5.6
@@ -234,8 +234,8 @@ importers:
         specifier: 16.0.8
         version: 16.0.8
       '@playwright/test':
-        specifier: 1.56.0
-        version: 1.56.0
+        specifier: 1.57.0
+        version: 1.57.0
       encoding:
         specifier: 0.1.13
         version: 0.1.13
@@ -1855,8 +1855,8 @@ packages:
   '@pinojs/redact@0.4.0':
     resolution: {integrity: sha512-k2ENnmBugE/rzQfEcdWHcCY+/FM3VLzH9cYEsbdsoqrvzAKRhUZeRNhAZvB8OitQJ1TBed3yqWtdjzS6wJKBwg==}
 
-  '@playwright/test@1.56.0':
-    resolution: {integrity: sha512-Tzh95Twig7hUwwNe381/K3PggZBZblKUe2wv25oIpzWLr6Z0m4KgV1ZVIjnR6GM9ANEqjZD7XsZEa6JL/7YEgg==}
+  '@playwright/test@1.57.0':
+    resolution: {integrity: sha512-6TyEnHgd6SArQO8UO2OMTxshln3QMWBtPGrOCgs3wVEmQmwyuNtB10IZMfmYDE0riwNR1cu4q+pPcxMVtaG3TA==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -5141,13 +5141,13 @@ packages:
   pkg-types@2.3.0:
     resolution: {integrity: sha512-SIqCzDRg0s9npO5XQ3tNZioRY1uK06lA41ynBC1YmFTmnY6FjUjVt6s4LoADmwoig1qqD0oK8h1p/8mlMx8Oig==}
 
-  playwright-core@1.56.0:
-    resolution: {integrity: sha512-1SXl7pMfemAMSDn5rkPeZljxOCYAmQnYLBTExuh6E8USHXGSX3dx6lYZN/xPpTz1vimXmPA9CDnILvmJaB8aSQ==}
+  playwright-core@1.57.0:
+    resolution: {integrity: sha512-agTcKlMw/mjBWOnD6kFZttAAGHgi/Nw0CZ2o6JqWSbMlI219lAFLZZCyqByTsvVAJq5XA5H8cA6PrvBRpBWEuQ==}
     engines: {node: '>=18'}
     hasBin: true
 
-  playwright@1.56.0:
-    resolution: {integrity: sha512-X5Q1b8lOdWIE4KAoHpW3SE8HvUB+ZZsUoN64ZhjnN8dOb1UpujxBtENGiZFE+9F/yhzJwYa+ca3u43FeLbboHA==}
+  playwright@1.57.0:
+    resolution: {integrity: sha512-ilYQj1s8sr2ppEJ2YVadYBN0Mb3mdo9J0wQ+UuDhzYqURwSoW4n1Xs5vs7ORwgDGmyEh33tRMeS8KhdkMoLXQw==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -8017,9 +8017,9 @@ snapshots:
   '@next/swc-win32-x64-msvc@16.0.8':
     optional: true
 
-  '@next/third-parties@16.0.8(next@16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)':
+  '@next/third-parties@16.0.8(next@16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)':
     dependencies:
-      next: 16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      next: 16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react: 19.2.3
       third-party-capital: 1.0.20
 
@@ -8164,9 +8164,9 @@ snapshots:
 
   '@pinojs/redact@0.4.0': {}
 
-  '@playwright/test@1.56.0':
+  '@playwright/test@1.57.0':
     dependencies:
-      playwright: 1.56.0
+      playwright: 1.57.0
 
   '@polka/url@1.0.0-next.28': {}
 
@@ -9050,14 +9050,14 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.3.3':
     optional: true
 
-  '@vercel/analytics@1.5.0(next@16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)':
+  '@vercel/analytics@1.5.0(next@16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)':
     optionalDependencies:
-      next: 16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      next: 16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react: 19.2.3
 
-  '@vercel/speed-insights@1.2.0(next@16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)':
+  '@vercel/speed-insights@1.2.0(next@16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)':
     optionalDependencies:
-      next: 16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      next: 16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react: 19.2.3
 
   '@vitest/expect@3.2.4':
@@ -11476,7 +11476,7 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  next@16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+  next@16.0.8(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
     dependencies:
       '@next/env': 16.0.8
       '@swc/helpers': 0.5.15
@@ -11495,7 +11495,7 @@ snapshots:
       '@next/swc-win32-arm64-msvc': 16.0.8
       '@next/swc-win32-x64-msvc': 16.0.8
       '@opentelemetry/api': 1.9.0
-      '@playwright/test': 1.56.0
+      '@playwright/test': 1.57.0
       sharp: 0.34.4
     transitivePeerDependencies:
       - '@babel/core'
@@ -11816,11 +11816,11 @@ snapshots:
       exsolve: 1.0.8
       pathe: 2.0.3
 
-  playwright-core@1.56.0: {}
+  playwright-core@1.57.0: {}
 
-  playwright@1.56.0:
+  playwright@1.57.0:
     dependencies:
-      playwright-core: 1.56.0
+      playwright-core: 1.57.0
     optionalDependencies:
       fsevents: 2.3.2
 
