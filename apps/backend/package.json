@@ -33,7 +33,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@biomejs/biome": "2.3.10",
+    "@biomejs/biome": "2.3.11",
     "@eddeee888/gcg-typescript-resolver-files": "0.14.1",
     "@graphql-codegen/cli": "5.0.7",
     "@types/node": "24.10.2",
