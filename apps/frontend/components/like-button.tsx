@@ -2,7 +2,7 @@
 
 import { Heart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useAuth } from '@/contexts/AuthContextDynamic'
 import { useLike } from '@/hooks/use-like'
 import { useMeshiLikeState } from '@/hooks/use-meshi-like-state'
@@ -34,14 +34,15 @@ export const LikeButton = ({
     refetch,
   } = useMeshiLikeState(meshiId, initialIsLiked, initialLikeCount)
 
-  const [optimisticLiked, setOptimisticLiked] = useState(actualIsLiked)
-  const [optimisticCount, setOptimisticCount] = useState(actualLikeCount)
+  // 楽観的更新の差分のみを状態として保持
+  const [optimisticDelta, setOptimisticDelta] = useState<{
+    liked: boolean | null
+    countDelta: number
+  } | null>(null)
 
-  // 実際の状態が更新されたら楽観的状態も更新
-  useEffect(() => {
-    setOptimisticLiked(actualIsLiked)
-    setOptimisticCount(actualLikeCount)
-  }, [actualIsLiked, actualLikeCount])
+  // レンダー時に実際の値と楽観的更新を合成
+  const displayIsLiked = optimisticDelta?.liked ?? actualIsLiked
+  const displayLikeCount = actualLikeCount + (optimisticDelta?.countDelta ?? 0)
 
   const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault()
@@ -56,9 +57,13 @@ export const LikeButton = ({
     if (isLoading) return
 
     // 楽観的更新
-    const newLikedState = !optimisticLiked
-    setOptimisticLiked(newLikedState)
-    setOptimisticCount((prev) => (newLikedState ? prev + 1 : prev - 1))
+    const newLikedState = !displayIsLiked
+    const countDelta = newLikedState ? 1 : -1
+
+    setOptimisticDelta({
+      liked: newLikedState,
+      countDelta: countDelta,
+    })
 
     try {
       if (newLikedState) {
@@ -68,17 +73,18 @@ export const LikeButton = ({
       }
       // 成功後に実際の状態を再取得
       await refetch()
+      // 再取得完了後、楽観的更新をクリア
+      setOptimisticDelta(null)
     } catch (error) {
       // エラー時にロールバック
-      setOptimisticLiked(actualIsLiked)
-      setOptimisticCount(actualLikeCount)
+      setOptimisticDelta(null)
       console.error('いいね操作でエラーが発生しました:', error)
     }
   }
 
   const sizeClasses = {
-    small: 'w-6 h-6',
-    medium: 'w-8 h-8',
+    small: 'size-6',
+    medium: 'size-8',
   }
 
   const heartSize = sizeClasses[size]
@@ -93,23 +99,23 @@ export const LikeButton = ({
         'flex items-center gap-1 px-2 py-1 rounded-lg transition-all duration-200',
         'hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500/20',
         'disabled:opacity-50 disabled:cursor-not-allowed',
-        optimisticLiked ? 'text-red-500' : 'text-gray-500',
+        displayIsLiked ? 'text-red-500' : 'text-gray-500',
         className,
       )}
-      aria-label={optimisticLiked ? 'いいねを取り消す' : 'いいねする'}
+      aria-label={displayIsLiked ? 'いいねを取り消す' : 'いいねする'}
     >
       <div className="relative">
         <Heart
           className={cn(
             heartSize,
             'transition-all duration-200',
-            optimisticLiked ? 'fill-red-500 text-red-500' : 'text-gray-500',
+            displayIsLiked ? 'fill-red-500 text-red-500' : 'text-gray-500',
             isLoading && 'animate-pulse',
           )}
         />
       </div>
-      {optimisticCount > 0 && (
-        <span className={cn('font-medium', textSize)}>{optimisticCount}</span>
+      {displayLikeCount > 0 && (
+        <span className={cn('font-medium', textSize)}>{displayLikeCount}</span>
       )}
     </button>
   )

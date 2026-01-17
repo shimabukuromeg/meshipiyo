@@ -48,7 +48,6 @@ export class LikeService {
         },
       })
 
-
       this.logger.info({ userId, meshiId, likeId: like.id }, 'likeMeshi成功')
       return like
     } catch (error: unknown) {
@@ -174,7 +173,7 @@ export class LikeService {
     for (const meshiId of meshiIds) {
       likeMap.set(meshiId, false)
     }
-    
+
     for (const like of likes) {
       likeMap.set(like.meshiId, true)
     }

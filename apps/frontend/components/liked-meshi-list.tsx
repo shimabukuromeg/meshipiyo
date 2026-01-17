@@ -35,7 +35,7 @@ export const LikedMeshiList = () => {
   if (loading && likes.length === 0) {
     return (
       <div className="flex justify-center items-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+        <div className="animate-spin rounded-full size-8 border-b-2 border-gray-900" />
       </div>
     )
   }
@@ -107,7 +107,7 @@ export const LikedMeshiList = () => {
                       target="_blank"
                       passHref
                     >
-                      <MapPin className="h-6 w-6" color="#8d7658" fill="#fff" />
+                      <MapPin className="size-6 text-amber-700" fill="#fff" />
                     </Link>
                   </div>
                 </div>
@@ -115,7 +115,9 @@ export const LikedMeshiList = () => {
               <CardFooter className="p-0">
                 <div className="w-full">
                   <Link href={`/meshi/${like.meshi.id}`}>
-                    <p className="font-bold line-clamp-3">{like.meshi.title}</p>
+                    <p className="font-bold line-clamp-3 text-balance">
+                      {like.meshi.title}
+                    </p>
                   </Link>
                   <div className="flex justify-end mt-1">
                     <p className="text-sm text-gray-500">
@@ -138,7 +140,7 @@ export const LikedMeshiList = () => {
       {hasNextPage && (
         <div ref={loadMoreRef} className="flex justify-center py-4">
           {loading ? (
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900" />
+            <div className="animate-spin rounded-full size-6 border-b-2 border-gray-900" />
           ) : (
             <p className="text-gray-500">もっと読み込む...</p>
           )}

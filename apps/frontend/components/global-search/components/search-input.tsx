@@ -104,7 +104,11 @@ export const SearchInput: React.FC<Props> = ({ searchTerm, setSearchTerm }) => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             {filterOptions.length > 0 && (
-              <Button variant="outline" className="w-full justify-between">
+              <Button
+                variant="outline"
+                className="w-full justify-between"
+                aria-label={`検索フィルター: ${filterOptions.find((filter) => filter.id === searchFilter)?.title}`}
+              >
                 <span className="flex items-center">
                   {
                     filterOptions.find((filter) => filter.id === searchFilter)

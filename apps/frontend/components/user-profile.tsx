@@ -35,7 +35,7 @@ export const UserProfile = ({ user, likeCount }: UserProfileProps) => {
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="text-center">
         <div className="flex justify-center mb-4">
-          <Avatar className="w-20 h-20">
+          <Avatar className="size-20">
             {hasValidIconUrl ? (
               <Image
                 src={user.iconImageURL!}
@@ -46,12 +46,12 @@ export const UserProfile = ({ user, likeCount }: UserProfileProps) => {
               />
             ) : (
               <div className="w-full h-full bg-gray-200 rounded-full flex items-center justify-center">
-                <User className="w-10 h-10 text-gray-500" />
+                <User className="size-10 text-gray-500" />
               </div>
             )}
           </Avatar>
         </div>
-        <h1 className="text-2xl font-bold">{user.displayName}</h1>
+        <h1 className="text-2xl font-bold text-balance">{user.displayName}</h1>
         <p className="text-gray-600">{user.email}</p>
       </CardHeader>
 
@@ -59,12 +59,12 @@ export const UserProfile = ({ user, likeCount }: UserProfileProps) => {
         {user.description && (
           <div>
             <h3 className="font-semibold mb-2">自己紹介</h3>
-            <p className="text-gray-700">{user.description}</p>
+            <p className="text-gray-700 text-pretty">{user.description}</p>
           </div>
         )}
 
         <div className="flex items-center justify-center gap-2 p-4 bg-red-50 rounded-lg">
-          <Heart className="w-6 h-6 text-red-500 fill-red-500" />
+          <Heart className="size-6 text-red-500 fill-red-500" />
           <div className="text-center">
             <p className="text-2xl font-bold text-red-500">{likeCount}</p>
             <p className="text-sm text-gray-600">いいね</p>

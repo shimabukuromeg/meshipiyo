@@ -1,10 +1,10 @@
+import { GraphQLClient } from 'graphql-request'
+import { cache } from 'react'
 import { loadMoreMeshis } from '@/app/actions/meshi'
 import { MeshiListContainer } from '@/components/meshi-list-container'
 import { SearchInput } from '@/components/search-input'
 import { graphql } from '@/src/gql'
 import type { MeshiQuery, MeshiQueryVariables } from '@/src/gql/graphql'
-import { GraphQLClient } from 'graphql-request'
-import { cache } from 'react'
 
 // 本ページは常に最新データを取得する（ISRキャッシュ無効化）
 export const dynamic = 'force-dynamic'

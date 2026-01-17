@@ -12,7 +12,7 @@ const LikeButton = dynamic(
   () => import('./like-button').then((mod) => ({ default: mod.LikeButton })),
   {
     ssr: false,
-    loading: () => <div className="w-6 h-6" />, // ローディング中のプレースホルダー
+    loading: () => <div className="size-6" />, // ローディング中のプレースホルダー
   },
 )
 
@@ -84,7 +84,7 @@ export const MeshiCard = (props: Props) => {
               target="_blank"
               passHref
             >
-              <MapPin className="h-6 w-6" color="#8d7658" fill="#fff" />
+              <MapPin className="size-6 text-amber-700" fill="#fff" />
             </Link>
           </div>
         </div>
@@ -92,7 +92,7 @@ export const MeshiCard = (props: Props) => {
       <CardFooter className="p-0">
         <div className="w-full">
           <Link href={`/meshi/${meshi.id}`} key={meshi.id}>
-            <p className="font-bold line-clamp-3">{meshi.title}</p>
+            <p className="font-bold line-clamp-3 text-balance">{meshi.title}</p>
           </Link>
           <div className="flex justify-end mt-1">
             <p className="text-sm text-gray-500">
