@@ -84,8 +84,10 @@ export function MeshiListContainer({
         const newMeshis = data.meshis.edges.map((edge) => edge.node)
 
         setMeshis((prev) => {
-          const existingIds = new Set(prev.map(meshi => meshi.id))
-          const uniqueNewMeshis = newMeshis.filter(meshi => !existingIds.has(meshi.id))
+          const existingIds = new Set(prev.map((meshi) => meshi.id))
+          const uniqueNewMeshis = newMeshis.filter(
+            (meshi) => !existingIds.has(meshi.id),
+          )
           console.log('🔄 Updating meshis:', {
             prevCount: prev.length,
             newMeshisCount: newMeshis.length,
@@ -155,7 +157,12 @@ export function MeshiListContainer({
           })
           // 最新のpageInfoを使用してチェック
           const latestPageInfo = pageInfoRef.current
-          if (entries[0].isIntersecting && !isLoadingMore && !isPending && latestPageInfo.hasNextPage) {
+          if (
+            entries[0].isIntersecting &&
+            !isLoadingMore &&
+            !isPending &&
+            latestPageInfo.hasNextPage
+          ) {
             console.log('🎯 Calling loadMore from Intersection Observer')
             loadMore()
           } else {

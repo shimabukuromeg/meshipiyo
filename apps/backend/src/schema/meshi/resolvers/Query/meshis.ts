@@ -105,9 +105,11 @@ export const meshis: NonNullable<QueryResolvers['meshis']> = async (
       SELECT *
       FROM meshis
       WHERE (title || ' ' || store_name) &@~ ${query}
-        ${cursorId && cursorPublishedDate
-          ? Prisma.sql`AND (published_date < ${cursorPublishedDate} OR (published_date = ${cursorPublishedDate} AND id < ${cursorId}))`
-          : Prisma.sql``}
+        ${
+          cursorId && cursorPublishedDate
+            ? Prisma.sql`AND (published_date < ${cursorPublishedDate} OR (published_date = ${cursorPublishedDate} AND id < ${cursorId}))`
+            : Prisma.sql``
+        }
       ORDER BY published_date DESC, id DESC
       LIMIT ${limitPlusOne}
     `
@@ -116,14 +118,20 @@ export const meshis: NonNullable<QueryResolvers['meshis']> = async (
   } else {
     // 通常のクエリ（全文検索なし）
     // 並び順と一致する複合カーソル条件
-    const whereCondition = cursorId && cursorPublishedDate
-      ? {
-          OR: [
-            { publishedDate: { lt: cursorPublishedDate } },
-            { AND: [ { publishedDate: cursorPublishedDate }, { id: { lt: cursorId } } ] },
-          ],
-        }
-      : {}
+    const whereCondition =
+      cursorId && cursorPublishedDate
+        ? {
+            OR: [
+              { publishedDate: { lt: cursorPublishedDate } },
+              {
+                AND: [
+                  { publishedDate: cursorPublishedDate },
+                  { id: { lt: cursorId } },
+                ],
+              },
+            ],
+          }
+        : {}
 
     // 総件数を取得
     totalCount = await ctx.prisma.meshi.count()
@@ -131,7 +139,7 @@ export const meshis: NonNullable<QueryResolvers['meshis']> = async (
     // データ取得（+1件取得してhasNextPageを判定）
     items = await ctx.prisma.meshi.findMany({
       where: whereCondition,
-      orderBy: [ { publishedDate: 'desc' }, { id: 'desc' } ],
+      orderBy: [{ publishedDate: 'desc' }, { id: 'desc' }],
       take: limitPlusOne,
     })
   }

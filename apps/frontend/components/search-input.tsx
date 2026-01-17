@@ -32,7 +32,9 @@ export function SearchInput({ initialQuery = '' }: SearchInputProps) {
       return
     }
 
-    const newUrl = debouncedSearchTerm ? `/?q=${encodeURIComponent(debouncedSearchTerm)}` : '/'
+    const newUrl = debouncedSearchTerm
+      ? `/?q=${encodeURIComponent(debouncedSearchTerm)}`
+      : '/'
     router.push(newUrl)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearchTerm])

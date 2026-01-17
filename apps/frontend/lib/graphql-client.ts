@@ -1,7 +1,7 @@
 import type { User } from 'firebase/auth'
 import { GraphQLClient } from 'graphql-request'
-import { auth } from './firebase'
 import type { MeshiQuery } from '@/src/gql/graphql'
+import { auth } from './firebase'
 
 const endpoint =
   process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || 'http://localhost:44000/graphql'
