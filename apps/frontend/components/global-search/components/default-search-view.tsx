@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import type { SearchItem } from '@/types/global-search'
 import { RecentSearches } from './recent-searches'
 import { TrendingSearches } from './trending-searches'

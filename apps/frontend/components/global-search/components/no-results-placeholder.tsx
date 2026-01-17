@@ -1,7 +1,7 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { FolderSearch } from 'lucide-react'
+import { motion } from 'motion/react'
 import type React from 'react'
 
 import { Button } from '@/components/ui/button'
@@ -40,10 +40,10 @@ export const NoResultsPlaceholder: React.FC<NoResultsPlaceholderProps> = ({
         className="mb-4 text-gray-400"
         aria-hidden="true"
       />
-      <h3 className="mb-2 text-lg font-semibold text-gray-700">
+      <h3 className="mb-2 text-lg font-semibold text-gray-700 text-balance">
         No results found
       </h3>
-      <p className="mb-4 text-sm text-gray-500">
+      <p className="mb-4 text-sm text-gray-500 text-pretty">
         We couldn&apos;t find any items matching your search. Try adjusting your
         keywords or filters.
       </p>
