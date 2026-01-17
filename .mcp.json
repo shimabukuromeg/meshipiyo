@@ -2,31 +2,12 @@
   "mcpServers": {
     "playwright-mcp": {
       "command": "npx",
-      "args": [
-        "@playwright/mcp@latest"
-      ]
+      "args": ["@playwright/mcp@latest"]
     },
     "context7": {
       "type": "stdio",
       "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp"
-      ],
-      "env": {}
-    },
-    "serena": {
-      "type": "stdio",
-      "command": "uvx",
-      "args": [
-        "--from",
-        "git+https://github.com/oraios/serena",
-        "serena-mcp-server",
-        "--context",
-        "ide-assistant",
-        "--project",
-        "/Users/shimabukuromeg/develop/src/github.com/shimabukuromeg/meshipiyo"
-      ],
+      "args": ["-y", "@upstash/context7-mcp"],
       "env": {}
     }
   }
