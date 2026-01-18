@@ -22,15 +22,15 @@ export default async function RestaurantDetail({ id }: Props) {
     <div className="flex flex-col items-center container mx-auto px-4 py-8">
       <Link href="/" passHref className="w-full">
         <Button variant="ghost" className="mb-4">
-          <ArrowLeft className="mr-2 h-4 w-4" />
+          <ArrowLeft className="mr-2 size-4" />
           戻る
         </Button>
       </Link>
       <div className="grid grid-cols-1 gap-8 max-w-[600px]">
         <div>
-          {data.meshi?.imageUrl && (
+          {data.meshi?.imageUrl ? (
             <Suspense
-              fallback={<Skeleton className="w-full h-[400px] rounded-full" />}
+              fallback={<Skeleton className="w-full h-[400px] rounded-lg" />}
             >
               <div className="relative h-[400px] w-full">
                 <Image
@@ -44,6 +44,10 @@ export default async function RestaurantDetail({ id }: Props) {
                 />
               </div>
             </Suspense>
+          ) : (
+            <div className="flex items-center justify-center h-[400px] bg-muted rounded-lg">
+              <p className="text-muted-foreground">画像がありません</p>
+            </div>
           )}
           <div className="mt-4 grid grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => {
@@ -54,7 +58,7 @@ export default async function RestaurantDetail({ id }: Props) {
                 <Suspense
                   key={i.toString()}
                   fallback={
-                    <Skeleton className="w-full h-[100px] rounded-full" />
+                    <Skeleton className="w-full h-[100px] rounded-lg" />
                   }
                 >
                   <div key={i.toString()} className="relative w-full h-[100px]">
@@ -72,7 +76,7 @@ export default async function RestaurantDetail({ id }: Props) {
           </div>
         </div>
         <div>
-          <h1 className="text-3xl font-bold mb-2">{data.meshi?.storeName}</h1>
+          <h1 className="text-3xl font-bold mb-2 text-balance">{data.meshi?.storeName}</h1>
           <div className="flex flex-row flex-wrap gap-1 mb-2">
             <Link
               href={`/municipality/${data.meshi?.municipality?.id}`}
@@ -81,7 +85,7 @@ export default async function RestaurantDetail({ id }: Props) {
               {data.meshi?.municipality?.name}
             </Link>
           </div>
-          <p className="text-lg text-muted-foreground mb-4">
+          <p className="text-lg text-muted-foreground mb-4 text-pretty">
             {data.meshi?.title}
           </p>
           <div className="space-y-4">
@@ -92,7 +96,7 @@ export default async function RestaurantDetail({ id }: Props) {
             >
               <Card>
                 <CardContent className="flex items-center p-4">
-                  <MapPin className="mr-2 h-5 w-5" />
+                  <MapPin className="mr-2 size-5" />
                   <span>{data.meshi?.address}</span>
                 </CardContent>
               </Card>
@@ -102,7 +106,7 @@ export default async function RestaurantDetail({ id }: Props) {
             {data.meshi?.siteUrl && (
               <Link href={data.meshi?.siteUrl} passHref target="_blank">
                 <Button>
-                  <Globe className="mr-2 h-4 w-4" />
+                  <Globe className="mr-2 size-4" />
                   ウェブサイト
                 </Button>
               </Link>
