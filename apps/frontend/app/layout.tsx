@@ -13,7 +13,6 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from '@/components/ui/menubar'
-import { DevSonarReporter } from '@/components/devsonar-reporter'
 import { cn } from '@/lib/utils'
 import './globals.css'
 
@@ -56,7 +55,6 @@ export default function RootLayout({
           </MenubarMenu>
         </Menubar>
         {children}
-        {process.env.NODE_ENV === 'development' && <DevSonarReporter />}
         <SpeedInsights />
         <Analytics />
       </body>
