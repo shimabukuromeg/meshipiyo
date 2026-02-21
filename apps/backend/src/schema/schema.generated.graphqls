@@ -2,33 +2,13 @@ scalar Date
 
 scalar DateTime
 
-type Like {
-  createdAt: DateTime!
-  id: ID!
-  meshi: Meshi!
-  user: User!
-}
-
-type LikeConnection {
-  edges: [LikeEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-type LikeEdge {
-  cursor: String!
-  node: Like!
-}
-
 type Meshi {
   address: String!
   articleId: String!
   createdAt: Date!
   id: ID!
   imageUrl: String!
-  isLiked: Boolean!
   latitude: Float!
-  likeCount: Int!
   longitude: Float!
   municipality: Municipality
   publishedDate: Date!
@@ -62,12 +42,6 @@ type Municipality {
   name: String!
 }
 
-type Mutation {
-  likeMeshi(meshiId: ID!): Like!
-  unlikeMeshi(meshiId: ID!): Boolean!
-  updateUser(input: UpdateUserInput!): User!
-}
-
 type PageInfo {
   endCursor: String
   hasNextPage: Boolean!
@@ -76,35 +50,8 @@ type PageInfo {
 }
 
 type Query {
-  me: User
   meshi(id: ID!): Meshi
   meshis(after: String, first: Int = 20, query: String): MeshiConnection!
   municipalities: [Municipality!]!
   municipality(id: ID!): Municipality
-  myLikes(after: String, first: Int = 20): LikeConnection!
-  user(id: ID!): User!
-  users: [User!]!
-}
-
-input UpdateUserInput {
-  description: String
-  displayName: String
-  iconImageURL: String
-  name: String
-  twitterProfileUrl: String
-}
-
-type User {
-  authProvider: [String!]!
-  createdAt: String!
-  description: String
-  displayName: String!
-  email: String!
-  firebaseUid: String
-  iconImageURL: String
-  id: ID!
-  likeCount: Int!
-  name: String!
-  twitterProfileUrl: String
-  updatedAt: String!
 }

@@ -47,9 +47,7 @@ $ make up
 $ pnpm dev
 ```
 
-**Docker Emulator使用のメリット：**
-- ✅ JDK不要（環境汚染なし）
-- ✅ メール認証の無制限テスト
+**Docker開発のメリット：**
 - ✅ オフライン開発
 - ✅ 本番データへの影響なし
 - ✅ 高速なテストサイクル
@@ -58,8 +56,6 @@ $ pnpm dev
 **アクセスURL：**
 - フロントエンド: http://localhost:33000
 - バックエンド: http://localhost:44000
-- Emulator管理UI: http://localhost:4000
-- 認証Emulator: http://localhost:4000/auth
 
 ### Dockerサービス管理（Makefile）
 
@@ -68,7 +64,7 @@ $ pnpm dev
 $ make help
 
 # サービス管理
-$ make up          # 全サービス起動（DB + Firebase Emulator）
+$ make up          # 全サービス起動
 $ make down        # 全サービス停止
 $ make restart     # 全サービス再起動
 $ make status      # サービス状態確認
@@ -76,7 +72,6 @@ $ make logs        # ログ表示
 
 # 個別サービス
 $ make db          # DB単体起動
-$ make emulator    # Firebase Emulator単体起動
 
 # クリーンアップ
 $ make clean       # コンテナとボリューム削除
@@ -105,50 +100,16 @@ $ cp apps/frontend/.env.local.example apps/frontend/.env.local
 $ cp apps/backend/.env.example apps/backend/.env
 ```
 
-**注意:** 開発モード（`NODE_ENV=development`）では、利用可能な場合自動的にFirebase Emulatorに接続します。
-
-## Firebase Emulatorでの認証テスト
-
-### マジックリンク認証の動作確認
-
-1. **サービス起動**
-   ```bash
-   $ make up      # DB + Firebase Emulator起動
-   $ pnpm dev     # アプリケーション起動
-   ```
-
-2. **認証テスト実行**
-   - ブラウザで http://localhost:33000/auth/login にアクセス
-   - テスト用メールアドレス（例：`test@example.com`）を入力
-   - 「マジックリンクを送信」ボタンをクリック
-
-3. **マジックリンク確認**
-   ```bash
-   # Firebase Emulatorのログでマジックリンクを確認
-   $ docker logs firebase-emulator --tail 10
-   ```
-   
-   ログに以下のような出力が表示されます：
-   ```
-   i  To sign in as test@example.com, follow this link: 
-   http://127.0.0.1:9099/emulator/action?mode=signIn&lang=en&oobCode=...
-   ```
-
-4. **認証完了**
-   - 表示されたリンクをブラウザで開く
-   - 自動的にホームページにリダイレクトされる
-   - http://localhost:4000/auth でユーザー作成を確認
-
 ### ログ確認コマンド
 
 ```bash
 # リアルタイムログ監視（全サービス）
 $ make logs
 
-# Firebase Emulator専用ログ
-$ docker logs firebase-emulator --tail 20  # 最新20行
-$ docker logs firebase-emulator -f         # リアルタイム監視
-$ docker logs firebase-emulator --since 5m # 5分以内のログ
+# DB専用ログ
+$ docker logs meshipiyo --tail 20  # 最新20行
+$ docker logs meshipiyo -f         # リアルタイム監視
+$ docker logs meshipiyo --since 5m # 5分以内のログ
 
 # サービス状態確認
 $ make status
@@ -156,9 +117,8 @@ $ make status
 
 ### トラブルシューティング
 
-- **Emulator UIにアクセスできない場合**: `make restart` でサービス再起動
-- **マジックリンクが表示されない場合**: `docker logs firebase-emulator --tail 50` でログ確認
-- **認証エラーの場合**: http://localhost:4000/auth で設定確認
+- **DBに接続できない場合**: `make restart` でサービス再起動
+- **マイグレーションに失敗する場合**: `pnpm --filter backend db:migrate:dev` を再実行
 
 ## コード品質管理
 

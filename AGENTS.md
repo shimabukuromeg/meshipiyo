@@ -8,7 +8,7 @@
 
 ## Build, Test, and Development Commands
 - Install: `pnpm install`
-- Start services (DB + Firebase Emulator): `make up` • Full dev: `make dev`
+- Start services: `make up` • Full dev: `make dev`
 - Run all apps (turbo): `pnpm dev` • Build all: `pnpm build`
 - Backend only: `pnpm --filter backend dev | build | start`
 - DB migrations: `pnpm --filter backend db:migrate:dev`
@@ -43,4 +43,4 @@
 - Never commit secrets. Copy env files and edit locally:
   - Frontend: `cp apps/frontend/.env.local.example apps/frontend/.env.local`
   - Backend: `cp apps/backend/.env.example apps/backend/.env`
-- Local endpoints: FE `http://localhost:33000`, BE `http://localhost:44000`, Emulator UI `http://localhost:4000`.
+- Local endpoints: FE `http://localhost:33000`, BE `http://localhost:44000`.
