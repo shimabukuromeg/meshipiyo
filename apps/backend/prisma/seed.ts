@@ -15,41 +15,6 @@ async function main() {
     console.error('PGroonga拡張の有効化中にエラーが発生しました:', error)
   }
 
-  await prisma.user.createMany({
-    data: [
-      {
-        name: 'シマブクロメグミ',
-        displayName: 'Megumi Shimabukuro',
-        email: 'shimabukuromeg@example.com',
-        iconImageURL:
-          'https://vnbnghhfpjhiwnipemcz.supabase.co/storage/v1/object/public/graphql-yoga-sample/profile2.jpg',
-        description: '1991年うまれ。ソフトウェアエンジニア🧑‍💻',
-        twitterProfileUrl: 'https://twitter.com/20092014',
-        authProvider: [],
-      },
-      {
-        name: 'シマブクロメグミ2',
-        displayName: 'Megumi Shimabukuro 2',
-        email: 'shimabukuromeg2@example.com',
-        iconImageURL:
-          'https://vnbnghhfpjhiwnipemcz.supabase.co/storage/v1/object/public/graphql-yoga-sample/profile2.jpg',
-        description: '1992年うまれ。ソフトウェアエンジニア🧑‍💻',
-        twitterProfileUrl: 'https://twitter.com/20092014',
-        authProvider: [],
-      },
-      {
-        name: 'シマブクロメグミ3',
-        displayName: 'Megumi Shimabukuro 3',
-        email: 'shimabukuromeg3@example.com',
-        iconImageURL:
-          'https://vnbnghhfpjhiwnipemcz.supabase.co/storage/v1/object/public/graphql-yoga-sample/profile2.jpg',
-        description: '1993年うまれ。ソフトウェアエンジニア🧑‍💻',
-        twitterProfileUrl: 'https://twitter.com/20092014',
-        authProvider: [],
-      },
-    ],
-  })
-
   // 他のテーブルデータ追加処理が終わった後にインデックスを作成
   try {
     // PGroongaインデックスを作成

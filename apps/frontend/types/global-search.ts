@@ -39,8 +39,6 @@ export type SearchItem = {
   storeName: string
   publishedDate: string
   createdAt: string
-  isLiked: boolean
-  likeCount: number
   municipality?: {
     __typename?: 'Municipality'
     id: string

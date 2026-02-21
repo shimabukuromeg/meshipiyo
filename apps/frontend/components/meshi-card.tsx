@@ -1,20 +1,10 @@
 'use client'
 
 import { MapPin } from 'lucide-react'
-import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { type FragmentType, graphql, useFragment } from '@/src/gql'
-
-// LikeButtonを動的インポートに変更し、SSRを無効化
-const LikeButton = dynamic(
-  () => import('./like-button').then((mod) => ({ default: mod.LikeButton })),
-  {
-    ssr: false,
-    loading: () => <div className="size-6" />, // ローディング中のプレースホルダー
-  },
-)
 
 export const MeshiCardFragment = graphql(`
   fragment MeshiCard on Meshi {
@@ -25,8 +15,6 @@ export const MeshiCardFragment = graphql(`
     storeName
     publishedDate
     createdAt
-    isLiked
-    likeCount
     municipality {
       id
       name
@@ -72,13 +60,7 @@ export const MeshiCard = (props: Props) => {
               {meshi.municipality?.name || '不明'}
             </span>
           )}
-          <div className="flex items-center gap-1">
-            <LikeButton
-              meshiId={meshi.id}
-              isLiked={meshi.isLiked}
-              likeCount={meshi.likeCount}
-              size="small"
-            />
+          <div className="flex items-center">
             <Link
               href={`https://www.google.com/maps/search/?api=1&query=${meshi?.storeName}`}
               target="_blank"
