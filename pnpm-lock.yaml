@@ -34,8 +34,8 @@ importers:
         specifier: 1.1.2
         version: 1.1.2
       fastify:
-        specifier: 5.7.1
-        version: 5.7.1
+        specifier: 5.7.4
+        version: 5.7.4
       firebase-admin:
         specifier: 13.6.0
         version: 13.6.0(encoding@0.1.13)
@@ -3454,8 +3454,8 @@ packages:
     resolution: {integrity: sha512-RKihhV+SHsIUGXObeVy9AXiBbFwkVk7Syp8XgwN5U3JV416+Gwp/GO9i0JYKmikykgz/UHRrrV4ROuZEo/T0ig==}
     hasBin: true
 
-  fastify@5.7.1:
-    resolution: {integrity: sha512-ZW7S4fxlZhE+tYWVokFzjh+i56R+buYKNGhrVl6DtN8sxkyMEzpJnzvO8A/ZZrsg5w6X37u6I4EOQikYS5DXpA==}
+  fastify@5.7.4:
+    resolution: {integrity: sha512-e6l5NsRdaEP8rdD8VR0ErJASeyaRbzXYpmkrpr2SuvuMq6Si3lvsaVy5C+7gLanEkvjpMDzBXWE5HPeb/hgTxA==}
 
   fastq@1.19.1:
     resolution: {integrity: sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ==}
@@ -9037,7 +9037,7 @@ snapshots:
       strnum: 1.1.2
     optional: true
 
-  fastify@5.7.1:
+  fastify@5.7.4:
     dependencies:
       '@fastify/ajv-compiler': 4.0.5
       '@fastify/error': 4.1.0
