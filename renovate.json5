@@ -160,14 +160,6 @@
       "addLabels": ["group:react"],
     },
 
-    // Firebase
-    {
-      "groupName": "Firebase",
-      "groupSlug": "firebase",
-      "matchPackageNames": ["firebase", "firebase-admin"],
-      "addLabels": ["group:firebase"],
-    },
-
     // Pino ロギング
     {
       "groupName": "Logging (pino)",

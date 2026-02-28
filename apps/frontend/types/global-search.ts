@@ -17,17 +17,6 @@ export type SearchItemType =
   | 'global'
 
 /**
- * Possible statuses for search items
- */
-export type SearchItemStatus =
-  | 'active'
-  | 'inactive'
-  | 'pending'
-  | 'completed'
-  | 'archived'
-  | 'scheduled'
-
-/**
  * Structure of a search item
  */
 export type SearchItem = {
@@ -53,23 +42,4 @@ export interface SearchFilter {
   id: SearchItemType
   title: string
   icon: LucideIcon
-}
-
-/**
- * Structure of the response from fetching search items
- */
-export interface FetchSearchItemsResponse {
-  items: SearchItem[]
-  totalCount: number
-  nextCursor: string | null
-}
-
-/**
- * Parameters for fetching search items
- */
-export interface FetchSearchItemsParams {
-  limit: number
-  searchTerm: string
-  filter: SearchItemType
-  trending: boolean
 }

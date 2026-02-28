@@ -10,9 +10,6 @@ import { createRequestLogger } from '../lib/logger'
 interface LoggerContext {
   requestId?: string
   logger?: ReturnType<typeof createRequestLogger>
-  user?: {
-    id?: string
-  }
 }
 
 function isOperationDefinition(
@@ -33,8 +30,7 @@ export const graphqlLoggerPlugin = (): Plugin<LoggerContext> => {
   return {
     onExecute({ args }) {
       const requestId = uuidv4()
-      const userId = args.contextValue?.user?.id
-      const requestLogger = createRequestLogger(requestId, userId)
+      const requestLogger = createRequestLogger(requestId)
 
       // Add logger to context
       args.contextValue = {
