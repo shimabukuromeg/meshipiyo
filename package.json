@@ -27,7 +27,7 @@
     "yarn": "use pnpm please!"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.4",
+    "@biomejs/biome": "2.4.16",
     "knip": "5.82.0",
     "turbo": "2.7.5"
   }
