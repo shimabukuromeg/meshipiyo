@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { PAGE_SIZE, TRADING_PAGE_SIZE } from '@/src/constants/common'
-// import { useSearch } from "../queries/use-search-query";
+import { PAGE_SIZE, TRENDING_PAGE_SIZE } from '@/src/constants/common'
 import type { SearchItem } from '@/types/global-search'
 import { useGlobalSearchStore } from '../store/global-search-store'
 
@@ -46,7 +45,7 @@ const useGlobalSearch = () => {
       setIsError(false)
       setError(null)
       try {
-        const limit = fetchTrending ? TRADING_PAGE_SIZE : PAGE_SIZE
+        const limit = fetchTrending ? TRENDING_PAGE_SIZE : PAGE_SIZE
         const params = new URLSearchParams()
         params.append('first', limit.toString())
         if (searchQuery) {
@@ -83,7 +82,7 @@ const useGlobalSearch = () => {
   // Extract trending items from the search results
   const trendingItems = useMemo(() => {
     if (fetchTrending) {
-      return searchResults.slice(0, TRADING_PAGE_SIZE)
+      return searchResults.slice(0, TRENDING_PAGE_SIZE)
     }
     return []
   }, [searchResults, fetchTrending])

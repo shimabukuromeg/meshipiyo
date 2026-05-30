@@ -8,6 +8,6 @@
 export const PAGE_SIZE = 1000
 
 /**
- * Trading Page Size
+ * Trending Page Size
  */
-export const TRADING_PAGE_SIZE = 1000
+export const TRENDING_PAGE_SIZE = 1000

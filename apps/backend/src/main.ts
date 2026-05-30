@@ -1,7 +1,6 @@
 // fastify 導入した。
 // 参考: https://the-guild.dev/graphql/yoga-server/docs/integrations/integration-with-fastify
-import fastify, { type FastifyReply, type FastifyRequest } from 'fastify'
-import { applyMiddleware } from 'graphql-middleware'
+import fastify from 'fastify'
 import { createSchema, createYoga } from 'graphql-yoga'
 import { createContext } from './context'
 import { logger } from './lib/logger'
@@ -33,12 +32,10 @@ function main() {
 
   // TODO: スキーマ読み込み
   const yoga = createYoga({
-    schema: applyMiddleware(
-      createSchema({
-        typeDefs,
-        resolvers,
-      }),
-    ),
+    schema: createSchema({
+      typeDefs,
+      resolvers,
+    }),
     context: createContext,
     graphiql: true,
     plugins: [graphqlLoggerPlugin()],
@@ -64,10 +61,7 @@ function main() {
     url: yoga.graphqlEndpoint,
     method: ['GET', 'POST', 'OPTIONS'],
     handler: async (req, reply) => {
-      // Second parameter adds Fastify's `req` to the GraphQL Context
-      const response = await yoga.handleNodeRequest(req, {
-        req,
-      })
+      const response = await yoga.handleNodeRequest(req)
       response.headers.forEach((value, key) => {
         reply.header(key, value)
       })

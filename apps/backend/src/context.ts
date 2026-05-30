@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client'
-import type { FastifyRequest } from 'fastify'
 import { createClient } from '../src/micro-cms-schemas/generated'
 
 const prisma = new PrismaClient()
@@ -13,9 +12,7 @@ export type GraphQLContext = {
   microCms: ReturnType<typeof createClient>
 }
 
-export async function createContext(context: {
-  req: FastifyRequest
-}): Promise<GraphQLContext> {
+export async function createContext(): Promise<GraphQLContext> {
   return {
     prisma,
     microCms,

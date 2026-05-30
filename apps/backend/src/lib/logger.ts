@@ -35,9 +35,8 @@ export function createChildLogger(context: Record<string, any>) {
   return logger.child(context)
 }
 
-export function createRequestLogger(requestId: string, userId?: string) {
+export function createRequestLogger(requestId: string) {
   return logger.child({
     requestId,
-    userId,
   })
 }
