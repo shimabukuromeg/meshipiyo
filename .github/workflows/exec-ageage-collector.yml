@@ -19,7 +19,6 @@ env:
   IMAGE_HOST: "asia-northeast1-docker.pkg.dev"
   IMAGE_TAG_BASE: ${{ secrets.IMAGE_TAG_BASE }} # 例. プロジェクトID/artifact_registry名/イメージ名
   GCP_REGION: asia-northeast1
-  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
 jobs:
   exec-ageage-collector:
@@ -57,33 +56,3 @@ jobs:
           echo ": $jobs_cmd a job"
           gcloud run jobs $jobs_cmd ageagecli --image="${{ env.IMAGE_HOST }}/${{ env.IMAGE_TAG_BASE }}:latest" --max-retries=1 --args="node,dist/src/scripts/ageage-collector/index.js" --service-account="${{ env.RUN_SERVICE_ACCOUNT }}" --set-secrets="DATABASE_URL=DATABASE_URL:latest"
           gcloud run jobs execute ageagecli --wait --format=json
-
-  vercle-deploy:
-    needs: exec-ageage-collector
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          check-latest: true
-
-      - name: Setup pnpm (latest)
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest
-          run_install: false  # 自動で pnpm install したくない場合は false
-
-      - name: Install Vercel CLI
-        run: npm install --global vercel@latest
-
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ env.VERCEL_TOKEN }}
-
-      - name: Build Project Artifacts
-        run: vercel build --prod --token=${{ env.VERCEL_TOKEN }}
-
-      - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --prod --token=${{ env.VERCEL_TOKEN }}
