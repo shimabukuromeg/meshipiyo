@@ -38,7 +38,7 @@ const data = await fetch('https://api.example.com/data', {
 現在のコード：
 ```typescript
 fetch: cache(async (url: any, params: any) =>
-  fetch(url, { ...params, next: { revalidate: 60, tags: ['meshi-data'] } }),
+  fetch(url, { ...params, next: { revalidate: 60 } }),
 ),
 ```
 
@@ -51,7 +51,7 @@ fetch: cache(async (url: any, params: any) =>
     ...params,
     ...(isDev 
       ? { cache: 'no-store' }
-      : { next: { revalidate: 60, tags: ['meshi-data'] } }
+      : { next: { revalidate: 60 } }
     )
   }),
 ),

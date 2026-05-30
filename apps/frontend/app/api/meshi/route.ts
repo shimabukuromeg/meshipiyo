@@ -21,7 +21,7 @@ export async function GET(request: Request) {
   const client = new GraphQLClient(backendEndpoint, {
     // biome-ignore lint/suspicious/noExplicitAny: Next.js fetch cache requires any for generic fetch signature
     fetch: cache(async (url: any, params: any) =>
-      fetch(url, { ...params, next: { revalidate: 60, tags: ['meshi-data'] } }),
+      fetch(url, { ...params, next: { revalidate: 60 } }),
     ),
   })
 
