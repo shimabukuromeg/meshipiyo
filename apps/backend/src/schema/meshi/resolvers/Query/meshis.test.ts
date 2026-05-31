@@ -1,13 +1,32 @@
+import type { GraphQLResolveInfo } from 'graphql'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import type { GraphQLContext } from '../../../../context'
 import { decodeMeshiCursor } from '../../../../lib/cursor'
+import type {
+  MeshiConnection,
+  QuerymeshisArgs,
+  QueryResolvers,
+} from '../../../types.generated'
 import { meshis } from './meshis'
 
 function d(s: string) {
   return new Date(s)
 }
 
+type PrismaMock = {
+  meshi: {
+    findMany: ReturnType<typeof vi.fn>
+    count: ReturnType<typeof vi.fn>
+    findUnique: ReturnType<typeof vi.fn>
+  }
+  $queryRaw: ReturnType<typeof vi.fn>
+}
+
+type MeshisResolver = NonNullable<QueryResolvers<GraphQLContext>['meshis']>
+type MeshisArgs = QuerymeshisArgs & { first: number }
+
 describe('Query.meshis resolver (composite cursor pagination)', () => {
-  const prismaMock: any = {
+  const prismaMock: PrismaMock = {
     meshi: {
       findMany: vi.fn(),
       count: vi.fn(),
@@ -15,22 +34,27 @@ describe('Query.meshis resolver (composite cursor pagination)', () => {
     },
     $queryRaw: vi.fn(),
   }
-  const ctx: any = { prisma: prismaMock }
+  const ctx = { prisma: prismaMock } as unknown as GraphQLContext
+  const info = {} as GraphQLResolveInfo
 
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
   const callResolver = async (
-    resolver: any,
-    parent: any,
-    args: any,
-    ctx: any,
-  ) => {
+    resolver: MeshisResolver,
+    args: MeshisArgs,
+  ): Promise<MeshiConnection> => {
+    const parent = {}
     if (typeof resolver === 'function')
-      return await resolver(parent, args, ctx, undefined)
+      return (await resolver(parent, args, ctx, info)) as MeshiConnection
     if (resolver && typeof resolver.resolve === 'function')
-      return await resolver.resolve(parent, args, ctx, undefined)
+      return (await resolver.resolve(
+        parent,
+        args,
+        ctx,
+        info,
+      )) as MeshiConnection
     throw new Error('Invalid resolver')
   }
 
@@ -78,7 +102,7 @@ describe('Query.meshis resolver (composite cursor pagination)', () => {
     prismaMock.meshi.count.mockResolvedValue(items.length)
     prismaMock.meshi.findMany.mockResolvedValue(items)
 
-    const result = await callResolver(meshis as any, {}, { first: 2 }, ctx)
+    const result = await callResolver(meshis, { first: 2 })
 
     expect(result.edges).toHaveLength(2)
     expect(result.pageInfo.hasNextPage).toBe(true)
@@ -90,12 +114,7 @@ describe('Query.meshis resolver (composite cursor pagination)', () => {
     // Second page after endCursor should return the remaining item and hasNextPage=false
     prismaMock.meshi.findMany.mockResolvedValue([items[2]])
 
-    const result2 = await callResolver(
-      meshis as any,
-      {},
-      { first: 2, after: end },
-      ctx,
-    )
+    const result2 = await callResolver(meshis, { first: 2, after: end })
     expect(prismaMock.meshi.findMany).toHaveBeenLastCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({ OR: expect.any(Array) }),
@@ -103,7 +122,7 @@ describe('Query.meshis resolver (composite cursor pagination)', () => {
         take: 3,
       }),
     )
-    expect(result2.edges.map((e: any) => e.node.id)).toEqual([1])
+    expect(result2.edges.map((edge) => edge.node.id)).toEqual([1])
     expect(result2.pageInfo.hasNextPage).toBe(false)
   })
 
@@ -138,8 +157,8 @@ describe('Query.meshis resolver (composite cursor pagination)', () => {
     prismaMock.meshi.count.mockResolvedValue(items.length)
     prismaMock.meshi.findMany.mockResolvedValue(items)
 
-    const firstPage = await callResolver(meshis as any, {}, { first: 1 }, ctx)
-    expect(firstPage.edges.map((e: any) => e.node.id)).toEqual([10])
+    const firstPage = await callResolver(meshis, { first: 1 })
+    expect(firstPage.edges.map((edge) => edge.node.id)).toEqual([10])
     expect(firstPage.pageInfo.hasNextPage).toBe(true)
 
     const endCursor = firstPage.pageInfo.endCursor!
@@ -150,13 +169,11 @@ describe('Query.meshis resolver (composite cursor pagination)', () => {
     // Next page should return id 9 (same date, lower id)
     prismaMock.meshi.findMany.mockResolvedValue([items[1]])
 
-    const secondPage = await callResolver(
-      meshis as any,
-      {},
-      { first: 1, after: endCursor },
-      ctx,
-    )
-    expect(secondPage.edges.map((e: any) => e.node.id)).toEqual([9])
+    const secondPage = await callResolver(meshis, {
+      first: 1,
+      after: endCursor,
+    })
+    expect(secondPage.edges.map((edge) => edge.node.id)).toEqual([9])
     expect(secondPage.pageInfo.hasNextPage).toBe(false)
   })
 })

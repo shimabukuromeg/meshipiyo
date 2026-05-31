@@ -76,7 +76,9 @@ export default async function RestaurantDetail({ id }: Props) {
           </div>
         </div>
         <div>
-          <h1 className="text-3xl font-bold mb-2 text-balance">{data.meshi?.storeName}</h1>
+          <h1 className="text-3xl font-bold mb-2 text-balance">
+            {data.meshi?.storeName}
+          </h1>
           <div className="flex flex-row flex-wrap gap-1 mb-2">
             <Link
               href={`/municipality/${data.meshi?.municipality?.id}`}
