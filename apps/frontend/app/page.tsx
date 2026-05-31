@@ -1,8 +1,7 @@
-import { GraphQLClient } from 'graphql-request'
-import { cache } from 'react'
 import { loadMoreMeshis } from '@/app/actions/meshi'
 import { MeshiListContainer } from '@/components/meshi-list-container'
 import { SearchInput } from '@/components/search-input'
+import { createNoStoreGraphQLClient } from '@/lib/graphql-client'
 import { graphql } from '@/src/gql'
 import type { MeshiQuery, MeshiQueryVariables } from '@/src/gql/graphql'
 
@@ -62,16 +61,7 @@ export default async function Home(props: HomePageProps) {
  * @returns メシデータ
  */
 const fetchMeshis = async (first = 20, query?: string) => {
-  const backendEndpoint =
-    process.env.BACKEND_ENDPOINT ?? 'http://localhost:44000/graphql'
-
-  const client = new GraphQLClient(backendEndpoint, {
-    // biome-ignore lint/suspicious/noExplicitAny: Next.js fetch cache requires any for generic fetch signature
-    // 初回データ取得時もキャッシュを使用しない（本番でのhasNextPage不整合を回避）
-    fetch: cache(async (url: any, params: any) =>
-      fetch(url, { ...params, cache: 'no-store' }),
-    ),
-  })
+  const client = createNoStoreGraphQLClient({ cached: true })
 
   // 変数オブジェクトを明示的に型付け
   const variables: MeshiQueryVariables = { first, query }

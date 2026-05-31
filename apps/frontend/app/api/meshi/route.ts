@@ -1,6 +1,5 @@
-import { GraphQLClient } from 'graphql-request'
 import { NextResponse } from 'next/server'
-import { cache } from 'react'
+import { createRevalidatedGraphQLClient } from '@/lib/graphql-client'
 import { graphql } from '@/src/gql'
 import type {
   MeshiSearchQuery,
@@ -13,17 +12,7 @@ export async function GET(request: Request) {
   const query = searchParams.get('query') ?? undefined
   const after = searchParams.get('after') ?? undefined
 
-  const backendEndpoint =
-    process.env.BACKEND_ENDPOINT ?? 'http://localhost:44000/graphql'
-
-  console.log('backendEndpoint', process.env.BACKEND_ENDPOINT)
-
-  const client = new GraphQLClient(backendEndpoint, {
-    // biome-ignore lint/suspicious/noExplicitAny: Next.js fetch cache requires any for generic fetch signature
-    fetch: cache(async (url: any, params: any) =>
-      fetch(url, { ...params, next: { revalidate: 60 } }),
-    ),
-  })
+  const client = createRevalidatedGraphQLClient(60)
 
   // 変数オブジェクトを明示的に型付け
   const variables: MeshiSearchQueryVariables = { first, query, after }

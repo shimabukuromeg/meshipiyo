@@ -1,9 +1,12 @@
+const path = require('node:path')
+
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  outputFileTracingRoot: path.join(__dirname, '../..'),
   experimental: {
     serverComponentsHmrCache: false, // 開発時のHMRキャッシュを無効化
   },

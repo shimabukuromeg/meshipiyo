@@ -10,14 +10,9 @@
       "entry": [
         "app/**/*.{ts,tsx}",
         "components/**/*.{ts,tsx}",
-        "hooks/**/*.ts",
         "lib/**/*.ts",
         "utils/**/*.ts",
-        "contexts/**/*.tsx",
         "types/**/*.ts",
-        "next.config.js",
-        "codegen.ts",
-        "playwright.config.ts",
         "e2e/**/*.spec.ts"
       ],
       "project": ["**/*.{ts,tsx}"],
@@ -36,9 +31,7 @@
       "entry": [
         "src/main.ts",
         "src/scripts/**/*.ts",
-        "src/schema/**/resolvers/**/*.ts",
-        "codegen.ts",
-        "prisma/seed.ts"
+        "src/schema/**/resolvers/**/*.ts"
       ],
       "project": ["src/**/*.ts", "prisma/**/*.ts"],
       "ignore": [
