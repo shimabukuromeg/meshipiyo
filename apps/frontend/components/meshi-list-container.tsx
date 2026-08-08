@@ -197,8 +197,8 @@ export function MeshiListContainer({
 
   return (
     <>
-      <div className="flex justify-center">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div>
+        <div className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 lg:gap-y-16">
           {meshis.map((meshi, index) => (
             <MeshiCard
               meshi={meshi}
