@@ -80,6 +80,19 @@ export default async function Home(props: HomePageProps) {
         </div>
       </section>
 
+      <div className="sticky top-0 z-40 border-y border-[#d9d4ca] bg-[#f5f2eb]/95 backdrop-blur-md">
+        <div className="mx-auto flex w-full max-w-[1180px] items-center gap-4 px-4 py-3 sm:px-6 lg:px-8">
+          <p className="hidden shrink-0 text-[11px] font-bold tracking-[0.18em] text-[#7a6c56] sm:block">
+            FIND YOUR MEAL
+          </p>
+          <SearchInput
+            initialQuery={query}
+            className="ml-auto max-w-xl"
+            inputClassName="h-10 rounded-none border-x-0 border-t-0 border-b-[#8f887d] bg-transparent pl-8 pr-9 text-sm shadow-none focus-visible:ring-0"
+          />
+        </div>
+      </div>
+
       <section className="mx-auto w-full max-w-[1180px] px-4 pb-20 pt-10 sm:px-6 sm:pb-24 sm:pt-16 lg:px-8">
         <div className="mb-8 border-b border-[#bdb7ad] pb-6 sm:mb-10 sm:flex sm:items-end sm:justify-between">
           <div>
