@@ -3,7 +3,6 @@
 import { MapPin } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { type FragmentType, graphql, useFragment } from '@/src/gql'
 
 export const MeshiCardFragment = graphql(`
@@ -31,58 +30,61 @@ export const MeshiCard = (props: Props) => {
   const meshi = useFragment(MeshiCardFragment, props.meshi)
 
   return (
-    <Card className="p-4 max-w-[345px]" key={meshi.id}>
-      <CardContent className="p-0">
-        <div className="flex justify-center">
-          {/* 中央に寄せる */}
-          <Link target="_blank" href={meshi.siteUrl} key={meshi.id}>
+    <article className="group min-w-0" key={meshi.id}>
+      <Link href={`/meshi/${meshi.id}`} className="block">
+        <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+          {meshi.imageUrl && (
             <Image
-              className="h-auto max-w-full rounded-lg"
-              width={313}
-              height={313}
+              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.025]"
+              fill
               src={meshi.imageUrl}
-              alt=""
+              alt={`${meshi.storeName}の料理`}
               loading={props.isEager ? 'eager' : 'lazy'}
               fetchPriority={props.isEager ? 'high' : undefined}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
             />
-          </Link>
+          )}
         </div>
-        <div className="flex flex-row items-center justify-between flex-wrap gap-1 pt-3 pb-1">
+      </Link>
+
+      <div className="pt-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
           {meshi.municipality?.id ? (
             <Link
               href={`/municipality/${meshi.municipality.id}`}
-              className="px-4 py-1 rounded-xl font-bold text-[12px] text-white w-fit bg-primary"
+              className="font-bold text-[#806a48] hover:underline"
             >
-              {meshi.municipality.name}
+              {meshi.municipality.name} →
             </Link>
           ) : (
-            <span className="px-4 py-1 rounded-xl font-bold text-[12px] text-white w-fit bg-gray-400">
+            <span className="font-medium text-muted-foreground">
               {meshi.municipality?.name || '不明'}
             </span>
           )}
-          <div className="flex items-center">
-            <Link
-              href={`https://www.google.com/maps/search/?api=1&query=${meshi?.storeName}`}
-              target="_blank"
-              passHref
-            >
-              <MapPin className="size-6 text-amber-700" fill="#fff" />
-            </Link>
-          </div>
+          <time className="tabular-nums text-muted-foreground">
+            {new Date(meshi.publishedDate).toLocaleDateString('ja-JP')}
+          </time>
         </div>
-      </CardContent>
-      <CardFooter className="p-0">
-        <div className="w-full">
-          <Link href={`/meshi/${meshi.id}`} key={meshi.id}>
-            <p className="font-bold line-clamp-3 text-balance">{meshi.title}</p>
-          </Link>
-          <div className="flex justify-end mt-1">
-            <p className="text-sm text-gray-500">
-              {new Date(meshi.publishedDate).toLocaleDateString('ja-JP')}
-            </p>
-          </div>
-        </div>
-      </CardFooter>
-    </Card>
+
+        <Link href={`/meshi/${meshi.id}`}>
+          <h3 className="mt-3 text-xl font-bold leading-snug tracking-tight text-[#302b26] transition-colors group-hover:text-[#806a48]">
+            {meshi.storeName}
+          </h3>
+          <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">
+            {meshi.title}
+          </p>
+        </Link>
+
+        <Link
+          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(meshi.storeName)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-[#302b26] hover:underline"
+        >
+          <MapPin className="size-3.5" />
+          地図を見る
+        </Link>
+      </div>
+    </article>
   )
 }
