@@ -5,7 +5,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata } from 'next'
 import { Noto_Sans_JP } from 'next/font/google'
 import Link from 'next/link'
-import { Icons } from '@/components/ui/icons'
+import { BrandLogo } from '@/components/brand-logo'
 import {
   Menubar,
   MenubarContent,
@@ -46,12 +46,9 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={cn('font-sans bg-background', noto.variable)}>
-        <Menubar className="flex flex-row justify-between bg-white shadow-nav">
+        <Menubar className="flex flex-row justify-between bg-white px-4 shadow-nav md:px-8">
           <Link href="/">
-            <div className="flex flex-row items-center">
-              <Icons.logo className="mr-1 h-14 w-14" />
-              <p className="text-s tracking-widest font-bold">飯ぴよ</p>
-            </div>
+            <BrandLogo />
           </Link>
           <MenubarMenu>
             <MenubarTrigger>

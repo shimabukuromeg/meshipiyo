@@ -1,4 +1,5 @@
 import { loadMoreMeshis } from '@/app/actions/meshi'
+import { BrandLogo } from '@/components/brand-logo'
 import { MeshiListContainer } from '@/components/meshi-list-container'
 import { SearchInput } from '@/components/search-input'
 import { createNoStoreGraphQLClient } from '@/lib/graphql-client'
@@ -22,8 +23,11 @@ export default async function Home(props: HomePageProps) {
     <div className="flex justify-center">
       <div className="flex flex-col gap-2 md:p-20 px-2 pt-6 pb-24 max-w-[900px]">
         <div className="text-center mb-4 md:mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-center mb-2 text-primary">
-            🍚 飯ぴよ 🐤
+          <h1 className="mb-2 flex justify-center">
+            <BrandLogo
+              markClassName="size-16 md:size-20"
+              textClassName="text-4xl md:text-5xl"
+            />
           </h1>
           <p className="text-gray-600">美味しいごはんを探そう！</p>
         </div>
