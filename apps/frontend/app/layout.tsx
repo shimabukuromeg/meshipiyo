@@ -23,8 +23,19 @@ const noto = Noto_Sans_JP({
 })
 
 export const metadata: Metadata = {
-  title: '飯ぴよ',
-  description: '沖縄のグルメ情報を探索するサイトです',
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? 'https://meshipiyo.app',
+  ),
+  title: {
+    default: '飯ぴよ｜沖縄のグルメ情報を探そう',
+    template: '%s｜飯ぴよ',
+  },
+  description: '沖縄の飲食店や注目グルメを地域から探せるグルメ情報サイトです。',
+  openGraph: {
+    locale: 'ja_JP',
+    siteName: '飯ぴよ',
+    type: 'website',
+  },
 }
 
 export default function RootLayout({
@@ -33,8 +44,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    // biome-ignore lint/a11y/useValidLang: Using jp for Japanese locale per project convention
-    <html lang="jp">
+    <html lang="ja">
       <body className={cn('font-sans bg-background', noto.variable)}>
         <Menubar className="flex flex-row justify-between bg-white shadow-nav">
           <Link href="/">
