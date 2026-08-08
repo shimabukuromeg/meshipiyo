@@ -45,41 +45,14 @@ export function MeshiListContainer({
     // 最新のpageInfoを使用
     const currentPageInfo = pageInfoRef.current
 
-    console.log('🔍 loadMore called:', {
-      hasNextPage: currentPageInfo.hasNextPage,
-      isLoadingMore,
-      isPending,
-      cursor: currentPageInfo.endCursor,
-      query,
-    })
-
     if (!currentPageInfo.hasNextPage || isLoadingMore || isPending) {
-      console.log('❌ loadMore blocked:', {
-        hasNextPage: currentPageInfo.hasNextPage,
-        isLoadingMore,
-        isPending,
-      })
       return
     }
 
-    console.log('✅ Starting loadMore...')
     setIsLoadingMore(true)
     startTransition(async () => {
       try {
-        console.log('📡 Calling loadMoreAction with:', {
-          cursor: currentPageInfo.endCursor,
-          first: 20,
-          query,
-        })
-
         const data = await loadMoreAction(currentPageInfo.endCursor, 20, query)
-
-        console.log('📦 Received data:', {
-          edgesLength: data.meshis.edges.length,
-          hasNextPage: data.meshis.pageInfo.hasNextPage,
-          endCursor: data.meshis.pageInfo.endCursor,
-          totalCount: data.meshis.totalCount,
-        })
 
         const newMeshis = data.meshis.edges.map((edge) => edge.node)
 
@@ -88,20 +61,7 @@ export function MeshiListContainer({
           const uniqueNewMeshis = newMeshis.filter(
             (meshi) => !existingIds.has(meshi.id),
           )
-          console.log('🔄 Updating meshis:', {
-            prevCount: prev.length,
-            newMeshisCount: newMeshis.length,
-            uniqueNewMeshisCount: uniqueNewMeshis.length,
-            finalCount: prev.length + uniqueNewMeshis.length,
-          })
           return [...prev, ...uniqueNewMeshis]
-        })
-
-        console.log('📝 Updating pageInfo:', {
-          oldCursor: currentPageInfo.endCursor,
-          newCursor: data.meshis.pageInfo.endCursor,
-          oldHasNextPage: currentPageInfo.hasNextPage,
-          newHasNextPage: data.meshis.pageInfo.hasNextPage,
         })
 
         // RefとStateを同時更新
@@ -133,12 +93,6 @@ export function MeshiListContainer({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (isLoadingMore || isPending || isInitialMount) {
-      console.log('🚫 Intersection Observer setup skipped:', {
-        hasNextPage: pageInfo.hasNextPage,
-        isLoadingMore,
-        isPending,
-        isInitialMount,
-      })
       return
     }
 
@@ -148,13 +102,6 @@ export function MeshiListContainer({
     const timeoutId = setTimeout(() => {
       observer = new IntersectionObserver(
         (entries) => {
-          console.log('👁️ Intersection Observer triggered:', {
-            isIntersecting: entries[0].isIntersecting,
-            isLoadingMore,
-            isPending,
-            hasNextPage: pageInfo.hasNextPage,
-            cursor: pageInfo.endCursor,
-          })
           // 最新のpageInfoを使用してチェック
           const latestPageInfo = pageInfoRef.current
           if (
@@ -163,15 +110,7 @@ export function MeshiListContainer({
             !isPending &&
             latestPageInfo.hasNextPage
           ) {
-            console.log('🎯 Calling loadMore from Intersection Observer')
             loadMore()
-          } else {
-            console.log('🛑 Intersection Observer blocked action:', {
-              isIntersecting: entries[0].isIntersecting,
-              isLoadingMore,
-              isPending,
-              hasNextPage: latestPageInfo.hasNextPage,
-            })
           }
         },
         {
@@ -182,7 +121,6 @@ export function MeshiListContainer({
 
       if (loadMoreRef.current) {
         observer.observe(loadMoreRef.current)
-        console.log('📍 Intersection Observer attached to element')
       }
     }, 500) // 200msから500msに増やして状態更新を待つ
 
@@ -190,7 +128,6 @@ export function MeshiListContainer({
       clearTimeout(timeoutId)
       if (observer) {
         observer.disconnect()
-        console.log('🔌 Intersection Observer disconnected')
       }
     }
   }, [isLoadingMore, isPending, isInitialMount, loadMore]) // pageInfoを依存配列から除外してRefを使用
@@ -211,21 +148,51 @@ export function MeshiListContainer({
 
       {/* Infinite scroll trigger */}
       {pageInfo.hasNextPage && (
-        <div ref={loadMoreRef} className="flex justify-center py-8">
+        <div ref={loadMoreRef} className="py-10 sm:py-14">
           {isLoadingMore || isPending ? (
-            <div className="flex items-center gap-2">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
-              <span className="text-gray-600">読み込み中...</span>
+            <div aria-live="polite" aria-busy="true">
+              <p className="mb-5 text-center text-[10px] font-bold tracking-[0.2em] text-[#806a48]">
+                LOADING MORE
+              </p>
+              <div className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+                {Array.from({ length: 3 }, (_, index) => (
+                  <div
+                    // biome-ignore lint/suspicious/noArrayIndexKey: loading placeholders have no stable data identity
+                    key={index}
+                    className="animate-pulse"
+                    aria-hidden="true"
+                  >
+                    <div className="aspect-[4/3] bg-[#ded9d0]" />
+                    <div className="pt-4">
+                      <div className="flex justify-between gap-4">
+                        <div className="h-3 w-16 bg-[#d5cfc4]" />
+                        <div className="h-3 w-20 bg-[#e1dcd3]" />
+                      </div>
+                      <div className="mt-4 h-5 w-3/5 bg-[#cfc8bc]" />
+                      <div className="mt-3 h-3 w-full bg-[#e1dcd3]" />
+                      <div className="mt-2 h-3 w-4/5 bg-[#e1dcd3]" />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           ) : (
-            <p className="text-gray-500">スクロールしてもっと見る</p>
+            <div className="flex items-center gap-4 text-[#8a8278]">
+              <span className="h-px flex-1 bg-[#d9d4ca]" />
+              <p className="text-[10px] font-bold tracking-[0.18em]">
+                SCROLL TO DISCOVER MORE
+              </p>
+              <span className="h-px flex-1 bg-[#d9d4ca]" />
+            </div>
           )}
         </div>
       )}
 
       {!pageInfo.hasNextPage && meshis.length > 0 && (
-        <div className="text-center py-8">
-          <p className="text-gray-500">すべての飯を表示しました 🍚</p>
+        <div className="flex items-center gap-4 py-10 text-[#8a8278] sm:py-14">
+          <span className="h-px flex-1 bg-[#d9d4ca]" />
+          <p className="shrink-0 text-xs">すべてのお店を表示しました</p>
+          <span className="h-px flex-1 bg-[#d9d4ca]" />
         </div>
       )}
     </>
