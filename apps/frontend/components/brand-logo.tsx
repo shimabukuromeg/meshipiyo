@@ -13,11 +13,11 @@ export function BrandLogo({
   textClassName,
 }: BrandLogoProps) {
   return (
-    <span className={cn('inline-flex items-center gap-2', className)}>
-      <Icons.logo className={cn('size-12 shrink-0', markClassName)} />
+    <span className={cn('inline-flex items-center gap-1.5', className)}>
+      <Icons.logo className={cn('size-10 shrink-0', markClassName)} />
       <span
         className={cn(
-          'whitespace-nowrap text-2xl font-bold tracking-[0.04em] text-[#302b26]',
+          'whitespace-nowrap text-[1.625rem] font-bold leading-none tracking-[0.025em] text-[#302b26]',
           textClassName,
         )}
       >
