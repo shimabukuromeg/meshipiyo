@@ -1,7 +1,9 @@
-FROM node:24-alpine
+FROM node:24.22.1-alpine
 
 # Java JREをインストール
-RUN apk add --no-cache openjdk11-jre
+RUN apk upgrade --no-cache \
+    && apk add --no-cache openjdk11-jre ca-certificates \
+    && update-ca-certificates
 
 # Firebase CLIをグローバルインストール
 RUN npm install -g firebase-tools
