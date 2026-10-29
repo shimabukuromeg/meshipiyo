@@ -1,4 +1,4 @@
-FROM node:24.22.1-slim AS base
+FROM node:24.22.2-slim AS base
 RUN apt-get update -y && apt-get install -y --no-install-recommends openssl ca-certificates \
     && update-ca-certificates \
     && rm -rf /var/lib/apt/lists/*
