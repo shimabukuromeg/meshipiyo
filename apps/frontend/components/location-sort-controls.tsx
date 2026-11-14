@@ -9,12 +9,14 @@ type Props = {
   locationApi: LocationApi
   sortedByDistance: boolean
   mode?: 'sort' | 'eta'
+  loadingAll?: boolean
 }
 
 export function LocationSortControls({
   locationApi,
   sortedByDistance,
   mode = 'sort',
+  loadingAll = false,
 }: Props) {
   const { status, requestLocation } = locationApi
   const idleLabel =
@@ -22,9 +24,11 @@ export function LocationSortControls({
   const readyLabel =
     mode === 'eta'
       ? '現在地を取得済み（所要は概算）'
-      : sortedByDistance
-        ? '現在地から近い順に表示中（車の所要は概算）'
-        : '現在地を取得済み'
+      : loadingAll
+        ? '全店を読み込んで近い順に並べています…'
+        : sortedByDistance
+          ? '全店を現在地から近い順に表示中（車の所要は概算）'
+          : '現在地を取得済み'
 
   return (
     <div className="flex flex-wrap items-center gap-3">
