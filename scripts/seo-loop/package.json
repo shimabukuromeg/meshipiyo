@@ -12,7 +12,8 @@
     "apply": "tsx src/cli.ts apply",
     "evaluate": "tsx src/cli.ts evaluate",
     "run-all": "tsx src/cli.ts run-all",
-    "run-weekly": "tsx src/cli.ts run-all"
+    "run-weekly": "tsx src/cli.ts run-all",
+    "test": "tsx src/propose-text.test.ts"
   },
   "dependencies": {
     "googleapis": "^164.1.0"

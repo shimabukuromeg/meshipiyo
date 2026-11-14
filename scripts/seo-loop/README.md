@@ -42,8 +42,11 @@ SEO_DRY_RUN=1 pnpm evaluate
 | `pnpm fetch` / `select` / `propose` | 各ステップ単体 |
 
 `SEO_DRY_RUN=1` を付けると git push / PR 作成をスキップします。
+`SEO_SKIP_INDEX_CHECK=1` で URL Inspection サンプルを省略できます。
 
 候補が無いときは何もしません。オープン中 PR が `meta-overrides.json` や `seo-experiments.tsv` を触っているときは `apply` をスキップします。
+
+`pnpm check` は末尾にインデックス兆候（sitemap と GSC の差分 + URL Inspection サンプル）も出します。未登録っぽい件は title/meta 実験とは別件です。
 
 ## 仕組み（内部）
 
