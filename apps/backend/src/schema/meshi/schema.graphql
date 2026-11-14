@@ -14,6 +14,15 @@ type Meshi {
   publishedDate: Date!
   latitude: Float!
   longitude: Float!
+  phone: String
+  businessHours: String
+  holiday: String
+  parking: String
+  paymentMethods: String
+  officialUrl: String
+  snsUrl: String
+  theme: String
+  sourceVerifiedAt: Date
   createdAt: Date!
   municipality: Municipality
 }

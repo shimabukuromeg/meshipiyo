@@ -25,15 +25,24 @@ export type Meshi = {
   __typename?: 'Meshi';
   address: Scalars['String']['output'];
   articleId: Scalars['String']['output'];
+  businessHours?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['Date']['output'];
+  holiday?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   imageUrl: Scalars['String']['output'];
   latitude: Scalars['Float']['output'];
   longitude: Scalars['Float']['output'];
   municipality?: Maybe<Municipality>;
+  officialUrl?: Maybe<Scalars['String']['output']>;
+  parking?: Maybe<Scalars['String']['output']>;
+  paymentMethods?: Maybe<Scalars['String']['output']>;
+  phone?: Maybe<Scalars['String']['output']>;
   publishedDate: Scalars['Date']['output'];
   siteUrl: Scalars['String']['output'];
+  snsUrl?: Maybe<Scalars['String']['output']>;
+  sourceVerifiedAt?: Maybe<Scalars['Date']['output']>;
   storeName: Scalars['String']['output'];
+  theme?: Maybe<Scalars['String']['output']>;
   title: Scalars['String']['output'];
 };
 
@@ -222,15 +231,24 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 export type MeshiResolvers<ContextType = any, ParentType extends ResolversParentTypes['Meshi'] = ResolversParentTypes['Meshi']> = {
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   articleId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  businessHours?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  holiday?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   latitude?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   longitude?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   municipality?: Resolver<Maybe<ResolversTypes['Municipality']>, ParentType, ContextType>;
+  officialUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  parking?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  paymentMethods?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  phone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   publishedDate?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   siteUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  snsUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  sourceVerifiedAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
   storeName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  theme?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 

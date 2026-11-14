@@ -29,6 +29,15 @@ model Meshi {
   publishedDate      DateTime      @map("published_date")
   latitude           Float
   longitude          Float
+  phone              String?
+  businessHours      String?       @map("business_hours")
+  holiday            String?
+  parking            String?
+  paymentMethods     String?       @map("payment_methods")
+  officialUrl        String?       @map("official_url")
+  snsUrl             String?       @map("sns_url")
+  theme              String?
+  sourceVerifiedAt   DateTime?     @map("source_verified_at") @db.Timestamptz(6)
   createdAt          DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
   municipalityMeshis Int?          @map("municipality_meshis")
   municipality       Municipality? @relation(fields: [municipalityMeshis], references: [id])
