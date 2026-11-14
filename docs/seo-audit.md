@@ -271,3 +271,5 @@ Search Consoleのページ別表示回数と、元記事に構造化欄が揃っ
 | 2026-11-14 | PR #222 merge（店舗詳細 ui-sdk Tabs、関連店舗画像、municipalities force-dynamic） | 詳細UI到達性＋本番ビルド安定 | squash merge 完了。Vercel green |
 | 2026-11-14 | Ageage collector 手動実行成功。店舗詳細 enrichment が DB に反映 | 電話・営業時間等の実データ投入 | GraphQL meshi(834) で phone/hours 確認。URL・SNS 複合ラベルは未対応だったため別PR |
 | 2026-11-14 | ジャンル次元の設計メモを監査に追記 | エリア×ジャンル実装前の方針固定 | docs only |
+| 2026-11-14 | PR #224/#225 merge + collector再実行 | URL・SNS振り分け、theme品質、openingHours JSON-LD | GraphQL meshi834: theme=null, snsUrl=Instagram。HTMLはISR後に追従 |
+| 2026-11-14 | PR #226 merge（ジャンル設計メモ） | エリア×ジャンル実装前の方針固定 | docs only |
