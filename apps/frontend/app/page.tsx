@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { loadMoreMeshis } from '@/app/actions/meshi'
 import { BrandLogo } from '@/components/brand-logo'
 import { MeshiListContainer } from '@/components/meshi-list-container'
@@ -11,6 +12,32 @@ export const dynamic = 'force-dynamic'
 
 type HomePageProps = {
   searchParams: Promise<{ q?: string }>
+}
+
+const HOME_TITLE = '飯ぴよ｜沖縄のグルメ情報を探そう'
+const HOME_DESCRIPTION =
+  '沖縄の飲食店や注目グルメを地域から探せるグルメ情報サイトです。'
+
+export async function generateMetadata({
+  searchParams,
+}: HomePageProps): Promise<Metadata> {
+  const { q } = await searchParams
+  const hasQuery = Boolean(q?.trim())
+
+  return {
+    title: { absolute: HOME_TITLE },
+    description: HOME_DESCRIPTION,
+    alternates: { canonical: '/' },
+    robots: hasQuery
+      ? { index: false, follow: true }
+      : { index: true, follow: true },
+    openGraph: {
+      title: HOME_TITLE,
+      description: HOME_DESCRIPTION,
+      type: 'website',
+      url: '/',
+    },
+  }
 }
 
 export default async function Home(props: HomePageProps) {

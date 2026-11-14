@@ -38,7 +38,7 @@ type MicroCmsImage {
 type Municipality {
   createdAt: Date!
   id: ID!
-  meshis: [Meshi]!
+  meshis(first: Int): [Meshi]!
   name: String!
 }
 

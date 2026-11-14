@@ -3,6 +3,10 @@
 import { MapPin } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import {
+  buildMapSearchQuery,
+  isPresentMeshiValue,
+} from '@/lib/meshi-content'
 import { type FragmentType, graphql, useFragment } from '@/src/gql'
 
 export const MeshiCardFragment = graphql(`
@@ -12,6 +16,7 @@ export const MeshiCardFragment = graphql(`
     siteUrl
     title
     storeName
+    address
     publishedDate
     createdAt
     municipality {
@@ -28,16 +33,21 @@ type Props = {
 
 export const MeshiCard = (props: Props) => {
   const meshi = useFragment(MeshiCardFragment, props.meshi)
+  const imageUrl = isPresentMeshiValue(meshi.imageUrl) ? meshi.imageUrl : null
+  const mapQuery = buildMapSearchQuery(meshi.storeName, meshi.address)
+  const mapUrl = mapQuery
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`
+    : null
 
   return (
     <article className="group min-w-0" key={meshi.id}>
       <Link href={`/meshi/${meshi.id}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-          {meshi.imageUrl && (
+          {imageUrl && (
             <Image
               className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.025]"
               fill
-              src={meshi.imageUrl}
+              src={imageUrl}
               alt={`${meshi.storeName}の料理`}
               loading={props.isEager ? 'eager' : 'lazy'}
               fetchPriority={props.isEager ? 'high' : undefined}
@@ -75,15 +85,17 @@ export const MeshiCard = (props: Props) => {
           </p>
         </Link>
 
-        <Link
-          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(meshi.storeName)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-[#302b26] hover:underline"
-        >
-          <MapPin className="size-3.5" />
-          地図を見る
-        </Link>
+        {mapUrl && (
+          <Link
+            href={mapUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-[#302b26] hover:underline"
+          >
+            <MapPin className="size-3.5" />
+            地図を見る
+          </Link>
+        )}
       </div>
     </article>
   )

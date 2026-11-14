@@ -5,6 +5,7 @@ const config: CodegenConfig = {
   documents: [
     'src/**/*.tsx',
     'app/**/*.tsx',
+    'app/**/*.ts',
     'components/**/*.tsx',
     'lib/**/*.ts',
     'app/api/**/*.ts',

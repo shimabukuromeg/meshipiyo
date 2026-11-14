@@ -7,5 +7,5 @@ type Municipality {
   id: ID!
   name: String!
   createdAt: Date!
-  meshis: [Meshi]!
+  meshis(first: Int): [Meshi]!
 }

@@ -66,6 +66,11 @@ export type Municipality = {
   name: Scalars['String']['output'];
 };
 
+
+export type MunicipalitymeshisArgs = {
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type PageInfo = {
   __typename?: 'PageInfo';
   endCursor?: Maybe<Scalars['String']['output']>;
@@ -249,7 +254,7 @@ export type MicroCmsImageResolvers<ContextType = any, ParentType extends Resolve
 export type MunicipalityResolvers<ContextType = any, ParentType extends ResolversParentTypes['Municipality'] = ResolversParentTypes['Municipality']> = {
   createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  meshis?: Resolver<Array<Maybe<ResolversTypes['Meshi']>>, ParentType, ContextType>;
+  meshis?: Resolver<Array<Maybe<ResolversTypes['Meshi']>>, ParentType, ContextType, Partial<MunicipalitymeshisArgs>>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
