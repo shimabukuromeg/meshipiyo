@@ -55,33 +55,33 @@ export default async function MunicipalityPage({ params }: Props) {
   }
 
   return (
-    <main className="min-h-screen bg-[#f5f2eb] text-[#302b26]">
-      <div className="mx-auto w-full max-w-[1180px] px-4 py-5 sm:px-6 sm:py-8 lg:px-8">
+    <main className="min-h-screen bg-background text-foreground">
+      <div className="mx-auto w-full max-w-content px-4 py-5 sm:px-6 sm:py-8 lg:px-8">
         <nav
           aria-label="パンくずリスト"
-          className="mb-5 flex min-w-0 items-center gap-1 text-xs text-[#777066] sm:mb-7"
+          className="mb-5 flex min-w-0 items-center gap-1 text-xs text-muted-foreground sm:mb-7"
         >
-          <Link href="/" className="hover:text-[#302b26]">
+          <Link href="/" className="hover:text-foreground">
             ホーム
           </Link>
           <ChevronRight aria-hidden="true" className="size-4" />
-          <Link href="/municipalities" className="hover:text-[#302b26]">
+          <Link href="/municipalities" className="hover:text-foreground">
             地域一覧
           </Link>
           <ChevronRight aria-hidden="true" className="size-4" />
-          <span aria-current="page" className="truncate text-[#302b26]">
+          <span aria-current="page" className="truncate text-foreground">
             {data.municipality.name}
           </span>
         </nav>
 
-        <header className="grid overflow-hidden border border-[#2f2b26] md:grid-cols-[1fr_0.38fr]">
-          <div className="flex min-h-[300px] flex-col justify-between bg-[#24211e] p-7 text-white sm:p-10 md:min-h-[360px] lg:p-12">
+        <header className="grid overflow-hidden border border-border md:grid-cols-[1fr_0.38fr]">
+          <div className="flex min-h-[300px] flex-col justify-between bg-ink-deep p-7 text-white sm:p-10 md:min-h-[360px] lg:p-12">
             <div className="flex items-center justify-between text-[10px] font-bold tracking-[0.2em] text-white/55">
               <span>AREA GUIDE</span>
               <span>OKINAWA</span>
             </div>
             <div className="py-10">
-              <p className="mb-4 flex items-center gap-3 text-sm text-[#d5a843]">
+              <p className="mb-4 flex items-center gap-3 text-sm text-gold">
                 <MapPin aria-hidden="true" className="size-4" />
                 沖縄のまちから探す
               </p>
@@ -94,12 +94,12 @@ export default async function MunicipalityPage({ params }: Props) {
             </p>
           </div>
 
-          <div className="flex min-h-[190px] flex-col justify-between bg-[#fbfaf7] p-7 sm:p-10 md:min-h-[360px] lg:p-12">
-            <p className="text-[10px] font-bold tracking-[0.2em] text-[#8a8278]">
+          <div className="flex min-h-[190px] flex-col justify-between bg-card p-7 sm:p-10 md:min-h-[360px] lg:p-12">
+            <p className="text-[10px] font-bold tracking-[0.2em] text-muted-soft">
               RESTAURANTS
             </p>
             <div>
-              <p className="text-sm text-[#777066]">掲載中のお店</p>
+              <p className="text-sm text-muted-foreground">掲載中のお店</p>
               <p className="mt-2 text-6xl font-bold tracking-[-0.05em] tabular-nums">
                 {data.municipality.meshis.length}
                 <span className="ml-2 text-base font-medium tracking-normal">
@@ -109,7 +109,7 @@ export default async function MunicipalityPage({ params }: Props) {
             </div>
             <Link
               href="/"
-              className="inline-flex items-center gap-2 border-t border-[#d9d4ca] pt-5 text-xs font-bold text-[#806a48] hover:underline"
+              className="inline-flex items-center gap-2 border-t border-border-subtle pt-5 text-xs font-bold text-link hover:underline"
             >
               ほかの地域・料理を探す →
             </Link>
@@ -117,9 +117,9 @@ export default async function MunicipalityPage({ params }: Props) {
         </header>
 
         <section className="pb-20 pt-12 sm:pb-24 sm:pt-16">
-          <div className="mb-8 border-b border-[#bdb7ad] pb-6 sm:mb-10 sm:flex sm:items-end sm:justify-between">
+          <div className="mb-8 border-b border-border-soft pb-6 sm:mb-10 sm:flex sm:items-end sm:justify-between">
             <div>
-              <p className="mb-3 text-xs font-bold tracking-[0.2em] text-[#7a6c56]">
+              <p className="mb-3 text-xs font-bold tracking-[0.2em] text-muted-olive">
                 DISCOVER
               </p>
               <h2 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
@@ -128,7 +128,7 @@ export default async function MunicipalityPage({ params }: Props) {
                 今日の一軒。
               </h2>
             </div>
-            <p className="mt-4 text-sm text-[#777066] sm:mt-0">
+            <p className="mt-4 text-sm text-muted-foreground sm:mt-0">
               {data.municipality.meshis.length}件
             </p>
           </div>
@@ -145,11 +145,11 @@ export default async function MunicipalityPage({ params }: Props) {
               })}
             </div>
           ) : (
-            <div className="border-y border-[#d9d4ca] py-16 text-center">
+            <div className="border-y border-border-subtle py-16 text-center">
               <p className="font-medium">この地域のお店はまだありません</p>
               <Link
                 href="/"
-                className="mt-3 inline-block text-sm font-medium text-[#806a48] hover:underline"
+                className="mt-3 inline-block text-sm font-medium text-link hover:underline"
               >
                 ほかの地域から探す →
               </Link>

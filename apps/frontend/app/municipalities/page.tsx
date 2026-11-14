@@ -33,23 +33,23 @@ export default async function MunicipalitiesPage() {
     )
 
   return (
-    <main className="min-h-screen bg-[#f5f2eb] text-[#302b26]">
-      <div className="mx-auto w-full max-w-[1180px] px-4 py-5 sm:px-6 sm:py-8 lg:px-8">
+    <main className="min-h-screen bg-background text-foreground">
+      <div className="mx-auto w-full max-w-content px-4 py-5 sm:px-6 sm:py-8 lg:px-8">
         <nav
           aria-label="パンくずリスト"
-          className="mb-5 flex min-w-0 items-center gap-1 text-xs text-[#777066] sm:mb-7"
+          className="mb-5 flex min-w-0 items-center gap-1 text-xs text-muted-foreground sm:mb-7"
         >
-          <Link href="/" className="hover:text-[#302b26]">
+          <Link href="/" className="hover:text-foreground">
             ホーム
           </Link>
           <ChevronRight aria-hidden="true" className="size-4" />
-          <span aria-current="page" className="truncate text-[#302b26]">
+          <span aria-current="page" className="truncate text-foreground">
             地域一覧
           </span>
         </nav>
 
-        <header className="overflow-hidden border border-[#2f2b26] bg-[#24211e] p-7 text-white sm:p-10 lg:p-12">
-          <p className="mb-4 flex items-center gap-3 text-sm text-[#d5a843]">
+        <header className="overflow-hidden border border-border bg-ink-deep p-7 text-white sm:p-10 lg:p-12">
+          <p className="mb-4 flex items-center gap-3 text-sm text-gold">
             <MapPin aria-hidden="true" className="size-4" />
             AREA INDEX
           </p>
@@ -61,22 +61,22 @@ export default async function MunicipalitiesPage() {
           </p>
         </header>
 
-        <section className="mt-10 border-y border-[#bdb7ad] py-8 sm:mt-14 sm:py-10">
+        <section className="mt-10 border-y border-border-soft py-8 sm:mt-14 sm:py-10">
           <div className="mb-6 flex items-end justify-between gap-4">
             <h2 className="text-2xl font-bold tracking-tight">地域一覧</h2>
-            <p className="text-sm text-[#777066]">{areas.length}地域</p>
+            <p className="text-sm text-muted-foreground">{areas.length}地域</p>
           </div>
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {areas.map((area) => (
               <li key={area.id}>
                 <Link
                   href={`/municipality/${area.id}`}
-                  className="flex items-center justify-between gap-4 border border-[#2f2b26] bg-[#fbfaf7] px-5 py-4 transition-colors hover:bg-white"
+                  className="flex items-center justify-between gap-4 border border-border bg-card px-5 py-4 transition-colors hover:bg-white"
                 >
                   <span className="text-lg font-bold tracking-tight">
                     {area.name}
                   </span>
-                  <span className="text-sm tabular-nums text-[#777066]">
+                  <span className="text-sm tabular-nums text-muted-foreground">
                     {area.meshiCount}件
                   </span>
                 </Link>

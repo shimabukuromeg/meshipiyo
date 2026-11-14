@@ -198,7 +198,7 @@ export default async function RestaurantDetail({ id }: Props) {
   }
 
   return (
-    <main className="min-h-screen bg-[#f5f2eb] text-[#302b26]">
+    <main className="min-h-screen bg-background text-foreground">
       {restaurantJsonLd && (
         <script
           type="application/ld+json"
@@ -216,10 +216,10 @@ export default async function RestaurantDetail({ id }: Props) {
         }}
       />
 
-      <div className="mx-auto w-full max-w-[1180px] px-4 py-5 sm:px-6 sm:py-8 lg:px-8">
+      <div className="mx-auto w-full max-w-content px-4 py-5 sm:px-6 sm:py-8 lg:px-8">
         <nav
           aria-label="パンくずリスト"
-          className="mb-5 flex min-w-0 items-center gap-1 text-xs text-[#777066] sm:mb-7"
+          className="mb-5 flex min-w-0 items-center gap-1 text-xs text-muted-foreground sm:mb-7"
         >
           <Link href="/" className="shrink-0 hover:text-foreground">
             ホーム
@@ -248,11 +248,11 @@ export default async function RestaurantDetail({ id }: Props) {
           </span>
         </nav>
 
-        <article className="overflow-hidden border border-[#2f2b26] bg-[#fbfaf7]">
+        <article className="overflow-hidden border border-border bg-card">
           <div className="grid lg:grid-cols-[1.08fr_0.92fr]">
-            <div className="min-w-0 border-b border-[#2f2b26] lg:border-b-0 lg:border-r">
+            <div className="min-w-0 border-b border-border lg:border-b-0 lg:border-r">
               {imageUrl ? (
-                <div className="relative aspect-[4/3] h-full min-h-[300px] w-full overflow-hidden bg-[#ded9d0]">
+                <div className="relative aspect-[4/3] h-full min-h-[300px] w-full overflow-hidden bg-placeholder">
                   <Image
                     className="object-cover"
                     src={imageUrl}
@@ -263,7 +263,7 @@ export default async function RestaurantDetail({ id }: Props) {
                   />
                 </div>
               ) : (
-                <div className="flex aspect-[4/3] h-full items-center justify-center bg-[#ded9d0]">
+                <div className="flex aspect-[4/3] h-full items-center justify-center bg-placeholder">
                   <p className="text-muted-foreground">画像がありません</p>
                 </div>
               )}
@@ -273,14 +273,14 @@ export default async function RestaurantDetail({ id }: Props) {
               <div>
                 <div className="mb-10 flex items-center justify-between gap-4">
                   <BrandLogo markClassName="size-9" textClassName="text-2xl" />
-                  <span className="text-[10px] font-bold tracking-[0.18em] text-[#8a8278]">
+                  <span className="text-[10px] font-bold tracking-[0.18em] text-muted-soft">
                     OKINAWA FOOD GUIDE
                   </span>
                 </div>
                 {meshi.municipality && (
                   <Link
                     href={`/municipality/${meshi.municipality.id}`}
-                    className="mb-4 inline-flex items-center gap-2 text-xs font-bold text-[#806a48] hover:underline"
+                    className="mb-4 inline-flex items-center gap-2 text-xs font-bold text-link hover:underline"
                   >
                     <MapPin aria-hidden="true" className="size-3.5" />
                     {meshi.municipality.name} →
@@ -291,7 +291,7 @@ export default async function RestaurantDetail({ id }: Props) {
                   {storeName}
                 </h1>
                 {titleText && (
-                  <p className="mt-5 text-pretty leading-8 text-[#6f685f]">
+                  <p className="mt-5 text-pretty leading-8 text-muted-warm">
                     {titleText}
                   </p>
                 )}
@@ -302,7 +302,7 @@ export default async function RestaurantDetail({ id }: Props) {
                   <Button
                     asChild
                     size="lg"
-                    className="h-12 rounded-none bg-[#302b26] text-white hover:bg-[#4a433c] hover:opacity-100"
+                    className="h-12 rounded-none bg-primary text-white hover:bg-ink-hover hover:opacity-100"
                   >
                     <Link
                       href={mapUrl}
@@ -319,7 +319,7 @@ export default async function RestaurantDetail({ id }: Props) {
                     asChild
                     variant="outline"
                     size="lg"
-                    className="h-12 rounded-none border-[#aaa298] bg-transparent hover:bg-[#eeeae2]"
+                    className="h-12 rounded-none border-border-soft bg-transparent hover:bg-paper"
                   >
                     <Link
                       href={articleUrl}
