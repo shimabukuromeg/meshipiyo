@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { loadMoreMeshis } from '@/app/actions/meshi'
 import { BrandLogo } from '@/components/brand-logo'
 import { MeshiListContainer } from '@/components/meshi-list-container'
@@ -92,6 +93,15 @@ export default async function Home(props: HomePageProps) {
                 className="mt-8"
                 inputClassName="h-14 rounded-none border-x-0 border-t-0 border-b-[#302b26] bg-transparent pl-9 pr-10 text-base shadow-none focus-visible:ring-0"
               />
+              <p className="mt-5 text-sm text-[#6f685f]">
+                地域から探したいときは
+                <Link
+                  href="/municipalities"
+                  className="ml-1 font-medium text-[#806a48] underline-offset-4 hover:underline"
+                >
+                  沖縄のまち一覧へ →
+                </Link>
+              </p>
             </div>
 
             <div className="flex items-end justify-between border-t border-[#d9d4ca] pt-5">
