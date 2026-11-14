@@ -248,12 +248,50 @@ Search Consoleのページ別表示回数と、元記事に構造化欄が揃っ
 - LLM によるジャンル付与の本番書き込み
 - 件数の少ないエリア×ジャンルの noindex なし公開
 
+## SNS埋め込み調査（2026-11-14）
+
+店舗詳細に「話題の投稿」を載せたい、という要件に対する調査メモ。
+
+### 結論
+
+| 媒体 | 埋め込み自体 | 話題の自動発見 | いま取れる現実解 |
+| --- | --- | --- | --- |
+| X | 可能（`blockquote.twitter-tweet` + `platform.x.com/widgets.js`） | 現状の接続では Search API が課金スコープ不足で不可 | 投稿URLを人手または有料Searchで集め、URLがある店だけ表示 |
+| Instagram | **投稿・Reel単位なら可能**（2026-06-15以降、tokenless oEmbed） | ハッシュタグ/メンションの自動収集は別APIが必要 | プロフィールURL（`snsUrl`）だけでは埋め込めない。`/p/` `/reel/` の個別URLが必要 |
+| Threads | Meta oEmbed 対象（tokenless） | 同上 | Instagramと同様に投稿URLが必要 |
+
+記憶どおり「Instagramは埋め込めない」時期はあったが、2026-06-15以降は公開投稿の oEmbed がトークンなしで使える。ただし**プロフィールURLは不可**（実測: `instagram_oembed?url=.../okinawasyokudo_nijiya_akebono/` → Invalid URL）。
+
+### 話題調査の現状
+
+- X API `search_posts_all` / `get_posts_counts_recent` は developer billing スコープがなく **403**。
+- Web検索・公開インデックス上でも `飯ぴよ` / `meshipiyo.app` のX投稿は見つからず。
+- 代表店「沖縄食堂 にじや 曙本店」は Instagram / Threads 公式はあるが、埋め込み可能な個別投稿URLは未回収。X公式は見当たらない。
+- よって「話題になっていたら埋め込む」の前提データが、いまはほぼ無い。UIを先に作っても空になる。
+
+### 実装方針（データが揃ってから）
+
+1. **保存単位**: Meshi に紐づく `SocialMention`（仮）  
+   `platform` (`x` / `instagram` / `threads`)・`url`・`fetchedAt`・任意で `authorHandle`。本文の大量転載はしない。
+2. **表示**: 店舗詳細 Tabs に「みんなの投稿」を追加。URLがあるときだけ出す。Xは widgets.js、IG/Threadsは oEmbed HTML（サーバで取得してキャッシュ、またはクライアントで公式embed）。
+3. **収集**  
+   - 短期: オペレータが公開投稿URLを数件貼るパイロット（10店以内）。  
+   - 中期: X Search（課金有効化後）で店名＋地域のクエリ。誤ヒットは人手確認。  
+   - Instagram: 公式プロフィールの最新投稿URLを人手または許可されたAPIで取得。スクレイプはしない。
+4. **やらないこと**: 話題の捏造、非公開投稿、プロフィール埋め込みの無理押し、全店一斉の薄い埋め込み枠。
+
+### 次の決断ポイント
+
+- X Search の課金を有効にするか（自動発見の可否が決まる）。
+- パイロットで貼る投稿URLを誰が集めるか（なければ埋め込みUIは後回し）。
+
 ## 残課題（オペレータ入力があると精度が上がる）
 
 - Search Consoleのクエリ別・ページ別CSV
 - 本番の `"unknown"` / `latitude = 0` / `municipality IS NULL` の件数
 - GTMの中身（GA4接続の有無）
 - アゲアゲ記事コンテンツの利用範囲（構造化項目の再掲が規約上どこまで許されるか）
+- X Search API の課金可否、埋め込みパイロット用の投稿URL
 
 ## 変更・検証の記録欄
 
@@ -273,3 +311,4 @@ Search Consoleのページ別表示回数と、元記事に構造化欄が揃っ
 | 2026-11-14 | ジャンル次元の設計メモを監査に追記 | エリア×ジャンル実装前の方針固定 | docs only |
 | 2026-11-14 | PR #224/#225 merge + collector再実行 | URL・SNS振り分け、theme品質、openingHours JSON-LD | GraphQL meshi834: theme=null, snsUrl=Instagram。HTMLはISR後に追従 |
 | 2026-11-14 | PR #226 merge（ジャンル設計メモ） | エリア×ジャンル実装前の方針固定 | docs only |
+| 2026-11-14 | SNS埋め込み調査（X/IG/Threads）を監査に追記 | 話題投稿の埋め込み可否を固定 | X Searchは課金不足。IGは投稿URLならtokenless oEmbed可 |
