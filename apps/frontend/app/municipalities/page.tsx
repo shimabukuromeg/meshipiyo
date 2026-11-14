@@ -57,7 +57,14 @@ export default async function MunicipalitiesPage() {
             沖縄のまちから探す
           </h1>
           <p className="mt-6 max-w-xl text-sm leading-7 text-white/65">
-            掲載がある地域だけを表示しています。気になるまちを選んで、お店一覧へ進んでください。
+            掲載がある地域だけを表示しています。気になるまちを選んで、お店一覧へ進んでください。店名で一覧したい場合は
+            <Link
+              href="/meshis"
+              className="ml-1 text-gold underline-offset-4 hover:underline"
+            >
+              お店一覧
+            </Link>
+            へ。
           </p>
         </header>
 

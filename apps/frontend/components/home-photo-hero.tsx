@@ -75,7 +75,14 @@ export function HomePhotoHero({ photos, totalCount, initialQuery }: Props) {
                 href="/municipalities"
                 className="ml-1 font-medium text-link underline-offset-4 hover:underline"
               >
-                沖縄のまち一覧へ →
+                沖縄のまち一覧
+              </Link>
+              、店名で見るなら
+              <Link
+                href="/meshis"
+                className="ml-1 font-medium text-link underline-offset-4 hover:underline"
+              >
+                お店一覧へ →
               </Link>
             </p>
           </div>
