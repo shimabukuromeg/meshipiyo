@@ -12,15 +12,24 @@ scalar DateTime
 type Meshi {
   address: String!
   articleId: String!
+  businessHours: String
   createdAt: Date!
+  holiday: String
   id: ID!
   imageUrl: String!
   latitude: Float!
   longitude: Float!
   municipality: Municipality
+  officialUrl: String
+  parking: String
+  paymentMethods: String
+  phone: String
   publishedDate: Date!
   siteUrl: String!
+  snsUrl: String
+  sourceVerifiedAt: Date
   storeName: String!
+  theme: String
   title: String!
 }
 

@@ -25,6 +25,147 @@ export type MeshiData = {
   publishedDate: Date
   latitude: number
   longitude: number
+  phone: string | null
+  businessHours: string | null
+  holiday: string | null
+  parking: string | null
+  paymentMethods: string | null
+  officialUrl: string | null
+  snsUrl: string | null
+  theme: string | null
+  sourceVerifiedAt: Date
+}
+
+export type AgeageStoreDetails = {
+  storeName: string
+  zipCode: string
+  address: string
+  municipality: string
+  phone: string | null
+  businessHours: string | null
+  holiday: string | null
+  parking: string | null
+  paymentMethods: string | null
+  officialUrl: string | null
+  snsUrl: string | null
+  theme: string | null
+}
+
+const LABEL_ALIASES: Record<string, keyof AgeageStoreDetails | 'payment'> = {
+  電話番号: 'phone',
+  電話: 'phone',
+  TEL: 'phone',
+  営業時間: 'businessHours',
+  定休日: 'holiday',
+  駐車場: 'parking',
+  カード: 'payment',
+  電子マネー: 'payment',
+  URL: 'officialUrl',
+  ホームページ: 'officialUrl',
+  HP: 'officialUrl',
+  SNS: 'snsUrl',
+  Instagram: 'snsUrl',
+}
+
+function cleanText(value: string) {
+  return value.replace(/\s+/g, ' ').trim()
+}
+
+/**
+ * アゲアゲ記事の店舗情報 datalist から確認済み項目だけを取り出す
+ */
+export function parseAgeageStoreDetails(html: string): AgeageStoreDetails {
+  const $ = cheerio.load(html)
+  const dts =
+    $('.information_datalist dt').length > 0
+      ? $('.information_datalist dt').toArray()
+      : $('dt').toArray()
+
+  let storeName = 'unknown'
+  let theme: string | null = null
+  let fullAddress = 'unknown'
+  let phone: string | null = null
+  let businessHours: string | null = null
+  let holiday: string | null = null
+  let parking: string | null = null
+  const payments: string[] = []
+  let officialUrl: string | null = null
+  let snsUrl: string | null = null
+
+  if (dts.length > 0) {
+    const firstDt = $(dts[0])
+    storeName = cleanText(firstDt.text()) || 'unknown'
+    const themeCandidate = cleanText(firstDt.next('dd').text())
+    if (
+      themeCandidate &&
+      !themeCandidate.startsWith('〒') &&
+      themeCandidate !== storeName
+    ) {
+      theme = themeCandidate
+    }
+  }
+
+  for (const dtEl of dts) {
+    const dt = $(dtEl)
+    const label = cleanText(dt.text())
+    if (!label) continue
+
+    if (label === '住所') {
+      const addressText = cleanText(dt.next('dd').text())
+      if (addressText) fullAddress = addressText
+      continue
+    }
+
+    const mapped = LABEL_ALIASES[label]
+    if (!mapped) continue
+
+    const values: string[] = []
+    let cursor = dt.next()
+    while (cursor.length > 0 && cursor.get(0)?.tagName?.toLowerCase() === 'dd') {
+      const text = cleanText(cursor.text())
+      const href = cursor.find('a[href]').first().attr('href')?.trim()
+      if (mapped === 'officialUrl' || mapped === 'snsUrl') {
+        if (href) values.push(href)
+        else if (text) values.push(text)
+      } else if (text) {
+        values.push(text)
+      }
+      cursor = cursor.next()
+    }
+    if (values.length === 0) continue
+
+    if (mapped === 'payment') {
+      payments.push(`${label}: ${values.join(' / ')}`)
+      continue
+    }
+    if (mapped === 'businessHours') {
+      businessHours = values.join('\n')
+      continue
+    }
+    if (mapped === 'phone') phone = values[0]
+    if (mapped === 'holiday') holiday = values.join('\n')
+    if (mapped === 'parking') parking = values.join('\n')
+    if (mapped === 'officialUrl') officialUrl = values[0]
+    if (mapped === 'snsUrl') snsUrl = values[0]
+  }
+
+  const { zipCode, address } = getZipcodeAndAddress(fullAddress)
+  const municipality = extractMunicipalityFromAddress(address)
+
+  return {
+    storeName,
+    zipCode,
+    address,
+    municipality,
+    phone,
+    businessHours,
+    holiday,
+    parking,
+    paymentMethods: payments.length > 0 ? payments.join('\n') : null,
+    officialUrl,
+    snsUrl,
+    theme,
+  }
 }
 
 /**
@@ -99,16 +240,14 @@ export const extractMunicipalityFromAddress = (address: string): string => {
  */
 export const findStoreAndAddress = async (
   siteUrl: string,
-): Promise<{
-  storeName: string
-  zipCode: string
-  address: string
-  municipality: string
-  latitude: number
-  longitude: number
-}> => {
+): Promise<
+  AgeageStoreDetails & {
+    latitude: number
+    longitude: number
+    sourceVerifiedAt: Date
+  }
+> => {
   try {
-    // 詳細ページの取得
     const response = await fetch(siteUrl)
 
     if (!response.ok) {
@@ -116,38 +255,14 @@ export const findStoreAndAddress = async (
     }
 
     const html = await response.text()
-
-    // Cheerioでパース
-    const $ = cheerio.load(html)
-
-    // 最初のdt要素から店舗名を取得
-    const storeName = $('dt').first().text().trim() || 'unknown'
-
-    // 「住所」というラベルを持つdt要素の次のdd要素から住所を取得
-    let fullAddress = 'unknown'
-    $('dt').each((_, element) => {
-      if ($(element).text().trim() === '住所') {
-        // dtの次のdd要素を取得
-        fullAddress = $(element).next('dd').text().trim() || 'unknown'
-      }
-    })
-
-    // 郵便番号と住所を分離
-    const { zipCode, address } = getZipcodeAndAddress(fullAddress)
-
-    // 住所から市町村名を抽出
-    const municipality = extractMunicipalityFromAddress(address)
-
-    // 住所から緯度経度を取得
-    const { latitude, longitude } = await getLatLng(address)
+    const details = parseAgeageStoreDetails(html)
+    const { latitude, longitude } = await getLatLng(details.address)
 
     return {
-      storeName,
-      zipCode,
-      address,
-      municipality,
+      ...details,
       latitude,
       longitude,
+      sourceVerifiedAt: new Date(),
     }
   } catch (error) {
     console.error('店舗情報取得中にエラーが発生しました:', error)
@@ -199,28 +314,15 @@ export const scrapeAgeagePage = async (
         const siteUrl = href
 
         try {
-          // 店舗名と住所、緯度経度を取得
-          const {
-            storeName,
-            zipCode,
-            address,
-            municipality,
-            latitude,
-            longitude,
-          } = await findStoreAndAddress(siteUrl)
+          const details = await findStoreAndAddress(siteUrl)
 
           return {
             articleId,
             title,
             imageUrl,
-            storeName,
-            zipCode,
-            address,
-            municipality,
             siteUrl,
             publishedDate,
-            latitude,
-            longitude,
+            ...details,
           } as MeshiData
         } catch (error) {
           console.error(

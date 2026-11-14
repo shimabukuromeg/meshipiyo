@@ -145,37 +145,38 @@ async function saveMeshiData(
       where: { articleId: meshi.articleId },
     })
 
+    const detailFields = {
+      title: meshi.title,
+      imageUrl: meshi.imageUrl,
+      storeName: meshi.storeName,
+      address: meshi.address,
+      siteUrl: meshi.siteUrl,
+      publishedDate: meshi.publishedDate,
+      latitude: meshi.latitude,
+      longitude: meshi.longitude,
+      phone: meshi.phone,
+      businessHours: meshi.businessHours,
+      holiday: meshi.holiday,
+      parking: meshi.parking,
+      paymentMethods: meshi.paymentMethods,
+      officialUrl: meshi.officialUrl,
+      snsUrl: meshi.snsUrl,
+      theme: meshi.theme,
+      sourceVerifiedAt: meshi.sourceVerifiedAt,
+      municipalityMeshis: municipalityId,
+    }
+
     if (existingMeshi) {
-      // 既存データの更新
       await prisma.meshi.update({
         where: { id: existingMeshi.id },
-        data: {
-          title: meshi.title,
-          imageUrl: meshi.imageUrl,
-          storeName: meshi.storeName,
-          address: meshi.address,
-          siteUrl: meshi.siteUrl,
-          publishedDate: meshi.publishedDate,
-          latitude: meshi.latitude,
-          longitude: meshi.longitude,
-          municipalityMeshis: municipalityId,
-        },
+        data: detailFields,
       })
       console.log(`既存レコードを更新しました: ${meshi.articleId}`)
     } else {
-      // 新規データの作成
       await prisma.meshi.create({
         data: {
           articleId: meshi.articleId,
-          title: meshi.title,
-          imageUrl: meshi.imageUrl,
-          storeName: meshi.storeName,
-          address: meshi.address,
-          siteUrl: meshi.siteUrl,
-          publishedDate: meshi.publishedDate,
-          latitude: meshi.latitude,
-          longitude: meshi.longitude,
-          municipalityMeshis: municipalityId,
+          ...detailFields,
         },
       })
       console.log(`新規レコードを作成しました: ${meshi.articleId}`)

@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { extractMunicipalityFromAddress, getZipcodeAndAddress } from './scraper'
+import {
+  extractMunicipalityFromAddress,
+  getZipcodeAndAddress,
+  parseAgeageStoreDetails,
+} from './scraper'
 
 describe('getZipcodeAndAddress', () => {
   it('正しい郵便番号と住所を抽出する', () => {
@@ -91,5 +95,51 @@ describe('extractMunicipalityFromAddress', () => {
     const result = extractMunicipalityFromAddress(address)
 
     expect(result).to.equal('')
+  })
+})
+
+describe('parseAgeageStoreDetails', () => {
+  it('datalist の確認済み項目を取り、空の欄は null にする', () => {
+    const html = `
+      <dl class="information_datalist">
+        <dt>ファミリー中華レストラン 残波宛</dt>
+        <dd>ゴルフ場めし</dd>
+        <dt>住所</dt>
+        <dd>〒901-0611 沖縄県島尻郡南城市玉城字糸数1596</dd>
+        <dt>電話番号</dt>
+        <dd>098-958-4080</dd>
+        <dt>営業時間</dt>
+        <dd>平日 11:00〜15:00 / 17:00〜21:00</dd>
+        <dd>土日祝 11:00〜21:00</dd>
+        <dt>定休日</dt>
+        <dd>水曜</dd>
+        <dt>駐車場</dt>
+        <dd>あり（施設と共有）</dd>
+        <dt>カード</dt>
+        <dd>可</dd>
+        <dt>電子マネー</dt>
+        <dd></dd>
+        <dt>URL</dt>
+        <dd><a href="https://example.com/shop">ホームページ</a></dd>
+        <dt>SNS</dt>
+        <dd><a href="https://instagram.com/example">Instagram</a></dd>
+      </dl>
+    `
+
+    const result = parseAgeageStoreDetails(html)
+
+    expect(result.storeName).to.equal('ファミリー中華レストラン 残波宛')
+    expect(result.theme).to.equal('ゴルフ場めし')
+    expect(result.address).to.equal('沖縄県島尻郡南城市玉城字糸数1596')
+    expect(result.municipality).to.equal('南城市')
+    expect(result.phone).to.equal('098-958-4080')
+    expect(result.businessHours).to.equal(
+      '平日 11:00〜15:00 / 17:00〜21:00\n土日祝 11:00〜21:00',
+    )
+    expect(result.holiday).to.equal('水曜')
+    expect(result.parking).to.equal('あり（施設と共有）')
+    expect(result.paymentMethods).to.equal('カード: 可')
+    expect(result.officialUrl).to.equal('https://example.com/shop')
+    expect(result.snsUrl).to.equal('https://instagram.com/example')
   })
 })

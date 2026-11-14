@@ -16,6 +16,15 @@ interface RawMeshiResult {
   published_date: Date
   latitude: number
   longitude: number
+  phone: string | null
+  business_hours: string | null
+  holiday: string | null
+  parking: string | null
+  payment_methods: string | null
+  official_url: string | null
+  sns_url: string | null
+  theme: string | null
+  source_verified_at: Date | null
   created_at: Date
   municipality_meshis: number | null
 }
@@ -32,6 +41,15 @@ interface MeshiModel {
   publishedDate: Date
   latitude: number
   longitude: number
+  phone: string | null
+  businessHours: string | null
+  holiday: string | null
+  parking: string | null
+  paymentMethods: string | null
+  officialUrl: string | null
+  snsUrl: string | null
+  theme: string | null
+  sourceVerifiedAt: Date | null
   createdAt: Date
   municipalityMeshis: number | null
 }
@@ -49,6 +67,15 @@ function mapRawMeshiToDomain(item: RawMeshiResult): MeshiModel {
     publishedDate: item.published_date,
     latitude: item.latitude,
     longitude: item.longitude,
+    phone: item.phone,
+    businessHours: item.business_hours,
+    holiday: item.holiday,
+    parking: item.parking,
+    paymentMethods: item.payment_methods,
+    officialUrl: item.official_url,
+    snsUrl: item.sns_url,
+    theme: item.theme,
+    sourceVerifiedAt: item.source_verified_at,
     createdAt: item.created_at,
     municipalityMeshis: item.municipality_meshis,
   }
