@@ -9,6 +9,8 @@ const TITLE = '沖縄の地域からグルメを探す'
 const DESCRIPTION =
   '那覇市・沖縄市・宜野湾市など、沖縄県内の地域別に飲食店情報を探せます。'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
@@ -25,7 +27,10 @@ export default async function MunicipalitiesPage() {
   const { municipalities } = await fetchMunicipalities()
   const areas = [...municipalities]
     .filter((area) => area.meshiCount > 0)
-    .sort((a, b) => b.meshiCount - a.meshiCount || a.name.localeCompare(b.name, 'ja'))
+    .sort(
+      (a, b) =>
+        b.meshiCount - a.meshiCount || a.name.localeCompare(b.name, 'ja'),
+    )
 
   return (
     <main className="min-h-screen bg-[#f5f2eb] text-[#302b26]">

@@ -242,3 +242,7 @@ Search Consoleのページ別表示回数と、元記事に構造化欄が揃っ
 | 2026-11-14 | P0実装（robots/sitemap、`/?q=` noindex、unknownガード、geo、関連店舗、メタ） | 発見と信頼の土台 | typecheck/lint green。HTML実測は未了（INCONCLUSIVE） |
 | 2026-11-14 | クロスレビュー指摘の修正 | sitemapとnoindexの条件揃え、空市区町村のsitemap除外、地図/JSON-LDのunknown漏れ修正、ui-sdk記述削除 | typecheck再実行 |
 | 2026-11-14 | `app/robots.ts` / `app/sitemap.ts` 追加 | 全店・全市区町村の発見 | ブランチ `cursor/seo-robots-sitemap-98af` / `c13fb2c`。モックGraphQLで検証済み。本番DB未接続 |
+| 2026-11-14 | PR #219 merge（P0: robots/sitemap、`/?q=` noindex、unknownガード、geo、関連店舗） | 発見と信頼の土台を本番へ | squash merge 完了 |
+| 2026-11-14 | PR #220 merge（P1: Ageage詳細フィールド収集 + Prisma拡張） | 薄いMeshiを出典記事から埋める土台 | squash merge 完了。本番スクレイプbackfillは未実行 |
+| 2026-11-14 | PR #221 merge（P1: `/municipalities` 一覧） | 市区町村ハブの内部リンク強化 | squash merge 完了 |
+| 2026-11-14 | PR #222（店舗詳細を ui-sdk Tabs で再構成） | 充実フィールドの可読性・モバイル到達性 | typecheck/biome 成功。CI待ち |
