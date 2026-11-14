@@ -142,4 +142,23 @@ describe('parseAgeageStoreDetails', () => {
     expect(result.officialUrl).to.equal('https://example.com/shop')
     expect(result.snsUrl).to.equal('https://instagram.com/example')
   })
+
+  it('URL・SNS の複合ラベルを公式とSNSに振り分ける', () => {
+    const html = `
+      <dl class="information_datalist">
+        <dt>沖縄食堂 にじや 曙本店</dt>
+        <dd>沖縄そば</dd>
+        <dt>住所</dt>
+        <dd>〒900-0002 沖縄県那覇市曙2-27-9 1F</dd>
+        <dt>URL・SNS</dt>
+        <dd><a href="https://example.com/nijiya">公式</a></dd>
+        <dd><a href="https://www.instagram.com/nijiya/">Instagram</a></dd>
+      </dl>
+    `
+
+    const result = parseAgeageStoreDetails(html)
+
+    expect(result.officialUrl).to.equal('https://example.com/nijiya')
+    expect(result.snsUrl).to.equal('https://www.instagram.com/nijiya/')
+  })
 })

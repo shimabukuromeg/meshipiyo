@@ -51,7 +51,10 @@ export type AgeageStoreDetails = {
   theme: string | null
 }
 
-const LABEL_ALIASES: Record<string, keyof AgeageStoreDetails | 'payment'> = {
+const LABEL_ALIASES: Record<
+  string,
+  keyof AgeageStoreDetails | 'payment' | 'links'
+> = {
   電話番号: 'phone',
   電話: 'phone',
   TEL: 'phone',
@@ -65,6 +68,14 @@ const LABEL_ALIASES: Record<string, keyof AgeageStoreDetails | 'payment'> = {
   HP: 'officialUrl',
   SNS: 'snsUrl',
   Instagram: 'snsUrl',
+  'URL・SNS': 'links',
+  'URL/SNS': 'links',
+}
+
+function isSnsUrl(value: string) {
+  return /instagram\.com|facebook\.com|x\.com|twitter\.com|tiktok\.com|line\.me/i.test(
+    value,
+  )
 }
 
 function cleanText(value: string) {
@@ -121,10 +132,17 @@ export function parseAgeageStoreDetails(html: string): AgeageStoreDetails {
 
     const values: string[] = []
     let cursor = dt.next()
-    while (cursor.length > 0 && cursor.get(0)?.tagName?.toLowerCase() === 'dd') {
+    while (
+      cursor.length > 0 &&
+      cursor.get(0)?.tagName?.toLowerCase() === 'dd'
+    ) {
       const text = cleanText(cursor.text())
       const href = cursor.find('a[href]').first().attr('href')?.trim()
-      if (mapped === 'officialUrl' || mapped === 'snsUrl') {
+      if (
+        mapped === 'officialUrl' ||
+        mapped === 'snsUrl' ||
+        mapped === 'links'
+      ) {
         if (href) values.push(href)
         else if (text) values.push(text)
       } else if (text) {
@@ -140,6 +158,16 @@ export function parseAgeageStoreDetails(html: string): AgeageStoreDetails {
     }
     if (mapped === 'businessHours') {
       businessHours = values.join('\n')
+      continue
+    }
+    if (mapped === 'links') {
+      for (const value of values) {
+        if (isSnsUrl(value)) {
+          if (!snsUrl) snsUrl = value
+        } else if (!officialUrl) {
+          officialUrl = value
+        }
+      }
       continue
     }
     if (mapped === 'phone') phone = values[0]

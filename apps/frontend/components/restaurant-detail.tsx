@@ -141,6 +141,12 @@ export default async function RestaurantDetail({ id }: Props) {
         name: storeNameForSchema,
         image: imageUrl ? [imageUrl] : undefined,
         telephone: isPresentMeshiValue(meshi.phone) ? meshi.phone : undefined,
+        openingHours: isPresentMeshiValue(meshi.businessHours)
+          ? meshi.businessHours
+              .split('\n')
+              .map((line) => line.trim())
+              .filter(Boolean)
+          : undefined,
         address: address
           ? {
               '@type': 'PostalAddress',
