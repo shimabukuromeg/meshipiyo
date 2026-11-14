@@ -79,17 +79,19 @@ export function buildProposal(input: {
     if (input.topQueries.length < 2) return null
   }
 
-  const storeHint =
-    input.currentTitle.split('｜')[0]?.trim() ||
-    input.currentTitle.slice(0, 12)
+  const bareTitle = input.currentTitle
+    .replace(/｜飯ぴよ$/u, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+  const storeHint = bareTitle.split('｜')[0]?.trim() || bareTitle.slice(0, 12)
 
   let candidate = ''
   if (primary.includes(storeHint) || storeHint.includes(primary)) {
     candidate = `${primary}｜飯ぴよ`
-  } else if (!looksContradictory(primary, input.currentTitle)) {
-    candidate = `${storeHint}｜${primary}`
+  } else if (!looksContradictory(primary, bareTitle)) {
+    candidate = `${storeHint}｜${primary}｜飯ぴよ`
   } else {
-    candidate = `${storeHint}｜${primary.split(/[\s　]/)[0]}`
+    candidate = `${storeHint}｜${primary.split(/[\s　]/)[0]}｜飯ぴよ`
   }
 
   let title = clampTitle(candidate)

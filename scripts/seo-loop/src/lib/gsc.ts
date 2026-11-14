@@ -21,7 +21,7 @@ export type PageAgg = {
   position: number
 }
 
-function loadServiceAccount() {
+function loadServiceAccountJson(): Record<string, unknown> | null {
   const raw =
     process.env.GSC_SERVICE_ACCOUNT_JSON?.trim() ||
     process.env.GOOGLE_SERVICE_ACCOUNT_JSON?.trim()
@@ -32,18 +32,68 @@ function loadServiceAccount() {
   if (file) {
     return JSON.parse(readFileSync(file, 'utf8')) as Record<string, unknown>
   }
-  throw new Error(
-    'GSC_SERVICE_ACCOUNT_JSON または GSC_SERVICE_ACCOUNT_FILE が必要です',
-  )
+  return null
+}
+
+function loadOAuthClient() {
+  const tokenFile =
+    process.env.GSC_OAUTH_TOKEN_FILE?.trim() ||
+    `${process.env.HOME}/Library/Application Support/mcp-gsc/token.json`
+  const secretsFile =
+    process.env.GSC_OAUTH_CLIENT_SECRETS_FILE?.trim() ||
+    `${process.env.HOME}/.config/gsc/client_secrets.json`
+
+  try {
+    const token = JSON.parse(readFileSync(tokenFile, 'utf8')) as {
+      client_id?: string
+      client_secret?: string
+      refresh_token?: string
+      access_token?: string
+      token?: string
+      expiry?: string
+      token_uri?: string
+    }
+    const secrets = JSON.parse(readFileSync(secretsFile, 'utf8')) as {
+      installed?: { client_id?: string; client_secret?: string }
+      web?: { client_id?: string; client_secret?: string }
+    }
+    const installed = secrets.installed || secrets.web || {}
+    const clientId = token.client_id || installed.client_id
+    const clientSecret = token.client_secret || installed.client_secret
+    if (!clientId || !clientSecret || !token.refresh_token) {
+      return null
+    }
+    const oauth2 = new google.auth.OAuth2(clientId, clientSecret)
+    oauth2.setCredentials({
+      refresh_token: token.refresh_token,
+      access_token: token.access_token || token.token,
+      expiry_date: token.expiry ? Date.parse(token.expiry) : undefined,
+      token_type: 'Bearer',
+    })
+    return oauth2
+  } catch {
+    return null
+  }
 }
 
 export async function getSearchConsole() {
-  const credentials = loadServiceAccount()
-  const auth = new google.auth.GoogleAuth({
-    credentials,
-    scopes: ['https://www.googleapis.com/auth/webmasters.readonly'],
-  })
-  return google.searchconsole({ version: 'v1', auth })
+  const sa = loadServiceAccountJson()
+  if (sa) {
+    const auth = new google.auth.GoogleAuth({
+      credentials: sa,
+      scopes: ['https://www.googleapis.com/auth/webmasters.readonly'],
+    })
+    return google.searchconsole({ version: 'v1', auth })
+  }
+
+  const oauth = loadOAuthClient()
+  if (oauth) {
+    return google.searchconsole({ version: 'v1', auth: oauth })
+  }
+
+  throw new Error(
+    '認証情報がありません。GSC_SERVICE_ACCOUNT_JSON/FILE、またはローカルの OAuth token（mcp-gsc）が必要です',
+  )
 }
 
 export async function fetchPageQueryRows(
