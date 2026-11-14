@@ -22,19 +22,29 @@ const noto = Noto_Sans_JP({
   variable: '--font-noto',
 })
 
+const defaultTitle = '飯ぴよ｜沖縄のグルメ情報を探そう'
+const defaultDescription =
+  '沖縄の飲食店や注目グルメを地域から探せるグルメ情報サイトです。'
+
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? 'https://meshipiyo.app',
   ),
   title: {
-    default: '飯ぴよ｜沖縄のグルメ情報を探そう',
+    default: defaultTitle,
     template: '%s｜飯ぴよ',
   },
-  description: '沖縄の飲食店や注目グルメを地域から探せるグルメ情報サイトです。',
+  description: defaultDescription,
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
+    title: defaultTitle,
+    description: defaultDescription,
     locale: 'ja_JP',
     siteName: '飯ぴよ',
     type: 'website',
+    url: '/',
   },
 }
 

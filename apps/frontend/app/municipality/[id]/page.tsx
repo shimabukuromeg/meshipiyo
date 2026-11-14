@@ -24,14 +24,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
   }
 
+  const count = municipality.meshis.length
   const title = `${municipality.name}のグルメ・飲食店情報`
-  const description = `${municipality.name}で紹介された沖縄グルメや飲食店を${municipality.meshis.length}件掲載しています。`
+  const description = `${municipality.name}で紹介された沖縄グルメや飲食店を${count}件掲載しています。`
   const canonical = `/municipality/${municipality.id}`
 
   return {
     title,
     description,
     alternates: { canonical },
+    robots:
+      count === 0
+        ? { index: false, follow: true }
+        : { index: true, follow: true },
     openGraph: {
       title,
       description,

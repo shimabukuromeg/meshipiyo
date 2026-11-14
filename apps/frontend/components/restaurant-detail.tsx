@@ -13,11 +13,18 @@ import { cache } from 'react'
 import { BrandLogo } from '@/components/brand-logo'
 import { Button } from '@/components/ui/button'
 import { createRevalidatedGraphQLClient } from '@/lib/graphql-client'
+import {
+  buildMapSearchQuery,
+  hasUsableCoordinates,
+  isPresentMeshiValue,
+} from '@/lib/meshi-content'
 import { graphql } from '@/src/gql'
 
 type Props = {
   id: string
 }
+
+const RELATED_LIMIT = 6
 
 export default async function RestaurantDetail({ id }: Props) {
   const { meshi } = await getMeshiDetail(id)
@@ -28,28 +35,63 @@ export default async function RestaurantDetail({ id }: Props) {
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://meshipiyo.app'
   const canonicalUrl = `${siteUrl}/meshi/${meshi.id}`
-  const mapQuery = encodeURIComponent(`${meshi.storeName} ${meshi.address}`)
-  const mapUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`
+  const storeNameForSchema = isPresentMeshiValue(meshi.storeName)
+    ? meshi.storeName
+    : null
+  const storeName = storeNameForSchema ?? '店舗情報'
+  const address = isPresentMeshiValue(meshi.address) ? meshi.address : null
+  const imageUrl = isPresentMeshiValue(meshi.imageUrl) ? meshi.imageUrl : null
+  const articleUrl = isPresentMeshiValue(meshi.siteUrl) ? meshi.siteUrl : null
+  const titleText = isPresentMeshiValue(meshi.title) ? meshi.title : null
+  const mapQuery = buildMapSearchQuery(
+    storeNameForSchema ?? '',
+    address ?? undefined,
+  )
+  const mapUrl = mapQuery
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`
+    : null
   const publishedDate = new Date(meshi.publishedDate)
   const publishedDateLabel = new Intl.DateTimeFormat('ja-JP', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   }).format(publishedDate)
-  const restaurantJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Restaurant',
-    '@id': `${canonicalUrl}#restaurant`,
-    name: meshi.storeName,
-    image: meshi.imageUrl ? [meshi.imageUrl] : undefined,
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: meshi.address,
-      addressRegion: '沖縄県',
-      addressCountry: 'JP',
-    },
-    mainEntityOfPage: canonicalUrl,
-  }
+  const hasGeo = hasUsableCoordinates(meshi.latitude, meshi.longitude)
+  const relatedMeshis =
+    meshi.municipality?.meshis
+      ?.filter(
+        (related): related is NonNullable<typeof related> =>
+          related != null &&
+          related.id !== meshi.id &&
+          isPresentMeshiValue(related.storeName),
+      )
+      .slice(0, RELATED_LIMIT) ?? []
+
+  const restaurantJsonLd = storeNameForSchema
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'Restaurant',
+        '@id': `${canonicalUrl}#restaurant`,
+        name: storeNameForSchema,
+        image: imageUrl ? [imageUrl] : undefined,
+        address: address
+          ? {
+              '@type': 'PostalAddress',
+              streetAddress: address,
+              addressRegion: '沖縄県',
+              addressCountry: 'JP',
+            }
+          : undefined,
+        geo: hasGeo
+          ? {
+              '@type': 'GeoCoordinates',
+              latitude: meshi.latitude,
+              longitude: meshi.longitude,
+            }
+          : undefined,
+        mainEntityOfPage: canonicalUrl,
+      }
+    : null
   const breadcrumbJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -73,7 +115,7 @@ export default async function RestaurantDetail({ id }: Props) {
       {
         '@type': 'ListItem',
         position: meshi.municipality ? 3 : 2,
-        name: meshi.storeName,
+        name: storeName,
         item: canonicalUrl,
       },
     ],
@@ -81,13 +123,15 @@ export default async function RestaurantDetail({ id }: Props) {
 
   return (
     <main className="min-h-screen bg-[#f5f2eb] text-[#302b26]">
-      <script
-        type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD is serialized from trusted API fields and escapes HTML delimiters
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(restaurantJsonLd).replace(/</g, '\\u003c'),
-        }}
-      />
+      {restaurantJsonLd && (
+        <script
+          type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD is serialized from trusted API fields and escapes HTML delimiters
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(restaurantJsonLd).replace(/</g, '\\u003c'),
+          }}
+        />
+      )}
       <script
         type="application/ld+json"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD is serialized from trusted API fields and escapes HTML delimiters
@@ -117,19 +161,19 @@ export default async function RestaurantDetail({ id }: Props) {
             </>
           )}
           <span className="truncate text-foreground" aria-current="page">
-            {meshi.storeName}
+            {storeName}
           </span>
         </nav>
 
         <article className="overflow-hidden border border-[#2f2b26] bg-[#fbfaf7]">
           <div className="grid lg:grid-cols-[1.08fr_0.92fr]">
             <div className="min-w-0 border-b border-[#2f2b26] lg:border-b-0 lg:border-r">
-              {meshi.imageUrl ? (
+              {imageUrl ? (
                 <div className="relative aspect-[4/3] h-full min-h-[300px] w-full overflow-hidden bg-[#ded9d0]">
                   <Image
                     className="object-cover"
-                    src={meshi.imageUrl}
-                    alt={`${meshi.storeName}の料理`}
+                    src={imageUrl}
+                    alt={`${storeName}の料理`}
                     fill
                     priority
                     sizes="(max-width: 1024px) 100vw, 640px"
@@ -161,25 +205,33 @@ export default async function RestaurantDetail({ id }: Props) {
                 )}
 
                 <h1 className="text-balance text-4xl font-bold leading-[1.15] tracking-[-0.04em] sm:text-5xl">
-                  {meshi.storeName}
+                  {storeName}
                 </h1>
-                <p className="mt-5 text-pretty leading-8 text-[#6f685f]">
-                  {meshi.title}
-                </p>
+                {titleText && (
+                  <p className="mt-5 text-pretty leading-8 text-[#6f685f]">
+                    {titleText}
+                  </p>
+                )}
               </div>
 
               <div className="mt-10 grid gap-3 sm:grid-cols-2">
-                <Button
-                  asChild
-                  size="lg"
-                  className="h-12 rounded-none bg-[#302b26] text-white hover:bg-[#4a433c] hover:opacity-100"
-                >
-                  <Link href={mapUrl} target="_blank" rel="noopener noreferrer">
-                    <MapPin aria-hidden="true" className="mr-2 size-4" />
-                    地図を見る
-                  </Link>
-                </Button>
-                {meshi.siteUrl && (
+                {mapUrl && (
+                  <Button
+                    asChild
+                    size="lg"
+                    className="h-12 rounded-none bg-[#302b26] text-white hover:bg-[#4a433c] hover:opacity-100"
+                  >
+                    <Link
+                      href={mapUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <MapPin aria-hidden="true" className="mr-2 size-4" />
+                      地図を見る
+                    </Link>
+                  </Button>
+                )}
+                {articleUrl && (
                   <Button
                     asChild
                     variant="outline"
@@ -187,7 +239,7 @@ export default async function RestaurantDetail({ id }: Props) {
                     className="h-12 rounded-none border-[#aaa298] bg-transparent hover:bg-[#eeeae2]"
                   >
                     <Link
-                      href={meshi.siteUrl}
+                      href={articleUrl}
                       target="_blank"
                       rel="noopener noreferrer external"
                     >
@@ -216,12 +268,14 @@ export default async function RestaurantDetail({ id }: Props) {
               </div>
               <div>
                 <dl className="divide-y divide-[#d9d4ca] border-y border-[#8f887d]">
-                  <div className="grid gap-1 py-5 sm:grid-cols-[7rem_1fr] sm:gap-4">
-                    <dt className="text-sm font-medium text-[#777066]">
-                      所在地
-                    </dt>
-                    <dd className="text-sm leading-6">{meshi.address}</dd>
-                  </div>
+                  {address && (
+                    <div className="grid gap-1 py-5 sm:grid-cols-[7rem_1fr] sm:gap-4">
+                      <dt className="text-sm font-medium text-[#777066]">
+                        所在地
+                      </dt>
+                      <dd className="text-sm leading-6">{address}</dd>
+                    </div>
+                  )}
                   {meshi.municipality && (
                     <div className="grid gap-1 py-5 sm:grid-cols-[7rem_1fr] sm:gap-4">
                       <dt className="text-sm font-medium text-[#777066]">
@@ -260,6 +314,46 @@ export default async function RestaurantDetail({ id }: Props) {
               </div>
             </div>
           </section>
+
+          {relatedMeshis.length > 0 && meshi.municipality && (
+            <section className="border-t border-[#2f2b26] p-7 sm:p-10 lg:p-12">
+              <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+                <div>
+                  <p className="mb-2 text-[11px] font-bold tracking-[0.2em] text-[#806a48]">
+                    NEARBY
+                  </p>
+                  <h2 className="text-2xl font-bold">
+                    {meshi.municipality.name}のほかのお店
+                  </h2>
+                </div>
+                <Link
+                  href={`/municipality/${meshi.municipality.id}`}
+                  className="text-sm font-medium text-[#806a48] hover:underline"
+                >
+                  すべて見る →
+                </Link>
+              </div>
+              <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {relatedMeshis.map((related) => (
+                  <li key={related.id}>
+                    <Link
+                      href={`/meshi/${related.id}`}
+                      className="block border border-[#d9d4ca] bg-white p-4 transition-colors hover:border-[#806a48]"
+                    >
+                      <p className="font-bold text-[#302b26]">
+                        {related.storeName}
+                      </p>
+                      {isPresentMeshiValue(related.title) && (
+                        <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#6f685f]">
+                          {related.title}
+                        </p>
+                      )}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </article>
       </div>
     </main>
@@ -283,10 +377,17 @@ const MeshiDetailQuery = graphql(/* GraphQL */ `
       storeName
       siteUrl
       publishedDate
+      latitude
+      longitude
       municipality {
         name
         id
         createdAt
+        meshis(first: 7) {
+          id
+          storeName
+          title
+        }
       }
     }
   }
