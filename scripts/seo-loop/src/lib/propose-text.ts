@@ -26,14 +26,17 @@ function clampTitle(text: string): string {
       .join('')
       .replace(/[｜|・、。\s]+$/u, '')
   }
-  const pads = ['｜沖縄グルメ', '｜飯ぴよ']
-  for (const pad of pads) {
-    if (charLen(value) >= TITLE_MIN) break
-    value = `${value}${pad}`
-    if (charLen(value) > TITLE_MAX) {
-      value = [...value].slice(0, TITLE_MAX).join('')
-      break
-    }
+  if (!value.includes('飯ぴよ') && charLen(value) < TITLE_MIN) {
+    value = `${value}｜飯ぴよ`
+  }
+  if (charLen(value) < TITLE_MIN && !value.includes('沖縄')) {
+    value = value.replace(/｜飯ぴよ$/u, '｜沖縄グルメ｜飯ぴよ')
+  }
+  if (charLen(value) > TITLE_MAX) {
+    value = [...value]
+      .slice(0, TITLE_MAX)
+      .join('')
+      .replace(/[｜|・、。\s]+$/u, '')
   }
   return value
 }
@@ -87,7 +90,11 @@ export function buildProposal(input: {
 
   let candidate = ''
   if (primary.includes(storeHint) || storeHint.includes(primary)) {
-    candidate = `${primary}｜飯ぴよ`
+    // 例: 「魚太郎くん 糸満」→「魚太郎くん｜糸満の沖縄グルメ｜飯ぴよ」
+    const place = primary.replace(storeHint, '').trim()
+    candidate = place
+      ? `${storeHint}｜${place}の沖縄グルメ｜飯ぴよ`
+      : `${storeHint}｜沖縄グルメ情報｜飯ぴよ`
   } else if (!looksContradictory(primary, bareTitle)) {
     candidate = `${storeHint}｜${primary}｜飯ぴよ`
   } else {
@@ -98,9 +105,18 @@ export function buildProposal(input: {
   if (hasClickbait(title)) return null
 
   const existing = new Set([...input.usedTitles, ...allTitles()])
-  if (existing.has(title) || title === input.currentTitle) {
-    const alt = clampTitle(`${primary}の情報｜飯ぴよ`)
-    if (existing.has(alt) || alt === input.currentTitle || hasClickbait(alt)) {
+  if (
+    existing.has(title) ||
+    title === input.currentTitle ||
+    title === bareTitle
+  ) {
+    const alt = clampTitle(`${storeHint}｜${primary}情報｜飯ぴよ`)
+    if (
+      existing.has(alt) ||
+      alt === input.currentTitle ||
+      alt === bareTitle ||
+      hasClickbait(alt)
+    ) {
       return null
     }
     title = alt
