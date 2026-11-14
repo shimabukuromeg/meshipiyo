@@ -57,11 +57,7 @@ export function DetailQuickFacts({
         </li>
       </ul>
       {showLocationButton && !locationApi.location && (
-        <LocationSortControls
-          locationApi={locationApi}
-          sortedByDistance={false}
-          mode="eta"
-        />
+        <LocationSortControls locationApi={locationApi} mode="eta" />
       )}
       {locationApi.location && (
         <p className="text-xs text-muted-foreground">

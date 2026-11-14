@@ -8,7 +8,10 @@ import {
   useState,
   useTransition,
 } from 'react'
-import { LocationSortControls } from '@/components/location-sort-controls'
+import {
+  type ListSortMode,
+  LocationSortControls,
+} from '@/components/location-sort-controls'
 import { MeshiCard, MeshiCardFragment } from '@/components/meshi-card'
 import { useUserLocation } from '@/hooks/use-user-location'
 import { haversineKm } from '@/lib/geo'
@@ -44,10 +47,11 @@ export function MeshiListContainer({
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [isLoadingAllForDistance, setIsLoadingAllForDistance] = useState(false)
   const [isInitialMount, setIsInitialMount] = useState(true)
+  const [sortMode, setSortMode] = useState<ListSortMode>('newest')
   const pageInfoRef = useRef(initialData.meshis.pageInfo)
   const loadedAllForDistanceRef = useRef(false)
   const locationApi = useUserLocation()
-  const sortByDistance = Boolean(locationApi.location)
+  const sortByDistance = sortMode === 'nearest' && Boolean(locationApi.location)
 
   useEffect(() => {
     pageInfoRef.current = pageInfo
@@ -203,8 +207,8 @@ export function MeshiListContainer({
 
   const resolvedMeshis = useFragment(MeshiCardFragment, meshis)
   const displayMeshis = useMemo(() => {
+    if (!sortByDistance || !locationApi.location) return meshis
     const origin = locationApi.location
-    if (!origin) return meshis
     const order = new Map(
       [...resolvedMeshis]
         .sort((a, b) => {
@@ -229,14 +233,15 @@ export function MeshiListContainer({
     return [...meshis].sort(
       (a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0),
     )
-  }, [meshis, resolvedMeshis, locationApi.location])
+  }, [meshis, resolvedMeshis, locationApi.location, sortByDistance])
 
   return (
     <>
       <div className="mb-8">
         <LocationSortControls
           locationApi={locationApi}
-          sortedByDistance={sortByDistance}
+          sortMode={sortMode}
+          onSortModeChange={setSortMode}
           loadingAll={isLoadingAllForDistance}
         />
       </div>
