@@ -17,6 +17,7 @@ export type MeshiData = {
   articleId: string
   title: string
   imageUrl: string
+  imageUrls: string[]
   storeName: string
   zipCode: string
   address: string
@@ -206,6 +207,42 @@ export function parseAgeageStoreDetails(html: string): AgeageStoreDetails {
 }
 
 /**
+ * 記事内の料理写真URLを抽出する（キャスト・バナーは除外）
+ */
+export function extractAgeageArticleImages(html: string, limit = 8): string[] {
+  const $ = cheerio.load(html)
+  const urls: string[] = []
+  const seen = new Set<string>()
+
+  $('img').each((_, element) => {
+    const raw =
+      $(element).attr('data-src') ||
+      $(element).attr('src') ||
+      $(element).attr('data-lazy-src') ||
+      ''
+    if (!raw) return
+    if (!/data\.otv\.co\.jp\/okitive\/wp-content\/uploads\//i.test(raw)) return
+    if (
+      /ageagemeshi_cast|banner|dummy|media_ageage_02|OKITIVE-MARKET|menu_otv/i.test(
+        raw,
+      )
+    ) {
+      return
+    }
+
+    const absolute = raw.startsWith('http')
+      ? raw
+      : new URL(raw, 'https://www.otv.co.jp').toString()
+    const full = absolute.replace(/-\d+x\d+(?=\.[a-z]+(?:\?.*)?$)/i, '')
+    if (seen.has(full)) return
+    seen.add(full)
+    urls.push(full)
+  })
+
+  return urls.slice(0, limit)
+}
+
+/**
  * 郵便番号と住所を分離する
  */
 export const getZipcodeAndAddress = (
@@ -281,6 +318,7 @@ export const findStoreAndAddress = async (
   AgeageStoreDetails & {
     latitude: number
     longitude: number
+    imageUrls: string[]
     sourceVerifiedAt: Date
   }
 > => {
@@ -293,10 +331,12 @@ export const findStoreAndAddress = async (
 
     const html = await response.text()
     const details = parseAgeageStoreDetails(html)
+    const imageUrls = extractAgeageArticleImages(html)
     const { latitude, longitude } = await getLatLng(details.address)
 
     return {
       ...details,
+      imageUrls,
       latitude,
       longitude,
       sourceVerifiedAt: new Date(),

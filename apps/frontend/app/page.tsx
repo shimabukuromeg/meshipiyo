@@ -1,14 +1,11 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { loadMoreMeshis } from '@/app/actions/meshi'
-import { BrandLogo } from '@/components/brand-logo'
+import { fetchMeshis, loadMoreMeshis } from '@/app/actions/meshi'
+import { HomePhotoHero } from '@/components/home-photo-hero'
 import { MeshiListContainer } from '@/components/meshi-list-container'
 import { SearchInput } from '@/components/search-input'
-import { createNoStoreGraphQLClient } from '@/lib/graphql-client'
-import { graphql } from '@/src/gql'
-import type { MeshiQuery, MeshiQueryVariables } from '@/src/gql/graphql'
+import { isPresentMeshiValue } from '@/lib/meshi-content'
 
-// 本ページは常に最新データを取得する（ISRキャッシュ無効化）
 export const dynamic = 'force-dynamic'
 
 type HomePageProps = {
@@ -45,77 +42,50 @@ export default async function Home(props: HomePageProps) {
   const searchParams = await props.searchParams
   const query = searchParams.q
 
-  const data = await fetchMeshis(10, query) // 初期表示を10件に制限
+  const data = await fetchMeshis(24, query)
+  const heroPhotos = data.meshis.edges
+    .map((edge) => edge.node)
+    .filter(
+      (meshi) =>
+        isPresentMeshiValue(meshi.storeName) &&
+        isPresentMeshiValue(meshi.imageUrl),
+    )
+    .map((meshi) => ({
+      id: meshi.id,
+      storeName: meshi.storeName,
+      imageUrl: meshi.imageUrl,
+    }))
 
   return (
     <main className="min-h-screen bg-background">
-      <section className="mx-auto w-full max-w-content px-4 py-5 sm:px-6 sm:py-8 lg:px-8">
-        <div className="grid overflow-hidden border border-border bg-white lg:grid-cols-[1.08fr_0.92fr]">
-          <div className="flex min-h-[420px] flex-col justify-between bg-ink-deep p-7 text-white sm:p-10 lg:min-h-[520px] lg:p-14">
-            <div className="flex items-center justify-between text-[11px] font-bold tracking-[0.2em] text-white/60">
-              <span>OKINAWA FOOD GUIDE</span>
-              <span>MESHI PIYO</span>
-            </div>
-
-            <div className="py-12 lg:py-16">
-              <p className="mb-5 flex items-center gap-3 text-sm text-gold">
-                <span className="h-px w-10 bg-current" />
-                沖縄のグルメを、もっと身近に
-              </p>
-              <h1 className="text-balance text-[clamp(3.25rem,8vw,6.75rem)] font-bold leading-[1.03] tracking-[-0.055em]">
-                今日の
-                <br />
-                うまいを、
-                <br />
-                沖縄で。
-              </h1>
-            </div>
-
-            <p className="max-w-md text-sm leading-7 text-white/65 sm:text-base">
-              テレビや記事で紹介された沖縄のお店を、地域や気になる料理から探せます。
+      {!query && heroPhotos.length > 0 ? (
+        <HomePhotoHero
+          photos={heroPhotos}
+          totalCount={data.meshis.totalCount}
+        />
+      ) : (
+        <section className="border-b border-border-subtle bg-card">
+          <div className="mx-auto w-full max-w-content px-4 py-8 sm:px-6 lg:px-8">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">
+              {query ? `「${query}」の検索` : '飯ぴよ'}
+            </h1>
+            <SearchInput
+              initialQuery={query}
+              className="mt-6 max-w-xl"
+              inputClassName="h-12 rounded-none border-x-0 border-t-0 border-b-border bg-transparent pl-9 pr-10 text-base shadow-none focus-visible:ring-0"
+            />
+            <p className="mt-4 text-sm text-muted-warm">
+              地域から探すなら
+              <Link
+                href="/municipalities"
+                className="ml-1 font-medium text-link underline-offset-4 hover:underline"
+              >
+                沖縄のまち一覧へ →
+              </Link>
             </p>
           </div>
-
-          <div className="flex min-h-[360px] flex-col justify-between bg-card p-7 sm:p-10 lg:min-h-[520px] lg:p-14">
-            <BrandLogo markClassName="size-12" textClassName="text-3xl" />
-
-            <div className="my-12 lg:my-16">
-              <p className="mb-4 text-xs font-bold tracking-[0.18em] text-muted-foreground">
-                SEARCH
-              </p>
-              <h2 className="max-w-md text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl">
-                店名や料理から、
-                <br />
-                食べたいものを探す。
-              </h2>
-              <SearchInput
-                initialQuery={query}
-                className="mt-8"
-                inputClassName="h-14 rounded-none border-x-0 border-t-0 border-b-border bg-transparent pl-9 pr-10 text-base shadow-none focus-visible:ring-0"
-              />
-              <p className="mt-5 text-sm text-muted-warm">
-                地域から探したいときは
-                <Link
-                  href="/municipalities"
-                  className="ml-1 font-medium text-link underline-offset-4 hover:underline"
-                >
-                  沖縄のまち一覧へ →
-                </Link>
-              </p>
-            </div>
-
-            <div className="flex items-end justify-between border-t border-border-subtle pt-5">
-              <p className="text-xs leading-5 text-muted-foreground">
-                掲載中の沖縄グルメ
-              </p>
-              <p className="text-3xl font-bold tabular-nums text-foreground">
-                {data.meshis.totalCount}
-                <span className="ml-1 text-sm font-medium">件</span>
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <div className="sticky top-0 z-40 border-y border-border-subtle bg-background/95 backdrop-blur-md">
         <div className="mx-auto flex w-full max-w-content items-center gap-4 px-4 py-3 sm:px-6 lg:px-8">
@@ -174,37 +144,3 @@ export default async function Home(props: HomePageProps) {
     </main>
   )
 }
-
-/**
- * メシデータを取得する関数
- * @param first 取得する件数（デフォルト20件）
- * @param query 検索クエリ（オプション）
- * @returns メシデータ
- */
-const fetchMeshis = async (first = 20, query?: string) => {
-  const client = createNoStoreGraphQLClient({ cached: true })
-
-  // 変数オブジェクトを明示的に型付け
-  const variables: MeshiQueryVariables = { first, query }
-
-  const data = await client.request<MeshiQuery>(MeshiQueryDocument, variables)
-  return data
-}
-
-const MeshiQueryDocument = graphql(/* GraphQL */ `
-  query Meshi($first: Int = 20, $after: String, $query: String) {
-    meshis(first: $first, after: $after, query: $query) {
-      edges {
-        node {
-          id
-          ...MeshiCard
-        }
-      }
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
-      totalCount
-    }
-  }
-`)

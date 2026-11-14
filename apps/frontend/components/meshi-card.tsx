@@ -1,8 +1,10 @@
 'use client'
 
-import { MapPin } from 'lucide-react'
+import { MapPin, ParkingSquare } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { TravelEta } from '@/components/travel-eta'
+import type { LatLng } from '@/lib/geo'
 import { buildMapSearchQuery, isPresentMeshiValue } from '@/lib/meshi-content'
 import { type FragmentType, graphql, useFragment } from '@/src/gql'
 
@@ -16,6 +18,9 @@ export const MeshiCardFragment = graphql(`
     address
     publishedDate
     createdAt
+    parking
+    latitude
+    longitude
     municipality {
       id
       name
@@ -26,6 +31,16 @@ export const MeshiCardFragment = graphql(`
 type Props = {
   meshi: FragmentType<typeof MeshiCardFragment>
   isEager?: boolean
+  userLocation?: LatLng | null
+}
+
+function parkingLabel(parking: string | null | undefined) {
+  if (!isPresentMeshiValue(parking)) return null
+  const compact = parking.replace(/\s+/g, ' ').trim()
+  if (/^なし/.test(compact)) return '駐車場なし'
+  if (/あり/.test(compact))
+    return compact.length > 24 ? '駐車場あり' : `駐車 ${compact}`
+  return `駐車 ${compact.length > 20 ? `${compact.slice(0, 20)}…` : compact}`
 }
 
 export const MeshiCard = (props: Props) => {
@@ -35,6 +50,7 @@ export const MeshiCard = (props: Props) => {
   const mapUrl = mapQuery
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`
     : null
+  const parking = parkingLabel(meshi.parking)
 
   return (
     <article className="group min-w-0" key={meshi.id}>
@@ -81,6 +97,24 @@ export const MeshiCard = (props: Props) => {
             {meshi.title}
           </p>
         </Link>
+
+        <div className="mt-3 flex flex-col gap-1.5">
+          {parking && (
+            <p className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground">
+              <ParkingSquare
+                aria-hidden="true"
+                className="size-3.5 text-link"
+              />
+              {parking}
+            </p>
+          )}
+          <TravelEta
+            origin={props.userLocation ?? null}
+            latitude={meshi.latitude}
+            longitude={meshi.longitude}
+            compact
+          />
+        </div>
 
         {mapUrl && (
           <Link

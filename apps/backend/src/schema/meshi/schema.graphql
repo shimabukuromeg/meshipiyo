@@ -8,6 +8,7 @@ type Meshi {
   articleId: String!
   title: String!
   imageUrl: String!
+  imageUrls: [String!]!
   storeName: String!
   address: String!
   siteUrl: String!

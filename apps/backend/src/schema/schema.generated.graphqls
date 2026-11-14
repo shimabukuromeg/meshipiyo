@@ -10,6 +10,7 @@ type Meshi {
   holiday: String
   id: ID!
   imageUrl: String!
+  imageUrls: [String!]!
   latitude: Float!
   longitude: Float!
   municipality: Municipality

@@ -10,6 +10,7 @@ interface RawMeshiResult {
   article_id: string
   title: string
   image_url: string
+  image_urls: string[] | null
   store_name: string
   address: string
   site_url: string
@@ -35,6 +36,7 @@ interface MeshiModel {
   articleId: string
   title: string
   imageUrl: string
+  imageUrls: string[]
   storeName: string
   address: string
   siteUrl: string
@@ -61,6 +63,7 @@ function mapRawMeshiToDomain(item: RawMeshiResult): MeshiModel {
     articleId: item.article_id,
     title: item.title,
     imageUrl: item.image_url,
+    imageUrls: item.image_urls ?? [],
     storeName: item.store_name,
     address: item.address,
     siteUrl: item.site_url,
