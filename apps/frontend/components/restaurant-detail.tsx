@@ -153,6 +153,10 @@ export default async function RestaurantDetail({ id }: Props) {
             ホーム
           </Link>
           <ChevronRight aria-hidden="true" className="size-4 shrink-0" />
+          <Link href="/municipalities" className="shrink-0 hover:text-foreground">
+            地域一覧
+          </Link>
+          <ChevronRight aria-hidden="true" className="size-4 shrink-0" />
           {meshi.municipality && (
             <>
               <Link
