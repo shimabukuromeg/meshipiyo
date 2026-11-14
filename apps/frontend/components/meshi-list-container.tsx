@@ -151,7 +151,7 @@ export function MeshiListContainer({
         <div ref={loadMoreRef} className="py-10 sm:py-14">
           {isLoadingMore || isPending ? (
             <div aria-live="polite" aria-busy="true">
-              <p className="mb-5 text-center text-[10px] font-bold tracking-[0.2em] text-[#806a48]">
+              <p className="mb-5 text-center text-[10px] font-bold tracking-[0.2em] text-link">
                 LOADING MORE
               </p>
               <div className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
@@ -162,37 +162,37 @@ export function MeshiListContainer({
                     className="animate-pulse"
                     aria-hidden="true"
                   >
-                    <div className="aspect-[4/3] bg-[#ded9d0]" />
+                    <div className="aspect-[4/3] bg-placeholder" />
                     <div className="pt-4">
                       <div className="flex justify-between gap-4">
-                        <div className="h-3 w-16 bg-[#d5cfc4]" />
-                        <div className="h-3 w-20 bg-[#e1dcd3]" />
+                        <div className="h-3 w-16 bg-skeleton-warm" />
+                        <div className="h-3 w-20 bg-skeleton" />
                       </div>
-                      <div className="mt-4 h-5 w-3/5 bg-[#cfc8bc]" />
-                      <div className="mt-3 h-3 w-full bg-[#e1dcd3]" />
-                      <div className="mt-2 h-3 w-4/5 bg-[#e1dcd3]" />
+                      <div className="mt-4 h-5 w-3/5 bg-skeleton-cool" />
+                      <div className="mt-3 h-3 w-full bg-skeleton" />
+                      <div className="mt-2 h-3 w-4/5 bg-skeleton" />
                     </div>
                   </div>
                 ))}
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-4 text-[#8a8278]">
-              <span className="h-px flex-1 bg-[#d9d4ca]" />
+            <div className="flex items-center gap-4 text-muted-soft">
+              <span className="h-px flex-1 bg-border-subtle" />
               <p className="text-[10px] font-bold tracking-[0.18em]">
                 SCROLL TO DISCOVER MORE
               </p>
-              <span className="h-px flex-1 bg-[#d9d4ca]" />
+              <span className="h-px flex-1 bg-border-subtle" />
             </div>
           )}
         </div>
       )}
 
       {!pageInfo.hasNextPage && meshis.length > 0 && (
-        <div className="flex items-center gap-4 py-10 text-[#8a8278] sm:py-14">
-          <span className="h-px flex-1 bg-[#d9d4ca]" />
+        <div className="flex items-center gap-4 py-10 text-muted-soft sm:py-14">
+          <span className="h-px flex-1 bg-border-subtle" />
           <p className="shrink-0 text-xs">すべてのお店を表示しました</p>
-          <span className="h-px flex-1 bg-[#d9d4ca]" />
+          <span className="h-px flex-1 bg-border-subtle" />
         </div>
       )}
     </>

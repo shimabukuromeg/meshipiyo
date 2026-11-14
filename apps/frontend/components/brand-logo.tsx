@@ -17,7 +17,7 @@ export function BrandLogo({
       <Icons.logo className={cn('size-10 shrink-0', markClassName)} />
       <span
         className={cn(
-          'whitespace-nowrap text-[1.625rem] font-bold leading-none tracking-[0.025em] text-[#302b26]',
+          'whitespace-nowrap text-[1.625rem] font-bold leading-none tracking-[0.025em] text-foreground',
           textClassName,
         )}
       >

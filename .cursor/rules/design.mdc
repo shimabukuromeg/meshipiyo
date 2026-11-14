@@ -1,0 +1,31 @@
+---
+description: 飯ぴよ UI は DESIGN.md の世界観とトークンに従う。DADS は a11y/日本語組みのみ参照。
+globs: apps/frontend/app/**/*.tsx,apps/frontend/components/**/*.tsx
+alwaysApply: false
+---
+
+# 飯ぴよ UI ルール
+
+## 見た目の正
+
+- 色・形・世界観・コンポーネントの型はリポジトリ直下の `DESIGN.md` に従う
+- トークン定義の正は `apps/frontend/app/globals.css`
+- 新しい画面は、既存コンポーネントを組み合わせて作れないかを先に検討する
+
+## デジタル庁デザインシステム（docs/dads）
+
+- **ビジュアルは参照しない**（行政サイト化しない）
+- 日本語の組み方、コントラスト、フォーム、キーボード操作、アクセシビリティだけ `docs/dads/` を参照する
+- 入口は `docs/dads/MANIFEST.md`
+- `DESIGN.md` と `docs/dads/` が食い違ったら **DESIGN.md を優先**
+
+## トークン
+
+- 色・余白・角丸はトークン / ユーティリティだけを使う（`bg-background`, `text-foreground`, `border-border`, `max-w-content`, `rounded-none` など）
+- hex / 新規の影・グラデーション・角丸を勝手に増やさない
+- 新しい値が必要なら、先に `DESIGN.md` と `globals.css` への追加案を出してから使う
+
+## 世界観の短いチェック
+
+- 紙色の余白、写真主役、角丸なし、影なし（`shadow-nav` 以外）
+- SaaS 管理画面・紫グラデ・カードだらけのダッシュボードにしない

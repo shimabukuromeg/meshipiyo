@@ -7,8 +7,13 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans:
+    var(--font-noto), "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+    "Noto Sans JP", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -34,84 +39,123 @@
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
-
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+
+  /* meshipiyo brand tokens */
+  --color-ink: var(--ink);
+  --color-ink-deep: var(--ink-deep);
+  --color-ink-hover: var(--ink-hover);
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-gold: var(--gold);
+  --color-link: var(--link);
+  --color-muted-soft: var(--muted-soft);
+  --color-muted-warm: var(--muted-warm);
+  --color-muted-olive: var(--muted-olive);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-soft: var(--border-soft);
+  --color-border-hairline: var(--border-hairline);
+  --color-placeholder: var(--placeholder);
+  --color-skeleton: var(--skeleton);
+  --color-skeleton-warm: var(--skeleton-warm);
+  --color-skeleton-cool: var(--skeleton-cool);
+  --color-nav: var(--nav);
+
+  --max-width-content: 1180px;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.583 0.071 78.83);
-  --primary-foreground: oklch(0.2 0.02 78.83);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* Brand palette (exact values from current UI) */
+  --paper: #f5f2eb;
+  --surface: #fbfaf7;
+  --nav: #ffffff;
+  --ink: #302b26;
+  --ink-deep: #24211e;
+  --ink-hover: #4a433c;
+  --gold: #d5a843;
+  --link: #806a48;
+  --muted-soft: #8a8278;
+  --muted-warm: #6f685f;
+  --muted-olive: #7a6c56;
+  --border-strong: #2f2b26;
+  --border-subtle: #d9d4ca;
+  --border-soft: #bdb7ad;
+  --border-hairline: #8f887d;
+  --placeholder: #ded9d0;
+  --skeleton: #e1dcd3;
+  --skeleton-warm: #d5cfc4;
+  --skeleton-cool: #cfc8bc;
+
+  /* shadcn semantic aliases → brand */
+  --radius: 0;
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--surface);
+  --card-foreground: var(--ink);
+  --popover: var(--surface);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: #ffffff;
+  --secondary: var(--surface);
+  --secondary-foreground: var(--ink);
+  --muted: var(--placeholder);
+  --muted-foreground: #777066;
+  --accent: var(--gold);
+  --accent-foreground: var(--ink);
+  --destructive: #a95f37;
+  --border: var(--border-strong);
+  --input: var(--border-strong);
+  --ring: var(--link);
+  --chart-1: var(--gold);
+  --chart-2: var(--link);
+  --chart-3: var(--ink);
+  --chart-4: var(--border-subtle);
+  --chart-5: var(--muted-soft);
+  --sidebar: var(--surface);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--ink);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--paper);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-border: var(--border-subtle);
+  --sidebar-ring: var(--link);
 }
 
+/* Dark mode is not used on meshipiyo. Keep stubs to avoid accidental .dark breakage. */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--surface);
+  --card-foreground: var(--ink);
+  --popover: var(--surface);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: #ffffff;
+  --secondary: var(--surface);
+  --secondary-foreground: var(--ink);
+  --muted: var(--placeholder);
+  --muted-foreground: #777066;
+  --accent: var(--gold);
+  --accent-foreground: var(--ink);
+  --destructive: #a95f37;
+  --border: var(--border-strong);
+  --input: var(--border-strong);
+  --ring: var(--link);
+  --sidebar: var(--surface);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--ink);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--paper);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-border: var(--border-subtle);
+  --sidebar-ring: var(--link);
 }
 
 @layer base {

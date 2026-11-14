@@ -49,3 +49,9 @@
 - Docs (online): https://ui-sdk.dev/docs
 - Before using ui-sdk, follow the ui-sdk skill if it is installed (`.agents/skills/ui-sdk`), and read `apps/frontend/node_modules/@ui-sdk/react/docs/llms.txt` (prefer the installed copy; it matches the package version).
 - To build a new component, also search `apps/frontend/node_modules/@ui-sdk/react/docs/core.md` by heading, and read `rendering.md` next to it.
+
+## Frontend Design
+- 見た目・トークンはリポジトリ直下の `DESIGN.md` と `apps/frontend/app/globals.css` に従う。
+- UI 実装時は `.cursor/rules/design.mdc` を適用する。
+- `docs/dads/`（デジタル庁デザインシステム Markdown）は a11y / 日本語組みの参照のみ。ビジュアルは持ち込まない。食い違いは `DESIGN.md` 優先。
+- hex 直書き・トークン外の角丸/影/新色を増やさない。必要なら先に `DESIGN.md` へ追加案を出す。

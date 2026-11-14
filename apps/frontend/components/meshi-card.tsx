@@ -3,10 +3,7 @@
 import { MapPin } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import {
-  buildMapSearchQuery,
-  isPresentMeshiValue,
-} from '@/lib/meshi-content'
+import { buildMapSearchQuery, isPresentMeshiValue } from '@/lib/meshi-content'
 import { type FragmentType, graphql, useFragment } from '@/src/gql'
 
 export const MeshiCardFragment = graphql(`
@@ -62,7 +59,7 @@ export const MeshiCard = (props: Props) => {
           {meshi.municipality?.id ? (
             <Link
               href={`/municipality/${meshi.municipality.id}`}
-              className="font-bold text-[#806a48] hover:underline"
+              className="font-bold text-link hover:underline"
             >
               {meshi.municipality.name} →
             </Link>
@@ -77,7 +74,7 @@ export const MeshiCard = (props: Props) => {
         </div>
 
         <Link href={`/meshi/${meshi.id}`}>
-          <h3 className="mt-3 text-xl font-bold leading-snug tracking-tight text-[#302b26] transition-colors group-hover:text-[#806a48]">
+          <h3 className="mt-3 text-xl font-bold leading-snug tracking-tight text-foreground transition-colors group-hover:text-link">
             {meshi.storeName}
           </h3>
           <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">
@@ -90,7 +87,7 @@ export const MeshiCard = (props: Props) => {
             href={mapUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-[#302b26] hover:underline"
+            className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-foreground hover:underline"
           >
             <MapPin className="size-3.5" />
             地図を見る
