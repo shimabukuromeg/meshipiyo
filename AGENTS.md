@@ -44,3 +44,8 @@
   - Frontend: `cp apps/frontend/.env.local.example apps/frontend/.env.local`
   - Backend: `cp apps/backend/.env.example apps/backend/.env`
 - Local endpoints: FE `http://localhost:33000`, BE `http://localhost:44000`.
+
+## ui-sdk
+- Docs (online): https://ui-sdk.dev/docs
+- Before using ui-sdk, follow the ui-sdk skill if it is installed (`.agents/skills/ui-sdk`), and read `apps/frontend/node_modules/@ui-sdk/react/docs/llms.txt` (prefer the installed copy; it matches the package version).
+- To build a new component, also search `apps/frontend/node_modules/@ui-sdk/react/docs/core.md` by heading, and read `rendering.md` next to it.
