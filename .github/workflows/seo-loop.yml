@@ -1,9 +1,7 @@
 name: SEO Loop
 
 on:
-  schedule:
-    # 毎週月曜 09:00 JST = 00:00 UTC
-    - cron: "0 0 * * 1"
+  # コストを抑えるため定期実行はしない。必要なときだけ手動実行。
   workflow_dispatch:
 
 permissions:
@@ -48,4 +46,4 @@ jobs:
           GSC_SITE_URL: ${{ secrets.GSC_SITE_URL }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SEO_SITE_ORIGIN: https://meshipiyo.app
-        run: pnpm run-weekly
+        run: pnpm run-all
