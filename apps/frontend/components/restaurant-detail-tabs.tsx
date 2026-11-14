@@ -2,6 +2,7 @@
 
 import { Tabs, TabsList, TabsPanel, TabsTab } from '@ui-sdk/react/tabs'
 import { CalendarDays, Info } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 
 export type RestaurantDetailRow = {
@@ -17,6 +18,7 @@ type RelatedMeshi = {
   id: string
   storeName: string
   title?: string | null
+  imageUrl?: string | null
 }
 
 type Props = {
@@ -166,16 +168,29 @@ export function RestaurantDetailTabs({
               <li key={related.id}>
                 <Link
                   href={`/meshi/${related.id}`}
-                  className="block border border-[#d9d4ca] bg-white p-4 transition-colors hover:border-[#806a48]"
+                  className="group block overflow-hidden border border-[#d9d4ca] bg-white transition-colors hover:border-[#806a48]"
                 >
-                  <p className="font-bold text-[#302b26]">
-                    {related.storeName}
-                  </p>
-                  {related.title && (
-                    <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#6f685f]">
-                      {related.title}
+                  <div className="relative aspect-[4/3] overflow-hidden bg-[#ded9d0]">
+                    {related.imageUrl ? (
+                      <Image
+                        className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.025]"
+                        src={related.imageUrl}
+                        alt={`${related.storeName}の料理`}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 280px"
+                      />
+                    ) : null}
+                  </div>
+                  <div className="p-4">
+                    <p className="font-bold text-[#302b26] transition-colors group-hover:text-[#806a48]">
+                      {related.storeName}
                     </p>
-                  )}
+                    {related.title && (
+                      <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#6f685f]">
+                        {related.title}
+                      </p>
+                    )}
+                  </div>
                 </Link>
               </li>
             ))}

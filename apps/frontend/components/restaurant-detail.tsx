@@ -346,6 +346,9 @@ export default async function RestaurantDetail({ id }: Props) {
               id: related.id,
               storeName: related.storeName,
               title: isPresentMeshiValue(related.title) ? related.title : null,
+              imageUrl: isPresentMeshiValue(related.imageUrl)
+                ? related.imageUrl
+                : null,
             }))}
           />
         </article>
@@ -390,6 +393,7 @@ const MeshiDetailQuery = graphql(/* GraphQL */ `
           id
           storeName
           title
+          imageUrl
         }
       }
     }
