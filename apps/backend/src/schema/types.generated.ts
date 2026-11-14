@@ -30,6 +30,7 @@ export type Meshi = {
   holiday?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   imageUrl: Scalars['String']['output'];
+  imageUrls: Array<Scalars['String']['output']>;
   latitude: Scalars['Float']['output'];
   longitude: Scalars['Float']['output'];
   municipality?: Maybe<Municipality>;
@@ -249,6 +250,7 @@ export type MeshiResolvers<ContextType = any, ParentType extends ResolversParent
   holiday?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  imageUrls?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   latitude?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   longitude?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   municipality?: Resolver<Maybe<ResolversTypes['Municipality']>, ParentType, ContextType>;

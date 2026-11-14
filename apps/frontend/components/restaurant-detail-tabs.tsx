@@ -33,6 +33,7 @@ type Props = {
   infoRows: RestaurantDetailRow[]
   accessRows: RestaurantDetailRow[]
   mapUrl: string | null
+  mapEmbedUrl: string | null
   municipalityName: string | null
   municipalityHref: string | null
   relatedMeshis: RelatedMeshi[]
@@ -95,6 +96,7 @@ export function RestaurantDetailTabs({
   infoRows,
   accessRows,
   mapUrl,
+  mapEmbedUrl,
   municipalityName,
   municipalityHref,
   relatedMeshis,
@@ -105,8 +107,8 @@ export function RestaurantDetailTabs({
 
   return (
     <Tabs defaultValue="info" className="border-t border-border">
-      <div className="border-b border-border px-7 pt-6 sm:px-10 lg:px-12">
-        <p className="mb-3 text-[11px] font-bold tracking-[0.2em] text-link">
+      <div className="sticky top-0 z-20 border-b border-border bg-card/95 px-4 pt-4 backdrop-blur-md sm:px-10 lg:px-12">
+        <p className="mb-2 text-[11px] font-bold tracking-[0.2em] text-link">
           DETAILS
         </p>
         <TabsList
@@ -156,6 +158,17 @@ export function RestaurantDetailTabs({
       <TabsPanel value="access" className="p-7 sm:p-10 lg:p-12">
         <h2 className="mb-6 text-2xl font-bold">アクセス</h2>
         <DetailList rows={accessRows} />
+        {mapEmbedUrl && (
+          <div className="mt-6 overflow-hidden border border-border">
+            <iframe
+              title="地図"
+              src={mapEmbedUrl}
+              className="aspect-[4/3] w-full border-0 sm:aspect-[16/10]"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
+        )}
         {mapUrl && (
           <Link
             href={mapUrl}
@@ -163,7 +176,7 @@ export function RestaurantDetailTabs({
             rel="noopener noreferrer"
             className="mt-6 inline-flex h-12 items-center justify-center bg-primary px-5 text-sm font-bold text-white hover:bg-ink-hover"
           >
-            地図を見る
+            Googleマップで開く
           </Link>
         )}
       </TabsPanel>

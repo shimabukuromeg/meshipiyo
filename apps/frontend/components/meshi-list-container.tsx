@@ -1,8 +1,20 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState, useTransition } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from 'react'
+import { LocationSortControls } from '@/components/location-sort-controls'
+import { MeshiCard, MeshiCardFragment } from '@/components/meshi-card'
+import { useUserLocation } from '@/hooks/use-user-location'
+import { haversineKm } from '@/lib/geo'
+import { hasUsableCoordinates } from '@/lib/meshi-content'
+import { useFragment } from '@/src/gql'
 import type { MeshiQuery } from '@/src/gql/graphql'
-import { MeshiCard } from './meshi-card'
 
 type MeshiNode = NonNullable<
   NonNullable<MeshiQuery['meshis']>['edges'][number]['node']
@@ -31,18 +43,14 @@ export function MeshiListContainer({
   const loadMoreRef = useRef<HTMLDivElement>(null)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [isInitialMount, setIsInitialMount] = useState(true)
-
-  // 最新のpageInfoを保持するRef（状態更新の遅延を回避）
   const pageInfoRef = useRef(initialData.meshis.pageInfo)
+  const locationApi = useUserLocation()
 
-  // pageInfoが更新されたらRefも更新
   useEffect(() => {
     pageInfoRef.current = pageInfo
   }, [pageInfo])
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const loadMore = useCallback(async () => {
-    // 最新のpageInfoを使用
     const currentPageInfo = pageInfoRef.current
 
     if (!currentPageInfo.hasNextPage || isLoadingMore || isPending) {
@@ -53,7 +61,6 @@ export function MeshiListContainer({
     startTransition(async () => {
       try {
         const data = await loadMoreAction(currentPageInfo.endCursor, 20, query)
-
         const newMeshis = data.meshis.edges.map((edge) => edge.node)
 
         setMeshis((prev) => {
@@ -64,7 +71,6 @@ export function MeshiListContainer({
           return [...prev, ...uniqueNewMeshis]
         })
 
-        // RefとStateを同時更新
         pageInfoRef.current = data.meshis.pageInfo
         setPageInfo(data.meshis.pageInfo)
       } catch (error) {
@@ -78,19 +84,23 @@ export function MeshiListContainer({
         setIsLoadingMore(false)
       }
     })
-  }, [isLoadingMore, isPending, loadMoreAction, query]) // pageInfoを依存配列から除外（pageInfoRefを使用）
+  }, [
+    isLoadingMore,
+    isPending,
+    loadMoreAction,
+    query,
+    pageInfo.endCursor,
+    pageInfo.hasNextPage,
+  ])
 
-  // 初回マウント後にフラグを更新
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsInitialMount(false)
-    }, 1000) // 初回表示後1秒待つ
+    }, 1000)
 
     return () => clearTimeout(timer)
   }, [])
 
-  // Intersection Observer for infinite scroll
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (isLoadingMore || isPending || isInitialMount) {
       return
@@ -98,11 +108,9 @@ export function MeshiListContainer({
 
     let observer: IntersectionObserver | null = null
 
-    // 少し遅延させる
     const timeoutId = setTimeout(() => {
       observer = new IntersectionObserver(
         (entries) => {
-          // 最新のpageInfoを使用してチェック
           const latestPageInfo = pageInfoRef.current
           if (
             entries[0].isIntersecting &&
@@ -122,7 +130,7 @@ export function MeshiListContainer({
       if (loadMoreRef.current) {
         observer.observe(loadMoreRef.current)
       }
-    }, 500) // 200msから500msに増やして状態更新を待つ
+    }, 500)
 
     return () => {
       clearTimeout(timeoutId)
@@ -130,23 +138,60 @@ export function MeshiListContainer({
         observer.disconnect()
       }
     }
-  }, [isLoadingMore, isPending, isInitialMount, loadMore]) // pageInfoを依存配列から除外してRefを使用
+  }, [isLoadingMore, isPending, isInitialMount, loadMore])
+
+  const resolvedMeshis = useFragment(MeshiCardFragment, meshis)
+  const displayMeshis = useMemo(() => {
+    const origin = locationApi.location
+    if (!origin) return meshis
+    const order = new Map(
+      [...resolvedMeshis]
+        .sort((a, b) => {
+          const aOk = hasUsableCoordinates(a.latitude, a.longitude)
+          const bOk = hasUsableCoordinates(b.latitude, b.longitude)
+          if (!aOk && !bOk) return 0
+          if (!aOk) return 1
+          if (!bOk) return -1
+          return (
+            haversineKm(origin, {
+              latitude: a.latitude,
+              longitude: a.longitude,
+            }) -
+            haversineKm(origin, {
+              latitude: b.latitude,
+              longitude: b.longitude,
+            })
+          )
+        })
+        .map((item, index) => [item.id, index] as const),
+    )
+    return [...meshis].sort(
+      (a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0),
+    )
+  }, [meshis, resolvedMeshis, locationApi.location])
 
   return (
     <>
+      <div className="mb-8">
+        <LocationSortControls
+          locationApi={locationApi}
+          sortedByDistance={Boolean(locationApi.location)}
+        />
+      </div>
+
       <div>
         <div className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 lg:gap-y-16">
-          {meshis.map((meshi, index) => (
+          {displayMeshis.map((meshi, index) => (
             <MeshiCard
               meshi={meshi}
               key={meshi.id}
-              isEager={index < 6} // 最初の6件のみeager loading
+              isEager={index < 6}
+              userLocation={locationApi.location}
             />
           ))}
         </div>
       </div>
 
-      {/* Infinite scroll trigger */}
       {pageInfo.hasNextPage && (
         <div ref={loadMoreRef} className="py-10 sm:py-14">
           {isLoadingMore || isPending ? (

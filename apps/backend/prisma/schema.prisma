@@ -23,6 +23,7 @@ model Meshi {
   articleId          String        @unique @map("article_id")
   title              String        @default("unknown")
   imageUrl           String        @default("unknown") @map("image_url")
+  imageUrls          String[]      @default([]) @map("image_urls")
   storeName          String        @default("unknown") @map("store_name")
   address            String        @default("unknown")
   siteUrl            String        @default("unknown") @map("site_url")

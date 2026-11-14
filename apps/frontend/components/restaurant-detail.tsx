@@ -1,14 +1,15 @@
 import { ChevronRight, ExternalLink, MapPin } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
-import { BrandLogo } from '@/components/brand-logo'
+import { DetailQuickFacts } from '@/components/detail-quick-facts'
+import { MeshiImageGallery } from '@/components/meshi-image-gallery'
 import {
   type RestaurantDetailRow,
   RestaurantDetailTabs,
 } from '@/components/restaurant-detail-tabs'
 import { Button } from '@/components/ui/button'
+import { buildMapEmbedUrl } from '@/lib/geo'
 import { createRevalidatedGraphQLClient } from '@/lib/graphql-client'
 import {
   buildMapSearchQuery,
@@ -38,6 +39,11 @@ export default async function RestaurantDetail({ id }: Props) {
   const storeName = storeNameForSchema ?? '店舗情報'
   const address = isPresentMeshiValue(meshi.address) ? meshi.address : null
   const imageUrl = isPresentMeshiValue(meshi.imageUrl) ? meshi.imageUrl : null
+  const galleryImages = [
+    ...(meshi.imageUrls ?? []).filter((url) => isPresentMeshiValue(url)),
+    ...(imageUrl ? [imageUrl] : []),
+  ]
+  const uniqueImages = Array.from(new Set(galleryImages))
   const articleUrl = isPresentMeshiValue(meshi.siteUrl) ? meshi.siteUrl : null
   const titleText = isPresentMeshiValue(meshi.title) ? meshi.title : null
   const mapQuery = buildMapSearchQuery(
@@ -47,6 +53,7 @@ export default async function RestaurantDetail({ id }: Props) {
   const mapUrl = mapQuery
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`
     : null
+  const mapEmbedUrl = mapQuery ? buildMapEmbedUrl(mapQuery) : null
   const publishedDate = new Date(meshi.publishedDate)
   const publishedDateLabel = new Intl.DateTimeFormat('ja-JP', {
     year: 'numeric',
@@ -65,6 +72,9 @@ export default async function RestaurantDetail({ id }: Props) {
       .slice(0, RELATED_LIMIT) ?? []
 
   const infoRows: RestaurantDetailRow[] = []
+  if (isPresentMeshiValue(meshi.parking)) {
+    infoRows.push({ label: '駐車場', value: meshi.parking, multiline: true })
+  }
   if (meshi.municipality) {
     infoRows.push({
       label: 'エリア',
@@ -87,9 +97,6 @@ export default async function RestaurantDetail({ id }: Props) {
   }
   if (isPresentMeshiValue(meshi.holiday)) {
     infoRows.push({ label: '定休日', value: meshi.holiday, multiline: true })
-  }
-  if (isPresentMeshiValue(meshi.parking)) {
-    infoRows.push({ label: '駐車場', value: meshi.parking, multiline: true })
   }
   if (isPresentMeshiValue(meshi.paymentMethods)) {
     infoRows.push({
@@ -139,7 +146,7 @@ export default async function RestaurantDetail({ id }: Props) {
         '@type': 'Restaurant',
         '@id': `${canonicalUrl}#restaurant`,
         name: storeNameForSchema,
-        image: imageUrl ? [imageUrl] : undefined,
+        image: uniqueImages.length > 0 ? uniqueImages : undefined,
         telephone: isPresentMeshiValue(meshi.phone) ? meshi.phone : undefined,
         openingHours: isPresentMeshiValue(meshi.businessHours)
           ? meshi.businessHours
@@ -251,53 +258,41 @@ export default async function RestaurantDetail({ id }: Props) {
         <article className="overflow-hidden border border-border bg-card">
           <div className="grid lg:grid-cols-[1.08fr_0.92fr]">
             <div className="min-w-0 border-b border-border lg:border-b-0 lg:border-r">
-              {imageUrl ? (
-                <div className="relative aspect-[4/3] h-full min-h-[300px] w-full overflow-hidden bg-placeholder">
-                  <Image
-                    className="object-cover"
-                    src={imageUrl}
-                    alt={`${storeName}の料理`}
-                    fill
-                    priority
-                    sizes="(max-width: 1024px) 100vw, 640px"
-                  />
-                </div>
-              ) : (
-                <div className="flex aspect-[4/3] h-full items-center justify-center bg-placeholder">
-                  <p className="text-muted-foreground">画像がありません</p>
-                </div>
-              )}
+              <MeshiImageGallery storeName={storeName} images={uniqueImages} />
             </div>
 
-            <div className="flex min-w-0 flex-col justify-between p-7 sm:p-10 lg:min-h-[520px] lg:p-12">
+            <div className="flex min-w-0 flex-col justify-between p-5 sm:p-8 lg:min-h-[420px] lg:p-10">
               <div>
-                <div className="mb-10 flex items-center justify-between gap-4">
-                  <BrandLogo markClassName="size-9" textClassName="text-2xl" />
-                  <span className="text-[10px] font-bold tracking-[0.18em] text-muted-soft">
-                    OKINAWA FOOD GUIDE
-                  </span>
-                </div>
                 {meshi.municipality && (
                   <Link
                     href={`/municipality/${meshi.municipality.id}`}
-                    className="mb-4 inline-flex items-center gap-2 text-xs font-bold text-link hover:underline"
+                    className="mb-3 inline-flex items-center gap-2 text-xs font-bold text-link hover:underline"
                   >
                     <MapPin aria-hidden="true" className="size-3.5" />
                     {meshi.municipality.name} →
                   </Link>
                 )}
 
-                <h1 className="text-balance text-4xl font-bold leading-[1.15] tracking-[-0.04em] sm:text-5xl">
+                <h1 className="text-balance text-3xl font-bold leading-[1.15] tracking-[-0.04em] sm:text-4xl">
                   {storeName}
                 </h1>
                 {titleText && (
-                  <p className="mt-5 text-pretty leading-8 text-muted-warm">
+                  <p className="mt-4 text-pretty leading-7 text-muted-warm">
                     {titleText}
                   </p>
                 )}
+
+                <div className="mt-6">
+                  <DetailQuickFacts
+                    parking={meshi.parking}
+                    phone={meshi.phone}
+                    latitude={meshi.latitude}
+                    longitude={meshi.longitude}
+                  />
+                </div>
               </div>
 
-              <div className="mt-10 grid gap-3 sm:grid-cols-2">
+              <div className="mt-8 grid gap-3 sm:grid-cols-2">
                 {mapUrl && (
                   <Button
                     asChild
@@ -338,10 +333,23 @@ export default async function RestaurantDetail({ id }: Props) {
             </div>
           </div>
 
+          {mapEmbedUrl && (
+            <div className="border-t border-border lg:hidden">
+              <iframe
+                title={`${storeName}の地図`}
+                src={mapEmbedUrl}
+                className="aspect-[16/10] w-full border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          )}
+
           <RestaurantDetailTabs
             infoRows={infoRows}
             accessRows={accessRows}
             mapUrl={mapUrl}
+            mapEmbedUrl={mapEmbedUrl}
             municipalityName={meshi.municipality?.name ?? null}
             municipalityHref={
               meshi.municipality
@@ -383,6 +391,7 @@ const MeshiDetailQuery = graphql(/* GraphQL */ `
       articleId
       createdAt
       imageUrl
+      imageUrls
       storeName
       siteUrl
       publishedDate

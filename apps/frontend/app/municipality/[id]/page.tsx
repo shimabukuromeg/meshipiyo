@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
-import { MeshiCard } from '@/components/meshi-card'
+import { MunicipalityMeshiGrid } from '@/components/municipality-meshi-grid'
 import { createRevalidatedGraphQLClient } from '@/lib/graphql-client'
 import { graphql } from '@/src/gql'
 
@@ -134,16 +134,11 @@ export default async function MunicipalityPage({ params }: Props) {
           </div>
 
           {data.municipality.meshis.length > 0 ? (
-            <div className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 lg:gap-y-16">
-              {data.municipality?.meshis.map((meshi, i) => {
-                if (meshi == null) {
-                  throw new Error('meshi is null')
-                }
-                return (
-                  <MeshiCard meshi={meshi} key={meshi.id} isEager={i <= 10} />
-                )
-              })}
-            </div>
+            <MunicipalityMeshiGrid
+              meshis={data.municipality.meshis.filter(
+                (meshi): meshi is NonNullable<typeof meshi> => meshi != null,
+              )}
+            />
           ) : (
             <div className="border-y border-border-subtle py-16 text-center">
               <p className="font-medium">この地域のお店はまだありません</p>

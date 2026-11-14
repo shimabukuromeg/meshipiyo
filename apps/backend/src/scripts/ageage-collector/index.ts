@@ -148,6 +148,7 @@ async function saveMeshiData(
     const detailFields = {
       title: meshi.title,
       imageUrl: meshi.imageUrl,
+      imageUrls: meshi.imageUrls ?? [],
       storeName: meshi.storeName,
       address: meshi.address,
       siteUrl: meshi.siteUrl,

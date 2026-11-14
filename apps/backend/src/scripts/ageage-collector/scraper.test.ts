@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  extractAgeageArticleImages,
   extractMunicipalityFromAddress,
   getZipcodeAndAddress,
   parseAgeageStoreDetails,
@@ -175,5 +176,19 @@ describe('parseAgeageStoreDetails', () => {
 
     expect(result.officialUrl).to.equal('https://example.com/nijiya')
     expect(result.snsUrl).to.equal('https://www.instagram.com/nijiya/')
+  })
+
+  it('記事内の料理写真URLを抽出しキャスト画像を除外する', () => {
+    const html = `
+      <img src="https://data.otv.co.jp/okitive/wp-content/uploads/2026/11/ageage_2026111302-2-150x150.jpg" />
+      <img src="https://data.otv.co.jp/okitive/wp-content/uploads/2021/11/ageagemeshi_cast_kakazuyuri01.png" />
+      <img src="https://data.otv.co.jp/okitive/wp-content/uploads/2026/11/ageage_2026111303-2.jpg" />
+      <img src="https://www.otv.co.jp/okitive/wp-content/themes/okitive/assets/img/external/banner_header.png" />
+    `
+    const urls = extractAgeageArticleImages(html)
+    expect(urls).to.deep.equal([
+      'https://data.otv.co.jp/okitive/wp-content/uploads/2026/11/ageage_2026111302-2.jpg',
+      'https://data.otv.co.jp/okitive/wp-content/uploads/2026/11/ageage_2026111303-2.jpg',
+    ])
   })
 })
