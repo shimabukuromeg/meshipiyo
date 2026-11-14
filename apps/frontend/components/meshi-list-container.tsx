@@ -42,18 +42,30 @@ export function MeshiListContainer({
   const [isPending, startTransition] = useTransition()
   const loadMoreRef = useRef<HTMLDivElement>(null)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const [isLoadingAllForDistance, setIsLoadingAllForDistance] = useState(false)
   const [isInitialMount, setIsInitialMount] = useState(true)
   const pageInfoRef = useRef(initialData.meshis.pageInfo)
+  const loadedAllForDistanceRef = useRef(false)
   const locationApi = useUserLocation()
+  const sortByDistance = Boolean(locationApi.location)
 
   useEffect(() => {
     pageInfoRef.current = pageInfo
   }, [pageInfo])
 
+  useEffect(() => {
+    loadedAllForDistanceRef.current = false
+  }, [query])
+
   const loadMore = useCallback(async () => {
     const currentPageInfo = pageInfoRef.current
 
-    if (!currentPageInfo.hasNextPage || isLoadingMore || isPending) {
+    if (
+      !currentPageInfo.hasNextPage ||
+      isLoadingMore ||
+      isPending ||
+      isLoadingAllForDistance
+    ) {
       return
     }
 
@@ -86,11 +98,47 @@ export function MeshiListContainer({
     })
   }, [
     isLoadingMore,
+    isLoadingAllForDistance,
     isPending,
     loadMoreAction,
     query,
     pageInfo.endCursor,
     pageInfo.hasNextPage,
+  ])
+
+  useEffect(() => {
+    if (!sortByDistance) return
+    if (loadedAllForDistanceRef.current) return
+    if (!pageInfo.hasNextPage) {
+      loadedAllForDistanceRef.current = true
+      return
+    }
+    if (isLoadingAllForDistance || isPending) return
+
+    setIsLoadingAllForDistance(true)
+    startTransition(async () => {
+      try {
+        const data = await loadMoreAction(null, 1000, query)
+        setMeshis(data.meshis.edges.map((edge) => edge.node))
+        pageInfoRef.current = data.meshis.pageInfo
+        setPageInfo(data.meshis.pageInfo)
+        loadedAllForDistanceRef.current = true
+      } catch (error) {
+        console.error('Failed to load all meshis for distance sort:', {
+          error,
+          query,
+        })
+      } finally {
+        setIsLoadingAllForDistance(false)
+      }
+    })
+  }, [
+    sortByDistance,
+    pageInfo.hasNextPage,
+    isLoadingAllForDistance,
+    isPending,
+    loadMoreAction,
+    query,
   ])
 
   useEffect(() => {
@@ -102,7 +150,13 @@ export function MeshiListContainer({
   }, [])
 
   useEffect(() => {
-    if (isLoadingMore || isPending || isInitialMount) {
+    if (
+      isLoadingMore ||
+      isPending ||
+      isInitialMount ||
+      sortByDistance ||
+      isLoadingAllForDistance
+    ) {
       return
     }
 
@@ -138,7 +192,14 @@ export function MeshiListContainer({
         observer.disconnect()
       }
     }
-  }, [isLoadingMore, isPending, isInitialMount, loadMore])
+  }, [
+    isLoadingMore,
+    isPending,
+    isInitialMount,
+    loadMore,
+    sortByDistance,
+    isLoadingAllForDistance,
+  ])
 
   const resolvedMeshis = useFragment(MeshiCardFragment, meshis)
   const displayMeshis = useMemo(() => {
@@ -175,7 +236,8 @@ export function MeshiListContainer({
       <div className="mb-8">
         <LocationSortControls
           locationApi={locationApi}
-          sortedByDistance={Boolean(locationApi.location)}
+          sortedByDistance={sortByDistance}
+          loadingAll={isLoadingAllForDistance}
         />
       </div>
 
@@ -192,12 +254,15 @@ export function MeshiListContainer({
         </div>
       </div>
 
-      {pageInfo.hasNextPage && (
+      {(isLoadingAllForDistance ||
+        (!sortByDistance && pageInfo.hasNextPage)) && (
         <div ref={loadMoreRef} className="py-10 sm:py-14">
-          {isLoadingMore || isPending ? (
+          {isLoadingMore || isPending || isLoadingAllForDistance ? (
             <div aria-live="polite" aria-busy="true">
               <p className="mb-5 text-center text-[10px] font-bold tracking-[0.2em] text-link">
-                LOADING MORE
+                {isLoadingAllForDistance
+                  ? 'LOADING ALL FOR NEAREST'
+                  : 'LOADING MORE'}
               </p>
               <div className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
                 {Array.from({ length: 3 }, (_, index) => (
