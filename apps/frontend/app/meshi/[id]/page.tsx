@@ -7,6 +7,7 @@ import {
   isIndexableMeshiRecord,
   isPresentMeshiValue,
 } from '@/lib/meshi-content'
+import { getSeoMetaOverride } from '@/lib/seo-meta-overrides'
 
 type Props = {
   params: Promise<{
@@ -35,21 +36,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const municipality = meshi.municipality?.name
-  const title = municipality
+  const canonical = `/meshi/${meshi.id}`
+  const override = getSeoMetaOverride(canonical)
+  const fallbackTitle = municipality
     ? `${meshi.storeName}｜${municipality}の沖縄グルメ`
     : meshi.storeName
-  const description = buildMeshiDescription({
+  const fallbackDescription = buildMeshiDescription({
     storeName: meshi.storeName,
     title: meshi.title,
     municipalityName: municipality,
   })
-  const canonical = `/meshi/${meshi.id}`
+  const title = override?.title?.trim() || fallbackTitle
+  const description = override?.description?.trim() || fallbackDescription
+  const titleValue = override?.title?.trim() ? { absolute: title } : title
   const imageUrl = isPresentMeshiValue(meshi.imageUrl)
     ? meshi.imageUrl
     : undefined
 
   return {
-    title,
+    title: titleValue,
     description,
     alternates: { canonical },
     openGraph: {

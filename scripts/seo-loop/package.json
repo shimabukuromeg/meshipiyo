@@ -1,0 +1,25 @@
+{
+  "name": "seo-loop",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/cli.ts",
+    "check": "tsx src/cli.ts check",
+    "fetch": "tsx src/cli.ts fetch",
+    "select": "tsx src/cli.ts select",
+    "propose": "tsx src/cli.ts propose",
+    "apply": "tsx src/cli.ts apply",
+    "evaluate": "tsx src/cli.ts evaluate",
+    "run-all": "tsx src/cli.ts run-all",
+    "run-weekly": "tsx src/cli.ts run-all"
+  },
+  "dependencies": {
+    "googleapis": "^164.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  }
+}
