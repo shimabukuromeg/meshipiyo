@@ -106,7 +106,10 @@ export function RestaurantDetailTabs({
   const showBuzz = socialMentions.length > 0
 
   return (
-    <Tabs defaultValue="info" className="border-t border-border">
+    <Tabs
+      defaultValue={showBuzz ? 'buzz' : 'info'}
+      className="border-t border-border"
+    >
       <div className="sticky top-0 z-20 border-b border-border bg-card/95 px-4 pt-4 backdrop-blur-md sm:px-10 lg:px-12">
         <p className="mb-2 text-[11px] font-bold tracking-[0.2em] text-link">
           DETAILS
