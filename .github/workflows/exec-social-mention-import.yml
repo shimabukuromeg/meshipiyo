@@ -1,0 +1,59 @@
+name: Exec Social Mention Import
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: "read"
+  id-token: "write"
+
+env:
+  WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+  SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
+  RUN_SERVICE_ACCOUNT: ${{ secrets.RUN_SERVICE_ACCOUNT }}
+  PROJECT_ID: ${{ secrets.PROJECT_ID }}
+  IMAGE_HOST: "asia-northeast1-docker.pkg.dev"
+  IMAGE_TAG_BASE: ${{ secrets.IMAGE_TAG_BASE }}
+  GCP_REGION: asia-northeast1
+
+jobs:
+  exec-social-mention-import:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: Kesin11/actions-timeline@v2
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v2"
+        with:
+          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
+
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v2"
+
+      - name: Exec Social Mention Import
+        run: |
+          gcloud config set project $PROJECT_ID
+          gcloud config set run/region $GCP_REGION
+          set +e
+          gcloud run jobs describe socialmentionimport --quiet >/dev/null
+          job_exists_check=$?
+          set -e
+          if [ $job_exists_check -eq 0 ]; then
+            jobs_cmd="update"
+          else
+            jobs_cmd="create"
+          fi
+          echo ": $jobs_cmd a job"
+          gcloud run jobs $jobs_cmd socialmentionimport \
+            --image="${{ env.IMAGE_HOST }}/${{ env.IMAGE_TAG_BASE }}:latest" \
+            --max-retries=1 \
+            --task-timeout=60m \
+            --args="node,dist/src/scripts/social-mention/import.js" \
+            --service-account="${{ env.RUN_SERVICE_ACCOUNT }}" \
+            --set-secrets="DATABASE_URL=DATABASE_URL:latest"
+          gcloud run jobs execute socialmentionimport --wait --format=json
