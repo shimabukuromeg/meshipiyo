@@ -5,6 +5,7 @@ import { HomePhotoHero } from '@/components/home-photo-hero'
 import { MeshiListContainer } from '@/components/meshi-list-container'
 import { SearchInput } from '@/components/search-input'
 import { isPresentMeshiValue } from '@/lib/meshi-content'
+import { getSeoMetaOverride } from '@/lib/seo-meta-overrides'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,17 +22,20 @@ export async function generateMetadata({
 }: HomePageProps): Promise<Metadata> {
   const { q } = await searchParams
   const hasQuery = Boolean(q?.trim())
+  const override = getSeoMetaOverride('/')
+  const title = override?.title?.trim() || HOME_TITLE
+  const description = override?.description?.trim() || HOME_DESCRIPTION
 
   return {
-    title: { absolute: HOME_TITLE },
-    description: HOME_DESCRIPTION,
+    title: { absolute: title },
+    description,
     alternates: { canonical: '/' },
     robots: hasQuery
       ? { index: false, follow: true }
       : { index: true, follow: true },
     openGraph: {
-      title: HOME_TITLE,
-      description: HOME_DESCRIPTION,
+      title,
+      description,
       type: 'website',
       url: '/',
     },

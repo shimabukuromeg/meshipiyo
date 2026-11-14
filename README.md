@@ -147,3 +147,7 @@ $ pnpm knip --workspace apps/backend
 **設定ファイル：** `knip.json`
 
 定期的に実行して、コードベースをクリーンに保つことを推奨します。
+
+## SEO 自己改善ループ
+
+Google Search Console のデータを使い、既存ページの title / meta description だけを週次で最大3件改善します。手順・サービスアカウント設定は [`scripts/seo-loop/README.md`](./scripts/seo-loop/README.md) を参照してください。
