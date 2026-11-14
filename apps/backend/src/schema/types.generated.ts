@@ -71,6 +71,7 @@ export type Municipality = {
   __typename?: 'Municipality';
   createdAt: Scalars['Date']['output'];
   id: Scalars['ID']['output'];
+  meshiCount: Scalars['Int']['output'];
   meshis: Array<Maybe<Meshi>>;
   name: Scalars['String']['output'];
 };
@@ -272,6 +273,7 @@ export type MicroCmsImageResolvers<ContextType = any, ParentType extends Resolve
 export type MunicipalityResolvers<ContextType = any, ParentType extends ResolversParentTypes['Municipality'] = ResolversParentTypes['Municipality']> = {
   createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  meshiCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   meshis?: Resolver<Array<Maybe<ResolversTypes['Meshi']>>, ParentType, ContextType, Partial<MunicipalitymeshisArgs>>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };

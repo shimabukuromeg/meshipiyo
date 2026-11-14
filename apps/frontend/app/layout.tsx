@@ -68,6 +68,9 @@ export default function RootLayout({
               <Link href="/">
                 <MenubarItem>Top</MenubarItem>
               </Link>
+              <Link href="/municipalities">
+                <MenubarItem>地域から探す</MenubarItem>
+              </Link>
             </MenubarContent>
           </MenubarMenu>
         </Menubar>

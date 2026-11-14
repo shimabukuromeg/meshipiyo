@@ -65,6 +65,10 @@ export default async function MunicipalityPage({ params }: Props) {
             ホーム
           </Link>
           <ChevronRight aria-hidden="true" className="size-4" />
+          <Link href="/municipalities" className="hover:text-[#302b26]">
+            地域一覧
+          </Link>
+          <ChevronRight aria-hidden="true" className="size-4" />
           <span aria-current="page" className="truncate text-[#302b26]">
             {data.municipality.name}
           </span>

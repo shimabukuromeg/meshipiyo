@@ -177,5 +177,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     fetchMeshiEntries(client, siteUrl),
   ])
 
-  return [sitemapEntry(siteUrl), ...municipalities, ...meshis]
+  return [
+    sitemapEntry(siteUrl),
+    sitemapEntry(`${siteUrl}/municipalities`),
+    ...municipalities,
+    ...meshis,
+  ]
 }
