@@ -1,16 +1,13 @@
-import {
-  CalendarDays,
-  ChevronRight,
-  ExternalLink,
-  Info,
-  MapPin,
-  Store,
-} from 'lucide-react'
+import { ChevronRight, ExternalLink, MapPin } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
 import { BrandLogo } from '@/components/brand-logo'
+import {
+  type RestaurantDetailRow,
+  RestaurantDetailTabs,
+} from '@/components/restaurant-detail-tabs'
 import { Button } from '@/components/ui/button'
 import { createRevalidatedGraphQLClient } from '@/lib/graphql-client'
 import {
@@ -66,6 +63,75 @@ export default async function RestaurantDetail({ id }: Props) {
           isPresentMeshiValue(related.storeName),
       )
       .slice(0, RELATED_LIMIT) ?? []
+
+  const infoRows: RestaurantDetailRow[] = []
+  if (meshi.municipality) {
+    infoRows.push({
+      label: 'エリア',
+      value: meshi.municipality.name,
+      href: `/municipality/${meshi.municipality.id}`,
+    })
+  }
+  if (isPresentMeshiValue(meshi.theme)) {
+    infoRows.push({ label: 'テーマ', value: meshi.theme })
+  }
+  if (isPresentMeshiValue(meshi.phone)) {
+    infoRows.push({ label: '電話', value: meshi.phone, tel: meshi.phone })
+  }
+  if (isPresentMeshiValue(meshi.businessHours)) {
+    infoRows.push({
+      label: '営業時間',
+      value: meshi.businessHours,
+      multiline: true,
+    })
+  }
+  if (isPresentMeshiValue(meshi.holiday)) {
+    infoRows.push({ label: '定休日', value: meshi.holiday, multiline: true })
+  }
+  if (isPresentMeshiValue(meshi.parking)) {
+    infoRows.push({ label: '駐車場', value: meshi.parking, multiline: true })
+  }
+  if (isPresentMeshiValue(meshi.paymentMethods)) {
+    infoRows.push({
+      label: '支払い',
+      value: meshi.paymentMethods,
+      multiline: true,
+    })
+  }
+  if (isPresentMeshiValue(meshi.officialUrl)) {
+    infoRows.push({
+      label: '公式サイト',
+      value: '公式ページを見る',
+      href: meshi.officialUrl,
+    })
+  }
+  if (isPresentMeshiValue(meshi.snsUrl)) {
+    infoRows.push({ label: 'SNS', value: 'SNSを見る', href: meshi.snsUrl })
+  }
+  infoRows.push({
+    label: '紹介日',
+    value: publishedDateLabel,
+    time: publishedDate.toISOString(),
+  })
+  if (articleUrl) {
+    infoRows.push({
+      label: '出典',
+      value: 'アゲアゲ飯の紹介記事',
+      href: articleUrl,
+    })
+  }
+
+  const accessRows: RestaurantDetailRow[] = []
+  if (address) {
+    accessRows.push({ label: '所在地', value: address })
+  }
+  if (meshi.municipality) {
+    accessRows.push({
+      label: 'エリア',
+      value: meshi.municipality.name,
+      href: `/municipality/${meshi.municipality.id}`,
+    })
+  }
 
   const restaurantJsonLd = storeNameForSchema
     ? {
@@ -153,7 +219,10 @@ export default async function RestaurantDetail({ id }: Props) {
             ホーム
           </Link>
           <ChevronRight aria-hidden="true" className="size-4 shrink-0" />
-          <Link href="/municipalities" className="shrink-0 hover:text-foreground">
+          <Link
+            href="/municipalities"
+            className="shrink-0 hover:text-foreground"
+          >
             地域一覧
           </Link>
           <ChevronRight aria-hidden="true" className="size-4 shrink-0" />
@@ -263,216 +332,22 @@ export default async function RestaurantDetail({ id }: Props) {
             </div>
           </div>
 
-          <section className="border-t border-[#2f2b26] p-7 sm:p-10 lg:p-12">
-            <div className="grid gap-8 lg:grid-cols-[0.42fr_1fr] lg:gap-14">
-              <div>
-                <p className="mb-3 text-[11px] font-bold tracking-[0.2em] text-[#806a48]">
-                  INFORMATION
-                </p>
-                <h2 className="flex items-center gap-2 text-2xl font-bold">
-                  <Store aria-hidden="true" className="size-5" />
-                  店舗情報
-                </h2>
-              </div>
-              <div>
-                <dl className="divide-y divide-[#d9d4ca] border-y border-[#8f887d]">
-                  {address && (
-                    <div className="grid gap-1 py-5 sm:grid-cols-[7rem_1fr] sm:gap-4">
-                      <dt className="text-sm font-medium text-[#777066]">
-                        所在地
-                      </dt>
-                      <dd className="text-sm leading-6">{address}</dd>
-                    </div>
-                  )}
-                  {meshi.municipality && (
-                    <div className="grid gap-1 py-5 sm:grid-cols-[7rem_1fr] sm:gap-4">
-                      <dt className="text-sm font-medium text-[#777066]">
-                        エリア
-                      </dt>
-                      <dd className="text-sm">
-                        <Link
-                          href={`/municipality/${meshi.municipality.id}`}
-                          className="font-medium text-[#806a48] underline-offset-4 hover:underline"
-                        >
-                          {meshi.municipality.name}
-                        </Link>
-                      </dd>
-                    </div>
-                  )}
-                  {isPresentMeshiValue(meshi.theme) && (
-                    <div className="grid gap-1 py-5 sm:grid-cols-[7rem_1fr] sm:gap-4">
-                      <dt className="text-sm font-medium text-[#777066]">
-                        テーマ
-                      </dt>
-                      <dd className="text-sm leading-6">{meshi.theme}</dd>
-                    </div>
-                  )}
-                  {isPresentMeshiValue(meshi.phone) && (
-                    <div className="grid gap-1 py-5 sm:grid-cols-[7rem_1fr] sm:gap-4">
-                      <dt className="text-sm font-medium text-[#777066]">
-                        電話
-                      </dt>
-                      <dd className="text-sm leading-6">
-                        <a href={`tel:${meshi.phone}`} className="hover:underline">
-                          {meshi.phone}
-                        </a>
-                      </dd>
-                    </div>
-                  )}
-                  {isPresentMeshiValue(meshi.businessHours) && (
-                    <div className="grid gap-1 py-5 sm:grid-cols-[7rem_1fr] sm:gap-4">
-                      <dt className="text-sm font-medium text-[#777066]">
-                        営業時間
-                      </dt>
-                      <dd className="whitespace-pre-line text-sm leading-6">
-                        {meshi.businessHours}
-                      </dd>
-                    </div>
-                  )}
-                  {isPresentMeshiValue(meshi.holiday) && (
-                    <div className="grid gap-1 py-5 sm:grid-cols-[7rem_1fr] sm:gap-4">
-                      <dt className="text-sm font-medium text-[#777066]">
-                        定休日
-                      </dt>
-                      <dd className="whitespace-pre-line text-sm leading-6">
-                        {meshi.holiday}
-                      </dd>
-                    </div>
-                  )}
-                  {isPresentMeshiValue(meshi.parking) && (
-                    <div className="grid gap-1 py-5 sm:grid-cols-[7rem_1fr] sm:gap-4">
-                      <dt className="text-sm font-medium text-[#777066]">
-                        駐車場
-                      </dt>
-                      <dd className="whitespace-pre-line text-sm leading-6">
-                        {meshi.parking}
-                      </dd>
-                    </div>
-                  )}
-                  {isPresentMeshiValue(meshi.paymentMethods) && (
-                    <div className="grid gap-1 py-5 sm:grid-cols-[7rem_1fr] sm:gap-4">
-                      <dt className="text-sm font-medium text-[#777066]">
-                        支払い
-                      </dt>
-                      <dd className="whitespace-pre-line text-sm leading-6">
-                        {meshi.paymentMethods}
-                      </dd>
-                    </div>
-                  )}
-                  {isPresentMeshiValue(meshi.officialUrl) && (
-                    <div className="grid gap-1 py-5 sm:grid-cols-[7rem_1fr] sm:gap-4">
-                      <dt className="text-sm font-medium text-[#777066]">
-                        公式サイト
-                      </dt>
-                      <dd className="text-sm">
-                        <Link
-                          href={meshi.officialUrl}
-                          target="_blank"
-                          rel="noopener noreferrer external"
-                          className="font-medium text-[#806a48] underline-offset-4 hover:underline"
-                        >
-                          公式ページを見る
-                        </Link>
-                      </dd>
-                    </div>
-                  )}
-                  {isPresentMeshiValue(meshi.snsUrl) && (
-                    <div className="grid gap-1 py-5 sm:grid-cols-[7rem_1fr] sm:gap-4">
-                      <dt className="text-sm font-medium text-[#777066]">
-                        SNS
-                      </dt>
-                      <dd className="text-sm">
-                        <Link
-                          href={meshi.snsUrl}
-                          target="_blank"
-                          rel="noopener noreferrer external"
-                          className="font-medium text-[#806a48] underline-offset-4 hover:underline"
-                        >
-                          SNSを見る
-                        </Link>
-                      </dd>
-                    </div>
-                  )}
-                  <div className="grid gap-1 py-5 sm:grid-cols-[7rem_1fr] sm:gap-4">
-                    <dt className="text-sm font-medium text-[#777066]">
-                      紹介日
-                    </dt>
-                    <dd className="flex items-center gap-2 text-sm">
-                      <CalendarDays
-                        aria-hidden="true"
-                        className="size-4 text-[#806a48]"
-                      />
-                      <time dateTime={publishedDate.toISOString()}>
-                        {publishedDateLabel}
-                      </time>
-                    </dd>
-                  </div>
-                  {articleUrl && (
-                    <div className="grid gap-1 py-5 sm:grid-cols-[7rem_1fr] sm:gap-4">
-                      <dt className="text-sm font-medium text-[#777066]">
-                        出典
-                      </dt>
-                      <dd className="text-sm">
-                        <Link
-                          href={articleUrl}
-                          target="_blank"
-                          rel="noopener noreferrer external"
-                          className="font-medium text-[#806a48] underline-offset-4 hover:underline"
-                        >
-                          アゲアゲ飯の紹介記事
-                        </Link>
-                      </dd>
-                    </div>
-                  )}
-                </dl>
-
-                <p className="mt-5 flex items-start gap-2 text-xs leading-5 text-[#777066]">
-                  <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-                  掲載情報は出典記事の内容に基づきます。営業時間・定休日・提供状況は変更される場合があるため、訪問前に掲載元や店舗の最新情報をご確認ください。
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {relatedMeshis.length > 0 && meshi.municipality && (
-            <section className="border-t border-[#2f2b26] p-7 sm:p-10 lg:p-12">
-              <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-                <div>
-                  <p className="mb-2 text-[11px] font-bold tracking-[0.2em] text-[#806a48]">
-                    NEARBY
-                  </p>
-                  <h2 className="text-2xl font-bold">
-                    {meshi.municipality.name}のほかのお店
-                  </h2>
-                </div>
-                <Link
-                  href={`/municipality/${meshi.municipality.id}`}
-                  className="text-sm font-medium text-[#806a48] hover:underline"
-                >
-                  すべて見る →
-                </Link>
-              </div>
-              <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {relatedMeshis.map((related) => (
-                  <li key={related.id}>
-                    <Link
-                      href={`/meshi/${related.id}`}
-                      className="block border border-[#d9d4ca] bg-white p-4 transition-colors hover:border-[#806a48]"
-                    >
-                      <p className="font-bold text-[#302b26]">
-                        {related.storeName}
-                      </p>
-                      {isPresentMeshiValue(related.title) && (
-                        <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#6f685f]">
-                          {related.title}
-                        </p>
-                      )}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
+          <RestaurantDetailTabs
+            infoRows={infoRows}
+            accessRows={accessRows}
+            mapUrl={mapUrl}
+            municipalityName={meshi.municipality?.name ?? null}
+            municipalityHref={
+              meshi.municipality
+                ? `/municipality/${meshi.municipality.id}`
+                : null
+            }
+            relatedMeshis={relatedMeshis.map((related) => ({
+              id: related.id,
+              storeName: related.storeName,
+              title: isPresentMeshiValue(related.title) ? related.title : null,
+            }))}
+          />
         </article>
       </div>
     </main>
