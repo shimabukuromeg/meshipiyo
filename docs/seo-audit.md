@@ -225,6 +225,29 @@ Search Consoleのページ別表示回数と、元記事に構造化欄が揃っ
 - `apps/backend/src/scripts/ageage-collector/scraper.ts`
 - `apps/backend/src/schema/meshi/schema.graphql`
 
+
+## ジャンル次元の設計メモ（2026-11-14）
+
+実装はしない。収集で十分な件数が揃ってから、限定公開する。
+
+### ソース候補（優先順）
+
+1. アゲアゲ記事の短いテーマラベル（例: 「ゴルフ場めし」）。キャッチコピーや締め文は theme にしない（#225）。
+2. 既存の紹介見出し・店名からの料理語彙（そば、タコライス、ステーキ等）は補助信号のみ。単独でURLを切らない。
+3. Google Places の `types` / 編集カテゴリは出典付きの次段。ChatGPT 単独分類は使わない。
+
+### インデックス条件
+
+- 市区町村 × ジャンルの組み合わせは、掲載店が一定数以上あるものだけ公開する（目安: 5店以上。確定値はパイロット後に決める）。
+- 全組み合わせのプログラマティック生成はしない。
+- URL案は後で決める。候補: `/municipality/{id}/genre/{slug}` または `/genres/{slug}?area=`。薄いページを量産しない形を優先。
+
+### 今はやらないこと
+
+- ジャンル一覧ページの公開
+- LLM によるジャンル付与の本番書き込み
+- 件数の少ないエリア×ジャンルの noindex なし公開
+
 ## 残課題（オペレータ入力があると精度が上がる）
 
 - Search Consoleのクエリ別・ページ別CSV
@@ -247,3 +270,4 @@ Search Consoleのページ別表示回数と、元記事に構造化欄が揃っ
 | 2026-11-14 | PR #221 merge（P1: `/municipalities` 一覧） | 市区町村ハブの内部リンク強化 | squash merge 完了 |
 | 2026-11-14 | PR #222 merge（店舗詳細 ui-sdk Tabs、関連店舗画像、municipalities force-dynamic） | 詳細UI到達性＋本番ビルド安定 | squash merge 完了。Vercel green |
 | 2026-11-14 | Ageage collector 手動実行成功。店舗詳細 enrichment が DB に反映 | 電話・営業時間等の実データ投入 | GraphQL meshi(834) で phone/hours 確認。URL・SNS 複合ラベルは未対応だったため別PR |
+| 2026-11-14 | ジャンル次元の設計メモを監査に追記 | エリア×ジャンル実装前の方針固定 | docs only |
