@@ -143,6 +143,21 @@ describe('parseAgeageStoreDetails', () => {
     expect(result.snsUrl).to.equal('https://instagram.com/example')
   })
 
+  it('店名直後のキャッチコピーは theme にしない', () => {
+    const html = `
+      <dl class="information_datalist">
+        <dt>沖縄食堂 にじや 曙本店</dt>
+        <dd><p>おいしい「沖縄そば」、ごちそうさまでした！</p></dd>
+        <dt>住所</dt>
+        <dd>〒900-0002 沖縄県那覇市曙2-27-9 1F</dd>
+      </dl>
+    `
+
+    const result = parseAgeageStoreDetails(html)
+
+    expect(result.theme).to.equal(null)
+  })
+
   it('URL・SNS の複合ラベルを公式とSNSに振り分ける', () => {
     const html = `
       <dl class="information_datalist">

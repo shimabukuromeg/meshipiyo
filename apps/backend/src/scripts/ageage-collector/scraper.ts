@@ -82,6 +82,14 @@ function cleanText(value: string) {
   return value.replace(/\s+/g, ' ').trim()
 }
 
+function isLikelyThemeLabel(value: string) {
+  if (!value || value.length > 24) return false
+  if (/[。！？!?]/.test(value)) return false
+  if (/、/.test(value)) return false
+  if (/ごちそうさま|いただきました|紹介するのは/.test(value)) return false
+  return true
+}
+
 /**
  * アゲアゲ記事の店舗情報 datalist から確認済み項目だけを取り出す
  */
@@ -110,7 +118,8 @@ export function parseAgeageStoreDetails(html: string): AgeageStoreDetails {
     if (
       themeCandidate &&
       !themeCandidate.startsWith('〒') &&
-      themeCandidate !== storeName
+      themeCandidate !== storeName &&
+      isLikelyThemeLabel(themeCandidate)
     ) {
       theme = themeCandidate
     }
