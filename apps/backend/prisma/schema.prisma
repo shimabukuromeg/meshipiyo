@@ -24,6 +24,7 @@ model Meshi {
   title              String        @default("unknown")
   imageUrl           String        @default("unknown") @map("image_url")
   imageUrls          String[]      @default([]) @map("image_urls")
+  placesImageUrls    String[]      @default([]) @map("places_image_urls")
   storeName          String        @default("unknown") @map("store_name")
   address            String        @default("unknown")
   siteUrl            String        @default("unknown") @map("site_url")
@@ -38,6 +39,7 @@ model Meshi {
   officialUrl        String?       @map("official_url")
   snsUrl             String?       @map("sns_url")
   theme              String?
+  googlePlaceId      String?       @map("google_place_id")
   sourceVerifiedAt   DateTime?     @map("source_verified_at") @db.Timestamptz(6)
   createdAt          DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
   municipalityMeshis Int?            @map("municipality_meshis")
@@ -45,6 +47,17 @@ model Meshi {
   socialMentions     SocialMention[]
 
   @@map("meshis")
+}
+
+/// Places API 無料枠の月次利用量。photo は月1000が無料上限の目安。
+model PlacesApiUsage {
+  month        String   @id
+  searchCount  Int      @default(0) @map("search_count")
+  detailsCount Int      @default(0) @map("details_count")
+  photoCount   Int      @default(0) @map("photo_count")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("places_api_usage")
 }
 
 /// 一般ユーザー等の公開SNS投稿。無料開始時は人手でURLを追加する。

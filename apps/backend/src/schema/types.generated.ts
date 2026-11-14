@@ -38,6 +38,7 @@ export type Meshi = {
   parking?: Maybe<Scalars['String']['output']>;
   paymentMethods?: Maybe<Scalars['String']['output']>;
   phone?: Maybe<Scalars['String']['output']>;
+  placesImageUrls: Array<Scalars['String']['output']>;
   publishedDate: Scalars['Date']['output'];
   siteUrl: Scalars['String']['output'];
   snsUrl?: Maybe<Scalars['String']['output']>;
@@ -258,6 +259,7 @@ export type MeshiResolvers<ContextType = any, ParentType extends ResolversParent
   parking?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   paymentMethods?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   phone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  placesImageUrls?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   publishedDate?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   siteUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   snsUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;

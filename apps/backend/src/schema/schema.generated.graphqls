@@ -18,6 +18,7 @@ type Meshi {
   parking: String
   paymentMethods: String
   phone: String
+  placesImageUrls: [String!]!
   publishedDate: Date!
   siteUrl: String!
   snsUrl: String

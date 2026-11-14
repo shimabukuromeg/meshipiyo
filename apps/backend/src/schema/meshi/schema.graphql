@@ -9,6 +9,7 @@ type Meshi {
   title: String!
   imageUrl: String!
   imageUrls: [String!]!
+  placesImageUrls: [String!]!
   storeName: String!
   address: String!
   siteUrl: String!

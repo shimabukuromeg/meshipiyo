@@ -23,6 +23,7 @@
     "ageage:scrape": "ts-node src/scripts/ageage-collector/index.ts",
     "social:add": "ts-node src/scripts/social-mention/add.ts",
     "social:import": "ts-node src/scripts/social-mention/import.ts",
+    "places:photos": "ts-node src/scripts/places-photos/collect.ts",
     "lint": "biome lint --write .",
     "format": "biome check --write .",
     "ci": "biome ci"
