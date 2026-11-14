@@ -4,6 +4,7 @@ import { Tabs, TabsList, TabsPanel, TabsTab } from '@ui-sdk/react/tabs'
 import { CalendarDays, Info } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { XPostEmbed } from '@/components/x-post-embed'
 
 export type RestaurantDetailRow = {
   label: string
@@ -21,6 +22,13 @@ type RelatedMeshi = {
   imageUrl?: string | null
 }
 
+export type SocialMentionItem = {
+  id: string
+  platform: string
+  url: string
+  note?: string | null
+}
+
 type Props = {
   infoRows: RestaurantDetailRow[]
   accessRows: RestaurantDetailRow[]
@@ -28,6 +36,7 @@ type Props = {
   municipalityName: string | null
   municipalityHref: string | null
   relatedMeshis: RelatedMeshi[]
+  socialMentions: SocialMentionItem[]
 }
 
 function DetailList({ rows }: { rows: RestaurantDetailRow[] }) {
@@ -90,8 +99,10 @@ export function RestaurantDetailTabs({
   municipalityName,
   municipalityHref,
   relatedMeshis,
+  socialMentions,
 }: Props) {
   const showRelated = relatedMeshis.length > 0 && municipalityName
+  const showBuzz = socialMentions.length > 0
 
   return (
     <Tabs defaultValue="info" className="border-t border-[#2f2b26]">
@@ -115,6 +126,14 @@ export function RestaurantDetailTabs({
           >
             アクセス
           </TabsTab>
+          {showBuzz && (
+            <TabsTab
+              value="buzz"
+              className="rounded-none border-b-2 border-transparent px-4 py-3 text-sm font-bold text-[#777066] data-selected:border-[#302b26] data-selected:text-[#302b26]"
+            >
+              みんなの投稿
+            </TabsTab>
+          )}
           {showRelated && (
             <TabsTab
               value="related"
@@ -149,6 +168,37 @@ export function RestaurantDetailTabs({
           </Link>
         )}
       </TabsPanel>
+
+      {showBuzz && (
+        <TabsPanel value="buzz" className="p-7 sm:p-10 lg:p-12">
+          <h2 className="mb-6 text-2xl font-bold">みんなの投稿</h2>
+          <ul className="grid gap-6">
+            {socialMentions.map((mention) => (
+              <li key={mention.id} className="min-w-0">
+                {mention.platform === 'x' ? (
+                  <XPostEmbed url={mention.url} />
+                ) : (
+                  <Link
+                    href={mention.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex border border-[#d9d4ca] bg-white px-4 py-3 text-sm font-medium text-[#806a48] hover:border-[#806a48]"
+                  >
+                    {mention.platform === 'instagram'
+                      ? 'Instagramの投稿を見る →'
+                      : mention.platform === 'threads'
+                        ? 'Threadsの投稿を見る →'
+                        : '投稿を見る →'}
+                  </Link>
+                )}
+                {mention.note && (
+                  <p className="mt-2 text-xs text-[#777066]">{mention.note}</p>
+                )}
+              </li>
+            ))}
+          </ul>
+        </TabsPanel>
+      )}
 
       {showRelated && municipalityHref && (
         <TabsPanel value="related" className="p-7 sm:p-10 lg:p-12">

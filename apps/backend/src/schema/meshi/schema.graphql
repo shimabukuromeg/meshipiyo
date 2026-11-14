@@ -25,6 +25,15 @@ type Meshi {
   sourceVerifiedAt: Date
   createdAt: Date!
   municipality: Municipality
+  socialMentions: [SocialMention!]!
+}
+
+type SocialMention {
+  id: ID!
+  platform: String!
+  url: String!
+  note: String
+  createdAt: Date!
 }
 
 type MeshiConnection {

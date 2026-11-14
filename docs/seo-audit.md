@@ -285,6 +285,21 @@ Search Consoleのページ別表示回数と、元記事に構造化欄が揃っ
 - X Search の課金を有効にするか（自動発見の可否が決まる）。
 - パイロットで貼る投稿URLを誰が集めるか（なければ埋め込みUIは後回し）。
 
+### 無料開始の方針（採用）
+
+1. 対象は一般ユーザーの公開投稿（番組公式の告知ではない）。
+2. 公式 X Search 課金と非公式リレー（Webセッション流用）は使わない。
+3. `social_mentions` に投稿URLを人手登録し、店舗詳細の「みんなの投稿」に出す。
+4. 追加コマンド: `pnpm --filter backend social:add -- <meshiId> "<投稿URL>" [メモ]`
+5. URLが増えてから Search 課金や自動収集を検討する。
+
+### 収集オペ（Grok → Notion → 登録）
+
+1. 対象一覧は `.audit/meshi-social-research-targets.csv`（有効834件）と `.audit/batches/`（20件単位）。
+2. 一括指示は `.audit/meshi-social-research-grok-all.md` を Grok に添付し、止まらず全バッチ調査 → Notion 保存。
+3. Notion の採用候補（medium以上）をこのリポジトリ側で `social:add` して本番反映。
+4. `.audit/` は作業用でコミットしない。
+
 ## 残課題（オペレータ入力があると精度が上がる）
 
 - Search Consoleのクエリ別・ページ別CSV
@@ -312,3 +327,4 @@ Search Consoleのページ別表示回数と、元記事に構造化欄が揃っ
 | 2026-11-14 | PR #224/#225 merge + collector再実行 | URL・SNS振り分け、theme品質、openingHours JSON-LD | GraphQL meshi834: theme=null, snsUrl=Instagram。HTMLはISR後に追従 |
 | 2026-11-14 | PR #226 merge（ジャンル設計メモ） | エリア×ジャンル実装前の方針固定 | docs only |
 | 2026-11-14 | SNS埋め込み調査（X/IG/Threads）を監査に追記 | 話題投稿の埋め込み可否を固定 | X Searchは課金不足。IGは投稿URLならtokenless oEmbed可 |
+| 2026-11-14 | SocialMention スキーマ + 店舗詳細「みんなの投稿」+ `social:add` | 無料で投稿URLを載せる土台 | データ0件時はタブ非表示。Grok調査待ち |

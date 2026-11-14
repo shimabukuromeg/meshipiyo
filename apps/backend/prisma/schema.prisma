@@ -39,8 +39,24 @@ model Meshi {
   theme              String?
   sourceVerifiedAt   DateTime?     @map("source_verified_at") @db.Timestamptz(6)
   createdAt          DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
-  municipalityMeshis Int?          @map("municipality_meshis")
-  municipality       Municipality? @relation(fields: [municipalityMeshis], references: [id])
+  municipalityMeshis Int?            @map("municipality_meshis")
+  municipality       Municipality?   @relation(fields: [municipalityMeshis], references: [id])
+  socialMentions     SocialMention[]
 
   @@map("meshis")
+}
+
+/// 一般ユーザー等の公開SNS投稿。無料開始時は人手でURLを追加する。
+model SocialMention {
+  id        Int      @id @default(autoincrement())
+  meshiId   Int      @map("meshi_id")
+  platform  String
+  url       String
+  note      String?
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  meshi     Meshi    @relation(fields: [meshiId], references: [id], onDelete: Cascade)
+
+  @@unique([meshiId, url])
+  @@index([meshiId])
+  @@map("social_mentions")
 }

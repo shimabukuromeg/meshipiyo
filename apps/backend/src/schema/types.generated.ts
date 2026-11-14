@@ -40,6 +40,7 @@ export type Meshi = {
   publishedDate: Scalars['Date']['output'];
   siteUrl: Scalars['String']['output'];
   snsUrl?: Maybe<Scalars['String']['output']>;
+  socialMentions: Array<SocialMention>;
   sourceVerifiedAt?: Maybe<Scalars['Date']['output']>;
   storeName: Scalars['String']['output'];
   theme?: Maybe<Scalars['String']['output']>;
@@ -112,6 +113,15 @@ export type QuerymeshisArgs = {
 
 export type QuerymunicipalityArgs = {
   id: Scalars['ID']['input'];
+};
+
+export type SocialMention = {
+  __typename?: 'SocialMention';
+  createdAt: Scalars['Date']['output'];
+  id: Scalars['ID']['output'];
+  note?: Maybe<Scalars['String']['output']>;
+  platform: Scalars['String']['output'];
+  url: Scalars['String']['output'];
 };
 
 
@@ -201,6 +211,7 @@ export type ResolversTypes = {
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
+  SocialMention: ResolverTypeWrapper<SocialMention>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -219,6 +230,7 @@ export type ResolversParentTypes = {
   PageInfo: PageInfo;
   Boolean: Scalars['Boolean']['output'];
   Query: Record<PropertyKey, never>;
+  SocialMention: SocialMention;
 };
 
 export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
@@ -247,6 +259,7 @@ export type MeshiResolvers<ContextType = any, ParentType extends ResolversParent
   publishedDate?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   siteUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   snsUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  socialMentions?: Resolver<Array<ResolversTypes['SocialMention']>, ParentType, ContextType>;
   sourceVerifiedAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
   storeName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   theme?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -292,6 +305,14 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   municipality?: Resolver<Maybe<ResolversTypes['Municipality']>, ParentType, ContextType, RequireFields<QuerymunicipalityArgs, 'id'>>;
 };
 
+export type SocialMentionResolvers<ContextType = any, ParentType extends ResolversParentTypes['SocialMention'] = ResolversParentTypes['SocialMention']> = {
+  createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  note?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  platform?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   Date?: GraphQLScalarType;
   DateTime?: GraphQLScalarType;
@@ -302,5 +323,6 @@ export type Resolvers<ContextType = any> = {
   Municipality?: MunicipalityResolvers<ContextType>;
   PageInfo?: PageInfoResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  SocialMention?: SocialMentionResolvers<ContextType>;
 };
 
