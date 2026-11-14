@@ -10,6 +10,7 @@ import    { MeshiEdge } from './meshi/resolvers/MeshiEdge';
 import    { MicroCmsImage } from './base/resolvers/MicroCmsImage';
 import    { Municipality } from './municipality/resolvers/Municipality';
 import    { PageInfo } from './meshi/resolvers/PageInfo';
+import    { SocialMention } from './meshi/resolvers/SocialMention';
 import    { DateResolver,DateTimeResolver } from 'graphql-scalars';
     export const resolvers: Resolvers = {
       Query: { meshi: Query_meshi,meshis: Query_meshis,municipalities: Query_municipalities,municipality: Query_municipality },
@@ -21,6 +22,7 @@ MeshiEdge: MeshiEdge,
 MicroCmsImage: MicroCmsImage,
 Municipality: Municipality,
 PageInfo: PageInfo,
+SocialMention: SocialMention,
 Date: DateResolver,
 DateTime: DateTimeResolver
     }

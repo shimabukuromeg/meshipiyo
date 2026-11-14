@@ -47,14 +47,19 @@ describe('Query.meshis resolver (composite cursor pagination)', () => {
   ): Promise<MeshiConnection> => {
     const parent = {}
     if (typeof resolver === 'function')
-      return (await resolver(parent, args, ctx, info)) as MeshiConnection
+      return (await resolver(
+        parent,
+        args,
+        ctx,
+        info,
+      )) as unknown as MeshiConnection
     if (resolver && typeof resolver.resolve === 'function')
       return (await resolver.resolve(
         parent,
         args,
         ctx,
         info,
-      )) as MeshiConnection
+      )) as unknown as MeshiConnection
     throw new Error('Invalid resolver')
   }
 

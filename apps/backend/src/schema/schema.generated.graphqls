@@ -20,6 +20,7 @@ type Meshi {
   publishedDate: Date!
   siteUrl: String!
   snsUrl: String
+  socialMentions: [SocialMention!]!
   sourceVerifiedAt: Date
   storeName: String!
   theme: String
@@ -64,4 +65,12 @@ type Query {
   meshis(after: String, first: Int = 20, query: String): MeshiConnection!
   municipalities: [Municipality!]!
   municipality(id: ID!): Municipality
+}
+
+type SocialMention {
+  createdAt: Date!
+  id: ID!
+  note: String
+  platform: String!
+  url: String!
 }

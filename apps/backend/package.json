@@ -21,6 +21,7 @@
     "codegen:microcms": "microcms_sdk_generator src/micro-cms-schemas src/micro-cms-schemas/generated.ts",
     "codegen": "pnpm run codegen:prisma && pnpm run codegen:gql",
     "ageage:scrape": "ts-node src/scripts/ageage-collector/index.ts",
+    "social:add": "ts-node src/scripts/social-mention/add.ts",
     "lint": "biome lint --write .",
     "format": "biome check --write .",
     "ci": "biome ci"

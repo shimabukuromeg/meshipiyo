@@ -8,4 +8,10 @@ export const Meshi: MeshiResolvers = {
       })
       .municipality()
   },
+  socialMentions: (parent, _arg, ctx) => {
+    return ctx.prisma.socialMention.findMany({
+      where: { meshiId: parent.id },
+      orderBy: { createdAt: 'desc' },
+    })
+  },
 }

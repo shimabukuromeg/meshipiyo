@@ -356,6 +356,12 @@ export default async function RestaurantDetail({ id }: Props) {
                 ? related.imageUrl
                 : null,
             }))}
+            socialMentions={(meshi.socialMentions ?? []).map((mention) => ({
+              id: mention.id,
+              platform: mention.platform,
+              url: mention.url,
+              note: mention.note,
+            }))}
           />
         </article>
       </div>
@@ -391,6 +397,12 @@ const MeshiDetailQuery = graphql(/* GraphQL */ `
       snsUrl
       theme
       sourceVerifiedAt
+      socialMentions {
+        id
+        platform
+        url
+        note
+      }
       municipality {
         name
         id
