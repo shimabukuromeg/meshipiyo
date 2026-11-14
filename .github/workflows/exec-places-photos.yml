@@ -1,0 +1,69 @@
+name: Exec Places Photos
+
+on:
+  workflow_dispatch:
+    inputs:
+      photos_per_store:
+        description: "1店あたり取得する写真枚数（無料枠内）"
+        required: false
+        default: "2"
+      monthly_budget:
+        description: "今月の写真取得上限（無料枠1000の手前で止める）"
+        required: false
+        default: "900"
+
+permissions:
+  contents: "read"
+  id-token: "write"
+
+env:
+  WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+  SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
+  RUN_SERVICE_ACCOUNT: ${{ secrets.RUN_SERVICE_ACCOUNT }}
+  PROJECT_ID: ${{ secrets.PROJECT_ID }}
+  IMAGE_HOST: "asia-northeast1-docker.pkg.dev"
+  IMAGE_TAG_BASE: ${{ secrets.IMAGE_TAG_BASE }}
+  GCP_REGION: asia-northeast1
+
+jobs:
+  exec-places-photos:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: Kesin11/actions-timeline@v2
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v2"
+        with:
+          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
+
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v2"
+
+      - name: Exec Places Photos Collector
+        run: |
+          gcloud config set project $PROJECT_ID
+          gcloud config set run/region $GCP_REGION
+          set +e
+          gcloud run jobs describe placesphotos --quiet >/dev/null
+          job_exists_check=$?
+          set -e
+          if [ $job_exists_check -eq 0 ]; then
+            jobs_cmd="update"
+          else
+            jobs_cmd="create"
+          fi
+          echo ": $jobs_cmd a job"
+          gcloud run jobs $jobs_cmd placesphotos \
+            --image="${{ env.IMAGE_HOST }}/${{ env.IMAGE_TAG_BASE }}:latest" \
+            --max-retries=1 \
+            --task-timeout=60m \
+            --args="node,dist/src/scripts/places-photos/collect.js" \
+            --service-account="${{ env.RUN_SERVICE_ACCOUNT }}" \
+            --set-secrets="DATABASE_URL=DATABASE_URL:latest,GOOGLE_MAPS_API_KEY=GOOGLE_MAPS_API_KEY:latest" \
+            --set-env-vars="PLACES_PHOTO_MONTHLY_BUDGET=${{ inputs.monthly_budget }},PLACES_PHOTOS_PER_STORE=${{ inputs.photos_per_store }},PLACES_ONLY_MISSING=1"
+          gcloud run jobs execute placesphotos --wait --format=json

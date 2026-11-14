@@ -11,6 +11,7 @@ interface RawMeshiResult {
   title: string
   image_url: string
   image_urls: string[] | null
+  places_image_urls: string[] | null
   store_name: string
   address: string
   site_url: string
@@ -25,6 +26,7 @@ interface RawMeshiResult {
   official_url: string | null
   sns_url: string | null
   theme: string | null
+  google_place_id: string | null
   source_verified_at: Date | null
   created_at: Date
   municipality_meshis: number | null
@@ -37,6 +39,7 @@ interface MeshiModel {
   title: string
   imageUrl: string
   imageUrls: string[]
+  placesImageUrls: string[]
   storeName: string
   address: string
   siteUrl: string
@@ -51,6 +54,7 @@ interface MeshiModel {
   officialUrl: string | null
   snsUrl: string | null
   theme: string | null
+  googlePlaceId: string | null
   sourceVerifiedAt: Date | null
   createdAt: Date
   municipalityMeshis: number | null
@@ -64,6 +68,7 @@ function mapRawMeshiToDomain(item: RawMeshiResult): MeshiModel {
     title: item.title,
     imageUrl: item.image_url,
     imageUrls: item.image_urls ?? [],
+    placesImageUrls: item.places_image_urls ?? [],
     storeName: item.store_name,
     address: item.address,
     siteUrl: item.site_url,
@@ -78,6 +83,7 @@ function mapRawMeshiToDomain(item: RawMeshiResult): MeshiModel {
     officialUrl: item.official_url,
     snsUrl: item.sns_url,
     theme: item.theme,
+    googlePlaceId: item.google_place_id,
     sourceVerifiedAt: item.source_verified_at,
     createdAt: item.created_at,
     municipalityMeshis: item.municipality_meshis,

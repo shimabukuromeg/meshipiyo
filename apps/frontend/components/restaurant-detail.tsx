@@ -41,6 +41,7 @@ export default async function RestaurantDetail({ id }: Props) {
   const imageUrl = isPresentMeshiValue(meshi.imageUrl) ? meshi.imageUrl : null
   const galleryImages = [
     ...(meshi.imageUrls ?? []).filter((url) => isPresentMeshiValue(url)),
+    ...(meshi.placesImageUrls ?? []).filter((url) => isPresentMeshiValue(url)),
     ...(imageUrl ? [imageUrl] : []),
   ]
   const uniqueImages = Array.from(new Set(galleryImages))
@@ -392,6 +393,7 @@ const MeshiDetailQuery = graphql(/* GraphQL */ `
       createdAt
       imageUrl
       imageUrls
+      placesImageUrls
       storeName
       siteUrl
       publishedDate
