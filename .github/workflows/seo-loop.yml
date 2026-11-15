@@ -1,0 +1,49 @@
+name: SEO Loop
+
+on:
+  # コストを抑えるため定期実行はしない。必要なときだけ手動実行。
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: seo-loop
+  cancel-in-progress: false
+
+jobs:
+  seo-loop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.25.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install seo-loop deps
+        run: pnpm install --filter seo-loop...
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Run weekly SEO loop
+        working-directory: scripts/seo-loop
+        env:
+          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+          GSC_SITE_URL: ${{ secrets.GSC_SITE_URL }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SEO_SITE_ORIGIN: https://meshipiyo.app
+        run: pnpm run-all

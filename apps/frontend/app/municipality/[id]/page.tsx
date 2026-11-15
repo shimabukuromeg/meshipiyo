@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { cache } from 'react'
 import { MunicipalityMeshiGrid } from '@/components/municipality-meshi-grid'
 import { createRevalidatedGraphQLClient } from '@/lib/graphql-client'
+import { getSeoMetaOverride } from '@/lib/seo-meta-overrides'
 import { graphql } from '@/src/gql'
 
 type Props = {
@@ -25,12 +26,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const count = municipality.meshis.length
-  const title = `${municipality.name}のグルメ・飲食店情報`
-  const description = `${municipality.name}で紹介された沖縄グルメや飲食店を${count}件掲載しています。`
   const canonical = `/municipality/${municipality.id}`
+  const override = getSeoMetaOverride(canonical)
+  const fallbackTitle = `${municipality.name}のグルメ・飲食店情報`
+  const fallbackDescription = `${municipality.name}で紹介された沖縄グルメや飲食店を${count}件掲載しています。`
+  const title = override?.title?.trim() || fallbackTitle
+  const description = override?.description?.trim() || fallbackDescription
 
   return {
-    title,
+    title: override?.title?.trim() ? { absolute: title } : title,
     description,
     alternates: { canonical },
     robots:

@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { cache } from 'react'
 import { createRevalidatedGraphQLClient } from '@/lib/graphql-client'
+import { getSeoMetaOverride } from '@/lib/seo-meta-overrides'
 import { graphql } from '@/src/gql'
 
 const TITLE = '沖縄の地域からグルメを探す'
@@ -11,13 +12,17 @@ const DESCRIPTION =
 
 export const dynamic = 'force-dynamic'
 
+const override = getSeoMetaOverride('/municipalities')
+const pageTitle = override?.title?.trim() || TITLE
+const pageDescription = override?.description?.trim() || DESCRIPTION
+
 export const metadata: Metadata = {
-  title: TITLE,
-  description: DESCRIPTION,
+  title: override?.title?.trim() ? { absolute: pageTitle } : pageTitle,
+  description: pageDescription,
   alternates: { canonical: '/municipalities' },
   openGraph: {
-    title: TITLE,
-    description: DESCRIPTION,
+    title: pageTitle,
+    description: pageDescription,
     type: 'website',
     url: '/municipalities',
   },

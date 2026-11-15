@@ -3,5 +3,7 @@ packages:
   - "apps/*"
   # all packages in subdirs of components/
   - "components/**"
+  # SEO weekly loop tooling
+  - "scripts/seo-loop"
   # exclude packages that are inside test directories
   - "!**/test/**"
