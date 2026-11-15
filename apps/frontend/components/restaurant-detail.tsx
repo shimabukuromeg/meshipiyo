@@ -382,7 +382,9 @@ export default async function RestaurantDetail({ id }: Props) {
               id: mention.id,
               platform: mention.platform,
               url: mention.url,
-              note: mention.note,
+              author: mention.author,
+              postedAt: mention.postedAt ? String(mention.postedAt) : null,
+              confidence: mention.confidence,
             }))}
           />
         </article>
@@ -425,7 +427,9 @@ const MeshiDetailQuery = graphql(/* GraphQL */ `
         id
         platform
         url
-        note
+        author
+        postedAt
+        confidence
       }
       municipality {
         name

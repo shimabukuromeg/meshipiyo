@@ -60,17 +60,21 @@ model PlacesApiUsage {
   @@map("places_api_usage")
 }
 
-/// 一般ユーザー等の公開SNS投稿。無料開始時は人手でURLを追加する。
+/// 一般ユーザー等の公開SNS投稿。本文は保存せず URL のみ保持し、表示は公式埋め込みを使う。
 model SocialMention {
-  id        Int      @id @default(autoincrement())
-  meshiId   Int      @map("meshi_id")
-  platform  String
-  url       String
-  note      String?
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  meshi     Meshi    @relation(fields: [meshiId], references: [id], onDelete: Cascade)
+  id         Int       @id @default(autoincrement())
+  meshiId    Int       @map("meshi_id")
+  platform   String
+  url        String
+  author     String?
+  postedAt   DateTime? @map("posted_at") @db.Timestamptz(6)
+  confidence String?
+  note       String?
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  meshi      Meshi     @relation(fields: [meshiId], references: [id], onDelete: Cascade)
 
   @@unique([meshiId, url])
   @@index([meshiId])
+  @@index([meshiId, confidence, postedAt])
   @@map("social_mentions")
 }
