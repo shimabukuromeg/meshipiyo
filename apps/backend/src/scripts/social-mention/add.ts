@@ -1,31 +1,11 @@
 import { PrismaClient } from '@prisma/client'
+import {
+  detectPlatform,
+  isValidMentionUrl,
+  normalizePostUrl,
+} from './normalize'
 
 const prisma = new PrismaClient()
-
-function detectPlatform(url: string): 'x' | 'instagram' | 'threads' | null {
-  try {
-    const host = new URL(url).hostname.replace(/^www\./, '')
-    if (host === 'x.com' || host === 'twitter.com') return 'x'
-    if (host === 'instagram.com') return 'instagram'
-    if (host === 'threads.net' || host === 'threads.com') return 'threads'
-  } catch {
-    return null
-  }
-  return null
-}
-
-function isValidMentionUrl(platform: string, url: string) {
-  if (platform === 'x') {
-    return /\/status\/\d+/i.test(url)
-  }
-  if (platform === 'instagram') {
-    return /\/(p|reel|tv)\/[A-Za-z0-9_-]+/i.test(url)
-  }
-  if (platform === 'threads') {
-    return /\/post\/[A-Za-z0-9_-]+/i.test(url)
-  }
-  return false
-}
 
 async function main() {
   const meshiId = Number(process.argv[2])
@@ -39,8 +19,9 @@ async function main() {
     process.exit(1)
   }
 
-  const platform = detectPlatform(url)
-  if (!platform || !isValidMentionUrl(platform, url)) {
+  const normalizedUrl = normalizePostUrl(url) ?? url
+  const platform = detectPlatform(normalizedUrl)
+  if (!platform || !isValidMentionUrl(platform, normalizedUrl)) {
     console.error(
       '公開投稿のURLのみ登録できます（X: /status/…、IG: /p|reel/…、Threads: /post/…）',
     )
@@ -55,9 +36,9 @@ async function main() {
 
   const created = await prisma.socialMention.upsert({
     where: {
-      meshiId_url: { meshiId, url },
+      meshiId_url: { meshiId, url: normalizedUrl },
     },
-    create: { meshiId, platform, url, note },
+    create: { meshiId, platform, url: normalizedUrl, note },
     update: { platform, note },
   })
 

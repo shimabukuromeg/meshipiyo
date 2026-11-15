@@ -26,7 +26,9 @@ export type SocialMentionItem = {
   id: string
   platform: string
   url: string
-  note?: string | null
+  author?: string | null
+  postedAt?: string | null
+  confidence?: string | null
 }
 
 type Props = {
@@ -135,7 +137,7 @@ export function RestaurantDetailTabs({
               value="buzz"
               className="rounded-none border-b-2 border-transparent px-4 py-3 text-sm font-bold text-muted-foreground data-selected:border-border data-selected:text-foreground"
             >
-              みんなの投稿
+              Xの口コミ
             </TabsTab>
           )}
           {showRelated && (
@@ -186,7 +188,10 @@ export function RestaurantDetailTabs({
 
       {showBuzz && (
         <TabsPanel value="buzz" className="p-7 sm:p-10 lg:p-12">
-          <h2 className="mb-6 text-2xl font-bold">みんなの投稿</h2>
+          <h2 className="mb-2 text-2xl font-bold">Xの口コミ</h2>
+          <p className="mb-6 text-sm leading-6 text-muted-foreground">
+            一般ユーザーの公開投稿です。削除・非公開になると表示できない場合があります。
+          </p>
           <ul className="grid gap-6">
             {socialMentions.map((mention) => (
               <li key={mention.id} className="min-w-0">
@@ -205,11 +210,6 @@ export function RestaurantDetailTabs({
                         ? 'Threadsの投稿を見る →'
                         : '投稿を見る →'}
                   </Link>
-                )}
-                {mention.note && (
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    {mention.note}
-                  </p>
                 )}
               </li>
             ))}

@@ -34,6 +34,9 @@ type SocialMention {
   id: ID!
   platform: String!
   url: String!
+  author: String
+  postedAt: Date
+  confidence: String
   note: String
   createdAt: Date!
 }

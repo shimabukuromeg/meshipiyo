@@ -70,9 +70,12 @@ type Query {
 }
 
 type SocialMention {
+  author: String
+  confidence: String
   createdAt: Date!
   id: ID!
   note: String
   platform: String!
+  postedAt: Date
   url: String!
 }

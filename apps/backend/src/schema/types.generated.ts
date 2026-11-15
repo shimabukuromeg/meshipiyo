@@ -119,10 +119,13 @@ export type QuerymunicipalityArgs = {
 
 export type SocialMention = {
   __typename?: 'SocialMention';
+  author?: Maybe<Scalars['String']['output']>;
+  confidence?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['Date']['output'];
   id: Scalars['ID']['output'];
   note?: Maybe<Scalars['String']['output']>;
   platform: Scalars['String']['output'];
+  postedAt?: Maybe<Scalars['Date']['output']>;
   url: Scalars['String']['output'];
 };
 
@@ -310,10 +313,13 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type SocialMentionResolvers<ContextType = any, ParentType extends ResolversParentTypes['SocialMention'] = ResolversParentTypes['SocialMention']> = {
+  author?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  confidence?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   note?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   platform?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  postedAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
   url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 

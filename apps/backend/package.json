@@ -7,7 +7,7 @@
     "test": "vitest",
     "dev": "cross-env NODE_ENV=development ts-node-dev --exit-child --respawn src/main.ts",
     "start": "node dist/src/main.js",
-    "build": "prisma generate && rm -rf ./dist && tsc && cp -r ./prisma/* ./dist/prisma && mkdir -p ./dist/src/scripts/social-mention && cp ./src/scripts/social-mention/candidates-high-medium.json ./dist/src/scripts/social-mention/",
+    "build": "prisma generate && rm -rf ./dist && tsc && cp -r ./prisma/* ./dist/prisma && mkdir -p ./dist/src/scripts/social-mention && cp ./src/scripts/social-mention/candidates-high-medium.json ./src/scripts/social-mention/meshipiyo_x_posts.json ./dist/src/scripts/social-mention/",
     "typecheck": "tsc --noEmit",
     "codegen:gql": "graphql-codegen --config ./codegen.ts",
     "db:migrate:dev": "prisma migrate dev",
