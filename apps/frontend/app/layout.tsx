@@ -6,6 +6,7 @@ import type { Metadata } from 'next'
 import { Noto_Sans_JP } from 'next/font/google'
 import Link from 'next/link'
 import { BrandLogo } from '@/components/brand-logo'
+import { SavedNavItem } from '@/components/saved-nav-item'
 import {
   Menubar,
   MenubarContent,
@@ -80,6 +81,7 @@ export default function RootLayout({
               <Link href="/meshis">
                 <MenubarItem>お店一覧</MenubarItem>
               </Link>
+              <SavedNavItem />
             </MenubarContent>
           </MenubarMenu>
         </Menubar>
