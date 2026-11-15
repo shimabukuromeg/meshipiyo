@@ -77,6 +77,9 @@ export default function RootLayout({
               <Link href="/municipalities">
                 <MenubarItem>地域から探す</MenubarItem>
               </Link>
+              <Link href="/meshis">
+                <MenubarItem>お店一覧</MenubarItem>
+              </Link>
             </MenubarContent>
           </MenubarMenu>
         </Menubar>

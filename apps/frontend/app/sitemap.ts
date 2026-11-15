@@ -2,10 +2,11 @@ import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import { parse } from 'graphql'
 import type { MetadataRoute } from 'next'
 import { createRevalidatedGraphQLClient } from '@/lib/graphql-client'
+import { isSitemapMeshiRecord } from '@/lib/meshi-content'
+import { MESHI_INDEX_PAGE_SIZE, meshiIndexPath } from '@/lib/meshi-index'
 
 const SITEMAP_REVALIDATE_SECONDS = 3600
 const MAX_MESHIS_PAGE_SIZE = 1000
-const UNKNOWN = 'unknown'
 
 type GraphQLClient = ReturnType<typeof createRevalidatedGraphQLClient>
 
@@ -38,6 +39,7 @@ type SitemapMunicipalitiesResult = {
   municipalities: Array<{
     id: string
     createdAt: unknown
+    meshiCount: number
   }>
 }
 
@@ -68,29 +70,13 @@ const sitemapMunicipalitiesQuery = parse(/* GraphQL */ `
     municipalities {
       id
       createdAt
+      meshiCount
     }
   }
 `) as TypedDocumentNode<SitemapMunicipalitiesResult, Record<string, never>>
 
 function getSiteUrl() {
   return process.env.NEXT_PUBLIC_SITE_URL ?? 'https://meshipiyo.app'
-}
-
-function isIndexWorthyMeshi(meshi: {
-  storeName: string
-  title: string
-  imageUrl: string
-  siteUrl: string
-  address: string
-}) {
-  if (meshi.storeName === '') return false
-  return [
-    meshi.storeName,
-    meshi.title,
-    meshi.imageUrl,
-    meshi.siteUrl,
-    meshi.address,
-  ].every((value) => value !== UNKNOWN)
 }
 
 function toLastModified(value: unknown): Date | undefined {
@@ -106,12 +92,22 @@ function toLastModified(value: unknown): Date | undefined {
   return date
 }
 
-function sitemapEntry(
-  url: string,
-  lastModified?: Date,
-): MetadataRoute.Sitemap[number] {
-  if (!lastModified) return { url }
-  return { url, lastModified }
+function daysSince(date: Date): number {
+  return (Date.now() - date.getTime()) / (24 * 60 * 60 * 1000)
+}
+
+function sitemapEntry(input: {
+  url: string
+  lastModified?: Date
+  changeFrequency?: MetadataRoute.Sitemap[number]['changeFrequency']
+  priority?: number
+}): MetadataRoute.Sitemap[number] {
+  return {
+    url: input.url,
+    lastModified: input.lastModified,
+    changeFrequency: input.changeFrequency,
+    priority: input.priority,
+  }
 }
 
 function nextCursor(
@@ -128,17 +124,22 @@ async function fetchMunicipalityEntries(
   siteUrl: string,
 ) {
   const data = await client.request(sitemapMunicipalitiesQuery)
-  return data.municipalities.map((municipality) =>
-    sitemapEntry(
-      `${siteUrl}/municipality/${municipality.id}`,
-      toLastModified(municipality.createdAt),
-    ),
-  )
+  return data.municipalities
+    .filter((municipality) => municipality.meshiCount > 0)
+    .map((municipality) =>
+      sitemapEntry({
+        url: `${siteUrl}/municipality/${municipality.id}`,
+        lastModified: toLastModified(municipality.createdAt),
+        changeFrequency: 'weekly',
+        priority: 0.7,
+      }),
+    )
 }
 
 async function fetchMeshiEntries(client: GraphQLClient, siteUrl: string) {
   const entries: MetadataRoute.Sitemap = []
   let after: string | undefined
+  let indexableCount = 0
 
   while (true) {
     const data = await client.request(sitemapMeshisQuery, {
@@ -147,12 +148,17 @@ async function fetchMeshiEntries(client: GraphQLClient, siteUrl: string) {
     })
     for (const edge of data.meshis.edges) {
       const meshi = edge.node
-      if (!isIndexWorthyMeshi(meshi)) continue
+      if (!isSitemapMeshiRecord(meshi)) continue
+      indexableCount += 1
+      const lastModified = toLastModified(meshi.publishedDate)
+      const recent = lastModified ? daysSince(lastModified) <= 30 : false
       entries.push(
-        sitemapEntry(
-          `${siteUrl}/meshi/${meshi.id}`,
-          toLastModified(meshi.publishedDate),
-        ),
+        sitemapEntry({
+          url: `${siteUrl}/meshi/${meshi.id}`,
+          lastModified,
+          changeFrequency: recent ? 'weekly' : 'monthly',
+          priority: recent ? 0.8 : 0.6,
+        }),
       )
     }
     const cursor = nextCursor(
@@ -164,6 +170,32 @@ async function fetchMeshiEntries(client: GraphQLClient, siteUrl: string) {
     after = cursor
   }
 
+  return { entries, indexableCount }
+}
+
+function meshiIndexEntries(siteUrl: string, indexableCount: number) {
+  const totalPages = Math.max(
+    1,
+    Math.ceil(indexableCount / MESHI_INDEX_PAGE_SIZE),
+  )
+  const entries: MetadataRoute.Sitemap = [
+    sitemapEntry({
+      url: `${siteUrl}${meshiIndexPath(1)}`,
+      changeFrequency: 'daily',
+      priority: 0.9,
+      lastModified: new Date(),
+    }),
+  ]
+  for (let page = 2; page <= totalPages; page += 1) {
+    entries.push(
+      sitemapEntry({
+        url: `${siteUrl}${meshiIndexPath(page)}`,
+        changeFrequency: 'daily',
+        priority: 0.5,
+        lastModified: new Date(),
+      }),
+    )
+  }
   return entries
 }
 
@@ -172,15 +204,26 @@ export const dynamic = 'force-dynamic'
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = getSiteUrl()
   const client = createRevalidatedGraphQLClient(SITEMAP_REVALIDATE_SECONDS)
-  const [municipalities, meshis] = await Promise.all([
+  const [municipalities, meshiResult] = await Promise.all([
     fetchMunicipalityEntries(client, siteUrl),
     fetchMeshiEntries(client, siteUrl),
   ])
 
   return [
-    sitemapEntry(siteUrl),
-    sitemapEntry(`${siteUrl}/municipalities`),
+    sitemapEntry({
+      url: siteUrl,
+      changeFrequency: 'daily',
+      priority: 1,
+      lastModified: new Date(),
+    }),
+    sitemapEntry({
+      url: `${siteUrl}/municipalities`,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+      lastModified: new Date(),
+    }),
+    ...meshiIndexEntries(siteUrl, meshiResult.indexableCount),
     ...municipalities,
-    ...meshis,
+    ...meshiResult.entries,
   ]
 }
