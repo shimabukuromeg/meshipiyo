@@ -3,6 +3,7 @@
 import { MapPin, ParkingSquare } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { SaveMeshiButton } from '@/components/save-meshi-button'
 import { TravelEta } from '@/components/travel-eta'
 import type { LatLng } from '@/lib/geo'
 import { buildMapSearchQuery, isPresentMeshiValue } from '@/lib/meshi-content'
@@ -54,8 +55,8 @@ export const MeshiCard = (props: Props) => {
 
   return (
     <article className="group min-w-0" key={meshi.id}>
-      <Link href={`/meshi/${meshi.id}`} className="block">
-        <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+      <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+        <Link href={`/meshi/${meshi.id}`} className="block h-full">
           {imageUrl && (
             <Image
               className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.025]"
@@ -67,8 +68,22 @@ export const MeshiCard = (props: Props) => {
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
             />
           )}
+        </Link>
+        <div className="absolute right-3 top-3 z-10">
+          <SaveMeshiButton
+            meshi={{
+              id: meshi.id,
+              storeName: meshi.storeName,
+              title: meshi.title,
+              imageUrl,
+              municipalityId: meshi.municipality?.id ?? null,
+              municipalityName: meshi.municipality?.name ?? null,
+            }}
+            variant="overlay"
+            showLabel={false}
+          />
         </div>
-      </Link>
+      </div>
 
       <div className="pt-4">
         <div className="flex flex-wrap items-center justify-between gap-2 text-xs">

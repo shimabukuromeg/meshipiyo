@@ -8,6 +8,7 @@ import {
   type RestaurantDetailRow,
   RestaurantDetailTabs,
 } from '@/components/restaurant-detail-tabs'
+import { SaveMeshiButton } from '@/components/save-meshi-button'
 import { Button } from '@/components/ui/button'
 import { buildMapEmbedUrl } from '@/lib/geo'
 import { createRevalidatedGraphQLClient } from '@/lib/graphql-client'
@@ -310,12 +311,24 @@ export default async function RestaurantDetail({ id }: Props) {
                     </Link>
                   </Button>
                 )}
+                <SaveMeshiButton
+                  meshi={{
+                    id: meshi.id,
+                    storeName,
+                    title: titleText ?? storeName,
+                    imageUrl: uniqueImages[0] ?? imageUrl,
+                    municipalityId: meshi.municipality?.id ?? null,
+                    municipalityName: meshi.municipality?.name ?? null,
+                  }}
+                  variant="solid"
+                  className={!mapUrl ? 'sm:col-span-2' : undefined}
+                />
                 {articleUrl && (
                   <Button
                     asChild
                     variant="outline"
                     size="lg"
-                    className="h-12 rounded-none border-border-soft bg-transparent hover:bg-paper"
+                    className="h-12 rounded-none border-border-soft bg-transparent hover:bg-paper sm:col-span-2"
                   >
                     <Link
                       href={articleUrl}
