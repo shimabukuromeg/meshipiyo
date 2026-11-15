@@ -12,6 +12,10 @@ export type SavedMeshi = {
 }
 
 const MAX_SAVED = 100
+const EMPTY_SAVED_MESHIS: SavedMeshi[] = []
+
+let cachedRaw: string | null | undefined
+let cachedItems: SavedMeshi[] = EMPTY_SAVED_MESHIS
 
 function isSavedMeshi(value: unknown): value is SavedMeshi {
   if (!value || typeof value !== 'object') return false
@@ -29,23 +33,43 @@ function isSavedMeshi(value: unknown): value is SavedMeshi {
   )
 }
 
+function parseSavedMeshis(raw: string | null): SavedMeshi[] {
+  if (!raw) return EMPTY_SAVED_MESHIS
+  try {
+    const parsed = JSON.parse(raw) as unknown
+    if (!Array.isArray(parsed)) return EMPTY_SAVED_MESHIS
+    const items = parsed.filter(isSavedMeshi).slice(0, MAX_SAVED)
+    return items.length > 0 ? items : EMPTY_SAVED_MESHIS
+  } catch {
+    return EMPTY_SAVED_MESHIS
+  }
+}
+
+function setCachedSnapshot(raw: string | null, items: SavedMeshi[]) {
+  cachedRaw = raw
+  cachedItems = items
+}
+
 export function readSavedMeshis(): SavedMeshi[] {
-  if (typeof window === 'undefined') return []
+  if (typeof window === 'undefined') return EMPTY_SAVED_MESHIS
   try {
     const raw = window.localStorage.getItem(SAVED_MESHIS_STORAGE_KEY)
-    if (!raw) return []
-    const parsed = JSON.parse(raw) as unknown
-    if (!Array.isArray(parsed)) return []
-    return parsed.filter(isSavedMeshi).slice(0, MAX_SAVED)
+    if (raw === cachedRaw) return cachedItems
+    const items = parseSavedMeshis(raw)
+    setCachedSnapshot(raw, items)
+    return items
   } catch {
-    return []
+    setCachedSnapshot(null, EMPTY_SAVED_MESHIS)
+    return EMPTY_SAVED_MESHIS
   }
 }
 
 function writeSavedMeshis(items: SavedMeshi[]) {
   if (typeof window === 'undefined') return
   const next = items.slice(0, MAX_SAVED)
-  window.localStorage.setItem(SAVED_MESHIS_STORAGE_KEY, JSON.stringify(next))
+  const raw = JSON.stringify(next)
+  window.localStorage.setItem(SAVED_MESHIS_STORAGE_KEY, raw)
+  setCachedSnapshot(raw, next.length > 0 ? next : EMPTY_SAVED_MESHIS)
   window.dispatchEvent(new Event(SAVED_MESHIS_CHANGED_EVENT))
 }
 
@@ -86,17 +110,25 @@ export function toggleSavedMeshi(
   return { items: upsertSavedMeshi(input), saved: true }
 }
 
+export function getSavedMeshisServerSnapshot(): SavedMeshi[] {
+  return EMPTY_SAVED_MESHIS
+}
+
 export function subscribeSavedMeshis(onStoreChange: () => void) {
   if (typeof window === 'undefined') return () => {}
   const onStorage = (event: StorageEvent) => {
     if (event.key === SAVED_MESHIS_STORAGE_KEY || event.key === null) {
+      cachedRaw = undefined
       onStoreChange()
     }
   }
+  const onLocalChange = () => {
+    onStoreChange()
+  }
   window.addEventListener('storage', onStorage)
-  window.addEventListener(SAVED_MESHIS_CHANGED_EVENT, onStoreChange)
+  window.addEventListener(SAVED_MESHIS_CHANGED_EVENT, onLocalChange)
   return () => {
     window.removeEventListener('storage', onStorage)
-    window.removeEventListener(SAVED_MESHIS_CHANGED_EVENT, onStoreChange)
+    window.removeEventListener(SAVED_MESHIS_CHANGED_EVENT, onLocalChange)
   }
 }

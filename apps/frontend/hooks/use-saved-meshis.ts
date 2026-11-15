@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useSyncExternalStore } from 'react'
 import {
+  getSavedMeshisServerSnapshot,
   isMeshiSaved,
   readSavedMeshis,
   removeSavedMeshi,
@@ -11,15 +12,11 @@ import {
   upsertSavedMeshi,
 } from '@/lib/saved-meshis'
 
-function getServerSnapshot(): SavedMeshi[] {
-  return []
-}
-
 export function useSavedMeshis() {
   const items = useSyncExternalStore(
     subscribeSavedMeshis,
     readSavedMeshis,
-    getServerSnapshot,
+    getSavedMeshisServerSnapshot,
   )
 
   const savedIds = useMemo(() => new Set(items.map((item) => item.id)), [items])
