@@ -159,6 +159,30 @@ describe('parseAgeageStoreDetails', () => {
     expect(result.theme).to.equal(null)
   })
 
+  it('dt に混ざった「店名」ラベルを除去する', () => {
+    const html = `
+      <dl class="information_datalist">
+        <dt>店名　お食事処 食堂うみの</dt>
+        <dd><p>おいしい「スタミナ料理」、ごちそうさまでした！</p></dd>
+        <dt>住所</dt>
+        <dd>〒901-1504 沖縄県南城市知念字海野165</dd>
+        <dt>電話番号</dt>
+        <dd>090-1179-1132</dd>
+        <dt>営業時間</dt>
+        <dd>11時～16時</dd>
+        <dt>駐車場</dt>
+        <dd>あり（10台）</dd>
+      </dl>
+    `
+
+    const result = parseAgeageStoreDetails(html)
+
+    expect(result.storeName).to.equal('お食事処 食堂うみの')
+    expect(result.phone).to.equal('090-1179-1132')
+    expect(result.businessHours).to.equal('11時～16時')
+    expect(result.parking).to.equal('あり（10台）')
+  })
+
   it('URL・SNS の複合ラベルを公式とSNSに振り分ける', () => {
     const html = `
       <dl class="information_datalist">

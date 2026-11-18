@@ -83,6 +83,14 @@ function cleanText(value: string) {
   return value.replace(/\s+/g, ' ').trim()
 }
 
+/** `<dt>店名　○○</dt>` のようにラベルが店名に混ざるケースを正規化する */
+export function normalizeStoreName(value: string) {
+  const cleaned = cleanText(value)
+  if (!cleaned) return 'unknown'
+  const stripped = cleaned.replace(/^店名[\s　:：]*/u, '').trim()
+  return stripped || cleaned
+}
+
 function isLikelyThemeLabel(value: string) {
   if (!value || value.length > 24) return false
   if (/[。！？!?]/.test(value)) return false
@@ -114,7 +122,7 @@ export function parseAgeageStoreDetails(html: string): AgeageStoreDetails {
 
   if (dts.length > 0) {
     const firstDt = $(dts[0])
-    storeName = cleanText(firstDt.text()) || 'unknown'
+    storeName = normalizeStoreName(firstDt.text())
     const themeCandidate = cleanText(firstDt.next('dd').text())
     if (
       themeCandidate &&

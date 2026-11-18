@@ -2,6 +2,11 @@ name: Exec Ageage Collector
 
 on:
   workflow_dispatch: # 手動実行用
+    inputs:
+      mode:
+        description: "取得範囲（all / ページ番号）。SEO向けの差分データ埋め直しは all"
+        required: false
+        default: "all"
   schedule:
     - cron: "0 23 * * SUN" # 日曜日の23時に実行
 
@@ -41,6 +46,8 @@ jobs:
 
       - name: Exec Ageage Collector
         id: ageage-collector
+        env:
+          COLLECTOR_MODE: ${{ github.event.inputs.mode || 'all' }}
         run: |
           gcloud config set project $PROJECT_ID
           gcloud config set run/region $GCP_REGION
@@ -53,6 +60,12 @@ jobs:
           else
           jobs_cmd="create"
           fi
-          echo ": $jobs_cmd a job"
-          gcloud run jobs $jobs_cmd ageagecli --image="${{ env.IMAGE_HOST }}/${{ env.IMAGE_TAG_BASE }}:latest" --max-retries=1 --args="node,dist/src/scripts/ageage-collector/index.js" --service-account="${{ env.RUN_SERVICE_ACCOUNT }}" --set-secrets="DATABASE_URL=DATABASE_URL:latest"
+          echo ": $jobs_cmd a job (mode=$COLLECTOR_MODE)"
+          gcloud run jobs $jobs_cmd ageagecli \
+            --image="${{ env.IMAGE_HOST }}/${{ env.IMAGE_TAG_BASE }}:latest" \
+            --max-retries=1 \
+            --task-timeout=60m \
+            --args="node,dist/src/scripts/ageage-collector/index.js,${COLLECTOR_MODE}" \
+            --service-account="${{ env.RUN_SERVICE_ACCOUNT }}" \
+            --set-secrets="DATABASE_URL=DATABASE_URL:latest"
           gcloud run jobs execute ageagecli --wait --format=json
